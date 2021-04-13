@@ -1,10 +1,16 @@
 <template >
   <v-row class="pa-5" v-if="loaded">
-    <button @click="goBack()"> BACK </button>
     <v-col>
       <v-card>
-        <v-card-title>{{ project.name }}</v-card-title>
-        <v-card-text> {{ project.description }} </v-card-text>
+        <v-card-title
+          ><v-icon @click="goBack()" color="primary" class="mr-2">mdi-arrow-left-circle</v-icon
+          >{{ project.name }}</v-card-title
+        >
+        <v-card-text>
+          {{ project.description }} <br />
+          miembros =>{{ project.members }} <br />
+          clientes =>{{ project.clients }}
+        </v-card-text>
       </v-card>
     </v-col>
   </v-row>
@@ -29,8 +35,8 @@ export default {
     this.getInfo();
   },
   methods: {
-    goBack(){
-      this.$router.go(-1)
+    goBack() {
+      this.$router.go(-1);
     },
 
     async getInfo() {

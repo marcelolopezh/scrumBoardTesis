@@ -56,7 +56,7 @@ public class User {
     		joinColumns = @JoinColumn(name = "user_id"),
     		inverseJoinColumns = @JoinColumn(name = "project_id")
     )
-    //@JsonIgnore
+    @JsonIgnore
     private List<Project> allProjects;
     
     
@@ -66,7 +66,7 @@ public class User {
     		joinColumns = @JoinColumn(name = "user_id"),
     		inverseJoinColumns = @JoinColumn(name = "project_id")
     )
-    //@JsonIgnore
+    @JsonIgnore
     private List<Project> allClientsProj;
     
     

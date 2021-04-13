@@ -36,11 +36,9 @@ public class Project implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
-	@JsonIgnore
     private User user;
 	
 	@OneToMany(mappedBy="project", fetch = FetchType.LAZY)
-	@JsonIgnore
 	private List<Sprint> sprints;
 	
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -49,7 +47,6 @@ public class Project implements Serializable{
 			joinColumns = @JoinColumn (name="project_id"),
 			inverseJoinColumns = @JoinColumn (name="user_id")
 			)
-	@JsonIgnore
 	private List<User> members;
 	
 	
@@ -59,7 +56,7 @@ public class Project implements Serializable{
 			joinColumns = @JoinColumn (name="project_id"),
 			inverseJoinColumns = @JoinColumn (name="user_id")
 			)
-	@JsonIgnore
+
 	private List<User> clients;
 	
 	
