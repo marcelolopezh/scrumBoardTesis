@@ -15,8 +15,8 @@ export default {
 
   mounted() {
     localStorage.removeItem("token")
-    this.$emit("isLoggedFalse",false)
-    this.$emit("showLogginTrue", true)
+    localStorage.removeItem("email")
+    this.$router.push("/login")
   },
 
 };

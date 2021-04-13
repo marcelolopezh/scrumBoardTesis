@@ -41,9 +41,14 @@
               type="password"
               prepend-icon="mdi-lock"
             ></v-text-field>
-            <v-btn right color="success" class="mr-4" @click="pre_register()">
-              Registrar
+            <v-btn right color="secondary" class="mr-4" @click="pre_register()">
+              Registrarse
             </v-btn>
+            <router-link to="login">
+              <v-btn :loading="loading"  color="success" class="mr-4">
+                Ingresar
+              </v-btn>
+            </router-link>
           </v-form>
         </v-card>
       </v-col>
@@ -83,7 +88,7 @@ export default {
     pre_register() {
       this.errorRegister = false;
       this.successRegister = false;
-      
+
       if (
         this.name == null &&
         this.lastName == null &&
@@ -108,7 +113,7 @@ export default {
       this.register();
     },
     async register() {
-      this.errors = null
+      this.errors = null;
       let formData = new FormData();
       formData.append("name", this.name);
       formData.append("lastName", this.lastName);
@@ -121,7 +126,7 @@ export default {
         .post(this.apiUrl, formData)
         .then((response) => console.log(response.data))
         .catch((error) => {
-          this.errors = error
+          this.errors = error;
           this.errorMsg = "El Correo ya se encuentra registrado";
           this.errorRegister = true;
         });

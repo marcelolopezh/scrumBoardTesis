@@ -1,11 +1,11 @@
 <template class="mt-5">
   <v-container fill-height>
     <v-row justify="center" align="center">
-      <v-col cols="12" sm="4">
+      <v-col cols="12" sm="6">
         <v-card class="pa-6">
           <v-card-title>Inicio de Sesión</v-card-title>
           <v-alert type="error" v-if="errorLogin">
-            Ups! Algo ha salido mal <v-icon>mdi-emoticon-sad-outline</v-icon>
+            Ups! Algo ha salido mal
           </v-alert>
           <v-form ref="form">
             <v-text-field
@@ -24,13 +24,17 @@
             ></v-text-field>
             <v-btn
               :loading="loading"
-              right
               color="success"
               class="mr-4"
               @click="pre_login()"
             >
               Ingresar
             </v-btn>
+            <router-link to="registro">
+              <v-btn :loading="loading"  color="secondary" class="mr-4">
+                Registrarse
+              </v-btn>
+            </router-link>
           </v-form>
         </v-card>
       </v-col>
@@ -88,7 +92,7 @@ export default {
         # LocalStorage
         */
         localStorage.setItem("token", this.data.data.token);
-        localStorage.setItem("email", this.email)
+        localStorage.setItem("email", this.email);
         const user = {
           id: this.data.data.id,
           completeName: this.data.data.completeName,

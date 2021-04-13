@@ -11,7 +11,7 @@
                 <v-card-text>Listado de Proyectos</v-card-text>
                 <v-list dense v-if="myProjects!=null">
                   <v-list-item-group v-model="selectedProject" color="primary">
-                    <v-list-item v-for="(item) in myProjects" :key="item.id" @click="routerTo(item)">
+                    <v-list-item v-for="(item) in myProjects" :key="item.id">
                       <v-list-item-icon>
                         <v-icon>mdi-file-document-multiple</v-icon>
                       </v-list-item-icon>
@@ -119,10 +119,6 @@ export default {
     this.getAllMembers();
   },
   methods: {
-    routerTo(item){
-      console.log(item.id)
-      this.$router.push('Proyecto')
-    },
     async getMyProjects() {
       const email = localStorage.getItem("email");
       const token = localStorage.getItem("token");
