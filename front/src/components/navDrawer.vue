@@ -13,7 +13,7 @@
             </v-list-item-content>
           </v-list-item>
         </router-link>
-        <router-link to="Proyecto">
+        <router-link to="/proyectos">
           <v-list-item>
             <v-list-item-icon>
               <v-icon>mdi-folder-star-multiple</v-icon>
@@ -31,7 +31,7 @@
             <v-list-item-title>Tareas</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <router-link to="Logout">
+        <router-link to="/logout">
           <v-list-item>
             <v-list-item-icon>
               <v-icon>mdi-exit-to-app</v-icon>

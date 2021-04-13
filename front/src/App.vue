@@ -1,7 +1,7 @@
 <template>
-  <v-app id="inspire" dark>
-    <div v-if="isLogged">
-      <v-navigation-drawer v-model="drawer" app dark>
+  <v-app id="inspire" dark v-cloak>
+    <div>
+      <v-navigation-drawer v-model="drawer" app dark v-if="isLogged">
         <navDrawer
           @itemFromNav="selectedItem = $event"
           @drawerOut="drawer = $event"
@@ -18,25 +18,8 @@
     <v-main>
       <v-container>
         <router-view />
-
         <v-row>
-          <!--  <v-col>
-            <div v-if="selectedItem == 'db'">
-              <DashBoard />
-            </div>
-            <div v-if="selectedItem == 'mp'">
-              <Proyectos />
-            </div>
-            <div v-if="selectedItem == 'mt'">
-              <Tareas />
-            </div>
-            <div v-if="selectedItem == 'lo'">
-              <Logout
-                @isLoggedFalse="isLogged = $event"
-                @showLoginTrue="showLogin = $event"
-              />
-            </div>
-          </v-col>-->
+        
         </v-row>
       </v-container>
     </v-main>
@@ -96,7 +79,7 @@ export default {
           });
       }
       if (!this.isLogged)
-        this.$router.push("login").catch((err) => {
+        this.$router.push("/login").catch((err) => {
           if (
             err.name !== "NavigationDuplicated" &&
             !err.message.includes(
@@ -108,7 +91,7 @@ export default {
         });
       else {
         console.log("te wa tirar al dash");
-        this.$router.push("dashboard").catch((err) => {
+        this.$router.push("/app").catch((err) => {
           if (
             err.name !== "NavigationDuplicated" &&
             !err.message.includes(

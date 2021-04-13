@@ -61,7 +61,9 @@ export default {
     };
   },
 
-  mounted() {},
+  mounted() {
+    
+  },
 
   methods: {
     pre_login() {
@@ -93,18 +95,13 @@ export default {
         */
         localStorage.setItem("token", this.data.data.token);
         localStorage.setItem("email", this.email);
-        const user = {
-          id: this.data.data.id,
-          completeName: this.data.data.completeName,
-        };
-        this.$emit("isLogged", true);
-        this.$emit("user", user);
-        this.$emit("selectedItem", "db");
+        this.$router.go("/app")
       } else {
         this.errorLogin = true;
       }
       this.loading = false;
     },
+    
   },
 };
 </script>
