@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Auth from "../components/auth/Main.vue"
-import NoAuth from "../components/no-auth/Main.vue"
+import Auth from "../components/auth/MainAuth.vue"
+import NoAuth from "../components/no-auth/MainNoAuth.vue"
 import DashBoard from "../components/auth/dashboard/DashBoard.vue"
 import Proyectos from "../components/auth/proyectos/Proyectos.vue"
 Vue.use(VueRouter)
