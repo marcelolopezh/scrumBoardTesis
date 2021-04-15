@@ -3,7 +3,7 @@
     <v-list rounded>
       <v-subheader>Secciones</v-subheader>
       <v-list-item-group color="primary">
-        <router-link to="/">
+        <router-link to="/app/dashboard">
           <v-list-item>
             <v-list-item-icon>
               <v-icon>mdi-view-dashboard</v-icon>
@@ -13,7 +13,7 @@
             </v-list-item-content>
           </v-list-item>
         </router-link>
-        <router-link to="/proyectos">
+        <router-link to="/app/proyectos">
           <v-list-item>
             <v-list-item-icon>
               <v-icon>mdi-folder-star-multiple</v-icon>
@@ -31,16 +31,15 @@
             <v-list-item-title>Tareas</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <router-link to="/logout">
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-exit-to-app</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Logout</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </router-link>
+
+        <v-list-item @click="logout()">
+          <v-list-item-icon>
+            <v-icon>mdi-exit-to-app</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list-item-group>
     </v-list>
   </v-card>
@@ -55,5 +54,12 @@ export default defineComponent({
   data() {
     return {};
   },
+  methods:{
+    logout(){
+      localStorage.removeItem("token")
+      localStorage.removeItem("email")
+      this.$router.go("/login")
+    }
+  }
 });
 </script>

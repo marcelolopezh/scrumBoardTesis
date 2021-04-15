@@ -44,11 +44,14 @@
             <v-btn right color="secondary" class="mr-4" @click="pre_register()">
               Registrarse
             </v-btn>
-            <router-link to="login">
-              <v-btn :loading="loading"  color="success" class="mr-4">
-                Ingresar
-              </v-btn>
-            </router-link>
+
+            <v-btn
+              color="success"
+              class="mr-4"
+              @click="changeForms()"
+            >
+              Ingresar
+            </v-btn>
           </v-form>
         </v-card>
       </v-col>
@@ -81,6 +84,10 @@ export default {
   mounted() {},
 
   methods: {
+    changeForms(){
+      this.$emit("showLogin",true)
+      this.$emit("showRegister",false)
+    },
     validateEmail(email) {
       const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(String(email).toLowerCase());

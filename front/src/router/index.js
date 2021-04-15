@@ -1,48 +1,20 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Proyectos from '../components/proyectos/Proyectos.vue'
-import ProyectosDetalle from '../components/proyectos/ProyectosDetalle.vue'
-import Logout from "../components/login/Logout.vue"
-import Login from "../components/login/Login.vue"
-import Registro from "../components/registro/Registro.vue"
-import Dashboard from "../components/dashboard/DashBoard.vue"
+import Auth from "../components/auth/Main.vue"
+import NoAuth from "../components/no-auth/Main.vue"
+import DashBoard from "../components/auth/dashboard/DashBoard.vue"
+import Proyectos from "../components/auth/proyectos/Proyectos.vue"
 Vue.use(VueRouter)
 
 const routes = [
+
+  { path: '/login', component: NoAuth },
   {
-    path: '/app',
-    name: 'dashboard',
-    component: Dashboard
+    path: '/app', component: Auth, children: [
+      { path: 'dashboard', component: DashBoard },
+      { path: 'proyectos', component: Proyectos }
+    ]
   },
-  {
-    path: '/proyectos',
-    name: 'proyectos',
-    component: Proyectos,
-  },
-  {
-    path: '/proyectos/:id',
-    name: 'proyectosId',
-    component: ProyectosDetalle,
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: Login
-  },
-  {
-    path: '/',
-    name: 'login2',
-    component: Login
-  },
-  {
-    path: '/logout',
-    name: 'logout',
-    component: Logout
-  }, {
-    path: '/registro',
-    name: 'registro',
-    component: Registro
-  }
 ]
 
 const router = new VueRouter({

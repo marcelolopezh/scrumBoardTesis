@@ -1,43 +1,13 @@
 <template>
   <v-app id="inspire" dark v-cloak>
-    <div>
-      <v-navigation-drawer v-model="drawer" app dark v-if="isLogged">
-        <navDrawer
-          @itemFromNav="selectedItem = $event"
-          @drawerOut="drawer = $event"
-        />
-      </v-navigation-drawer>
-
-      <v-app-bar app dark>
-        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-
-        <v-toolbar-title>ScrumBoard</v-toolbar-title>
-      </v-app-bar>
-    </div>
-
-    <v-main>
-      <v-container>
-        <router-view />
-        <v-row>
-        
-        </v-row>
-      </v-container>
-    </v-main>
-    <v-footer dark padless>
-      <Footer />
-    </v-footer>
+    <router-view></router-view>
   </v-app>
 </template>
 
 <script>
-import navDrawer from "./components/navDrawer";
-import Footer from "./components/Footer";
 export default {
   name: "Home",
-  components: {
-    navDrawer,
-    Footer,
-  },
+  components: {},
   data() {
     return {
       drawer: false,
@@ -78,30 +48,8 @@ export default {
             this.isLogged = false;
           });
       }
-      if (!this.isLogged)
-        this.$router.push("/login").catch((err) => {
-          if (
-            err.name !== "NavigationDuplicated" &&
-            !err.message.includes(
-              "Avoided redundant navigation to current location"
-            )
-          ) {
-            console.log(err);
-          }
-        });
-      else {
-        console.log("te wa tirar al dash");
-        this.$router.push("/app").catch((err) => {
-          if (
-            err.name !== "NavigationDuplicated" &&
-            !err.message.includes(
-              "Avoided redundant navigation to current location"
-            )
-          ) {
-            console.log(err);
-          }
-        });
-      }
+      if (this.isLogged) this.$router.push("/app");
+      else this.$router.push("/login");
     },
   },
 };
@@ -119,22 +67,5 @@ a {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-}
-.bounce-enter-active {
-  animation: bounce-in 0.2s;
-}
-.bounce-leave-active {
-  animation: bounce-in 0.2s reverse;
-}
-@keyframes bounce-in {
-  0% {
-    transform: scale(0);
-  }
-  50% {
-    transform: scale(1.5);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 </style>

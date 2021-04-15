@@ -30,11 +30,14 @@
             >
               Ingresar
             </v-btn>
-            <router-link to="registro">
-              <v-btn :loading="loading"  color="secondary" class="mr-4">
-                Registrarse
-              </v-btn>
-            </router-link>
+
+            <v-btn
+              color="secondary"
+              class="mr-4"
+              @click="changeForms()"
+            >
+              Registrarse
+            </v-btn>
           </v-form>
         </v-card>
       </v-col>
@@ -61,11 +64,13 @@ export default {
     };
   },
 
-  mounted() {
-    
-  },
+  mounted() {},
 
   methods: {
+    changeForms() {
+      this.$emit("showLogin", false);
+      this.$emit("showRegister", true);
+    },
     pre_login() {
       this.loading = true;
       this.login();
@@ -95,13 +100,12 @@ export default {
         */
         localStorage.setItem("token", this.data.data.token);
         localStorage.setItem("email", this.email);
-        this.$router.go("/app")
+        this.$router.go("/app");
       } else {
         this.errorLogin = true;
       }
       this.loading = false;
     },
-    
   },
 };
 </script>

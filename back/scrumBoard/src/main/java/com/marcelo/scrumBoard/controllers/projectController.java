@@ -66,9 +66,7 @@ public class projectController {
 		for(int i  = 0 ; i< AllProjects.size(); i++) {
 			if(AllProjects.get(i).getUser()==user) MyProj.add(AllProjects.get(i));
 		}
-		for(int j = 0 ; j<MyProj.size();j++) {
-			System.out.println(MyProj.get(j).getName());
-		}
+	
 		return ResponseEntity.status(HttpStatus.OK).body(MyProj);
 	}
 	
