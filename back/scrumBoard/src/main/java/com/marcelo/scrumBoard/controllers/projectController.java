@@ -46,7 +46,7 @@ public class projectController {
 			project.setMembers(selectedMembersArray);
 			List<User> selectedClientsArray = new ArrayList<User>();
 			for(int i = 0; i<selectedClients.size(); i++) {
-				user = userService.findById( Long.parseLong(selectedMembers.get(i)) );
+				user = userService.findById( Long.parseLong(selectedClients.get(i)) );
 				selectedClientsArray.add(user);
 			}
 			project.setClients(selectedClientsArray);
