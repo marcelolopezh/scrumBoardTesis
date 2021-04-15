@@ -120,7 +120,7 @@ export default {
   },
   methods: {
     routerTo(item){
-      this.$router.push('/proyectos/'+item.id)
+      this.$router.push('/app/proyectos/'+item.id)
     },
     async getMyProjects() {
       const email = localStorage.getItem("email");
