@@ -51,6 +51,7 @@
                     <v-card-text
                       ><div>
                         <v-data-table
+                          dense
                           :headers="headers"
                           :items="project.sprints"
                           :page.sync="page"
@@ -58,6 +59,7 @@
                           hide-default-footer
                           class="elevation-1"
                           @page-count="pageCount = $event"
+                          @click:row="sprintClick"
                         >
                           <template v-slot:item.state="{ item }">
                             <v-chip
@@ -86,12 +88,11 @@
                             </v-chip>
                           </template>
                           <template v-slot:item.startDate="{ item }">
-                            {{ item.startDate | moment("DD-MM-YYYY")}}
+                            {{ item.startDate | moment("DD-MM-YYYY") }}
                           </template>
                           <template v-slot:item.endDate="{ item }">
-                            {{ item.endDate | moment("DD-MM-YYYY")}}
+                            {{ item.endDate | moment("DD-MM-YYYY") }}
                           </template>
-                           
                         </v-data-table>
                         <div class="text-center pt-2">
                           <v-pagination
@@ -127,12 +128,14 @@
           <v-text-field
             v-model="sprintName"
             label="Nombre Sprint"
+            prepend-icon="mdi-card-text"
             clearable
           ></v-text-field>
 
           <v-text-field
             v-model="sprintObjetive"
             label="Objetivo Sprint"
+            prepend-icon="mdi-calendar"
             clearable
           ></v-text-field>
 
@@ -240,16 +243,16 @@ export default {
       itemsPerPage: 10,
       headers: [
         {
-          text: "Id",
-
+          text: "#",
           sortable: false,
           value: "id",
+          width: "5%",
         },
-        { text: "Nombre", value: "name" },
-        { text: "Objetivo", value: "objetive" },
-        { text: "Estado", value: "state" },
-        { text: "Inicio", value: "startDate" },
-        { text: "Termino", value: "endDate" },
+        { text: "Nombre", value: "name", width: "10%" },
+        { text: "Objetivo", value: "objetive", width:"40%" },
+        { text: "Estado", value: "state", width: "15%" },
+        { text: "Inicio", value: "startDate", width: "15%" },
+        { text: "Termino", value: "endDate", width: "15%" },
       ],
       sprintName: null,
       sprintObjetive: null,
@@ -265,15 +268,19 @@ export default {
     this.getInfo();
   },
   methods: {
+    sprintClick(value){
+      let sprint = value.id
+      this.$router.push("/app/proyectos/"+this.project.id+"/"+sprint)
+    },
     async createSprint() {
       const token = localStorage.getItem("token");
       var formData = new FormData();
       formData.append("name", this.sprintName);
       formData.append("objetive", this.sprintObjetive);
       //2020-04-01T09:18:18Z
-      console.log(this.sprintStartDate + " " + this.sprintEndDate)
-      formData.append("startDate", this.sprintStartDate+" 00:00:00");
-      formData.append("endDate", this.sprintEndDate+" 23:59:59");
+      console.log(this.sprintStartDate + " " + this.sprintEndDate);
+      formData.append("startDate", this.sprintStartDate + " 00:00:00");
+      formData.append("endDate", this.sprintEndDate + " 23:59:59");
       formData.append("projectId", this.project.id);
       await axios
         .post(this.apiUrl + "createSprint", formData, {

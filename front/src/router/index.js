@@ -6,6 +6,7 @@ import NoAuth from "../components/no-auth/MainNoAuth.vue"
 import DashBoard from "../components/auth/dashboard/DashBoard.vue"
 import Proyectos from "../components/auth/proyectos/Proyectos.vue"
 import ProyectoDetalle from "../components/auth/proyectos/ProyectosDetalle.vue"
+import SprintDetalle from "../components/auth/sprints/SprintDetalle.vue"
 Vue.use(VueRouter)
 
 const routes = [
@@ -15,7 +16,8 @@ const routes = [
     path: '/app', component: Auth, children: [
       { path: 'dashboard', component: DashBoard },
       { path: 'proyectos', component: Proyectos },
-      { path: 'proyectos/:id', component: ProyectoDetalle }
+      { path: 'proyectos/:id', component: ProyectoDetalle },
+      { path: 'proyectos/:id/:sprint', component: SprintDetalle }
     ]
   },
 ]
