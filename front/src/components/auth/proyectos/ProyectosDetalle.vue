@@ -11,7 +11,7 @@
           <v-card-text>
             <v-container
               ><v-row>
-                <v-col cols="4">
+                <v-col cols="3">
                   <v-card>
                     <v-card-text>
                       <v-list dense>
@@ -45,7 +45,7 @@
                     </v-card-text>
                   </v-card>
                 </v-col>
-                <v-col cols="8">
+                <v-col cols="9">
                   <v-card>
                     <v-card-title>Sprints</v-card-title>
                     <v-card-text
@@ -58,7 +58,34 @@
                           hide-default-footer
                           class="elevation-1"
                           @page-count="pageCount = $event"
-                        ></v-data-table>
+                        >
+                          <template v-slot:item.state="{ item }">
+                            <v-chip
+                              style="width: 100%"
+                              v-if="item.state == 'No Iniciado'"
+                              color="red"
+                              dark
+                            >
+                              {{ item.state }}
+                            </v-chip>
+                            <v-chip
+                              style="width: 100%"
+                              v-if="item.state == 'Iniciado'"
+                              color="blue"
+                              dark
+                            >
+                              {{ item.state }}
+                            </v-chip>
+                            <v-chip
+                              style="width: 100%"
+                              v-if="item.state == 'Terminado'"
+                              color="success"
+                              dark
+                            >
+                              {{ item.state }}
+                            </v-chip>
+                          </template>
+                        </v-data-table>
                         <div class="text-center pt-2">
                           <v-pagination
                             v-model="page"
@@ -100,7 +127,73 @@
             v-model="sprintObjetive"
             label="Objetivo Sprint"
             clearable
-          ></v-text-field> </v-card-text
+          ></v-text-field>
+
+          <!-- PICK START DATE -->
+          <v-dialog
+            ref="dialogStartSprint"
+            v-model="modalStartSprint"
+            :return-value.sync="sprintStartDate"
+            persistent
+            width="290px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="sprintStartDate"
+                label="Fecha de Inicio"
+                prepend-icon="mdi-calendar"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="sprintStartDate" scrollable>
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="modalStartSprint = false">
+                Cancel
+              </v-btn>
+              <v-btn
+                text
+                color="primary"
+                @click="$refs.dialogStartSprint.save(sprintStartDate)"
+              >
+                OK
+              </v-btn>
+            </v-date-picker>
+          </v-dialog>
+
+          <!-- PICK END DATE -->
+          <v-dialog
+            ref="dialogEndSprint"
+            v-model="modalEndSprint"
+            :return-value.sync="sprintEndDate"
+            persistent
+            width="290px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="sprintEndDate"
+                label="Fecha de Inicio"
+                prepend-icon="mdi-calendar"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="sprintEndDate" scrollable>
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="modalEndSprint = false">
+                Cancel
+              </v-btn>
+              <v-btn
+                text
+                color="primary"
+                @click="$refs.dialogEndSprint.save(sprintEndDate)"
+              >
+                OK
+              </v-btn>
+            </v-date-picker>
+          </v-dialog> </v-card-text
         ><v-card-actions>
           <v-btn color="danger" text @click="dialog = false"> Cerrar </v-btn>
           <v-btn
@@ -153,6 +246,11 @@ export default {
       ],
       sprintName: null,
       sprintObjetive: null,
+      sprintStartDate: null,
+      sprintEndDate: null,
+      modalStartSprint: false,
+      modalEndSprint: false,
+      menu: false,
     };
   },
   mounted() {
@@ -165,6 +263,9 @@ export default {
       var formData = new FormData();
       formData.append("name", this.sprintName);
       formData.append("objetive", this.sprintObjetive);
+      //2020-04-01T09:18:18Z
+      formData.append("startDate", this.sprintStartDate+"T00:00:00Z");
+      formData.append("endDate", this.sprintEndDate+"T23:59:00Z");
       formData.append("projectId", this.project.id);
       await axios
         .post(this.apiUrl + "createSprint", formData, {
@@ -172,7 +273,7 @@ export default {
             Authorization: token,
           },
         })
-        .then(async() =>  this.getInfo())
+        .then(async () => this.getInfo())
         .catch((error) => console.log(error));
     },
     goBack() {

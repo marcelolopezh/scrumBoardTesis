@@ -1,6 +1,9 @@
 package com.marcelo.scrumBoard.controllers;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,14 +25,18 @@ public class sprintController {
 	ProjectService projectService;
 
 	@PostMapping("/createSprint")
-	private ResponseEntity<Project> createSprint(
-			@RequestParam("name") String name, 
-			@RequestParam("objetive") String objetive,
-			@RequestParam("projectId") Long projectId) {
+	private ResponseEntity<Project> createSprint(@RequestParam("name") String name,
+			@RequestParam("objetive") String objetive, @RequestParam("projectId") Long projectId,
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") Date startDate,
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") Date endDate) {
+
 		Sprint sprint = new Sprint();
 		sprint.setName(name);
 		sprint.setObjetive(objetive);
-		Project project =projectService.findById(projectId);
+		sprint.setState("No Iniciado");
+		sprint.setStartDate(startDate);
+		sprint.setEndDate(endDate);
+		Project project = projectService.findById(projectId);
 		sprint = sprintService.save(sprint);
 		sprint.setProject(project);
 		project = projectService.createProject(project);

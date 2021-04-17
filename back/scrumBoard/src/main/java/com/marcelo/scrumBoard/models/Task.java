@@ -10,41 +10,47 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-
 @Entity
-@Table(name="tasks")
+@Table(name = "tasks")
 public class Task {
 	@Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String description;
-    private String state;
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'hh:mm")
-    private Date startDate;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	private String name;
+	private String description;
+	private String state;
+	private Integer hours;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'hh:mm")
-    private Date endDate;
-    
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="user_id")
-    private User user;
-    
-    @Column(updatable=false)
-    private Date createdAt;
-    private Date updatedAt;
-    
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="sprint_id")
-    private Sprint sprint;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private User user;
+
+	@Column(updatable = false)
+	private Date createdAt;
+	private Date updatedAt;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "sprint_id")
+	private Sprint sprint;
+
+	@PrePersist
+	protected void onCreate() {
+		this.createdAt = new Date();
+		this.updatedAt = new Date();
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		this.updatedAt = new Date();
+	}
 
 	public Long getId() {
 		return id;
@@ -78,20 +84,12 @@ public class Task {
 		this.state = state;
 	}
 
-	public Date getStartDate() {
-		return startDate;
+	public Integer getHours() {
+		return hours;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	public void setHours(Integer hours) {
+		this.hours = hours;
 	}
 
 	public User getUser() {
@@ -125,6 +123,5 @@ public class Task {
 	public void setSprint(Sprint sprint) {
 		this.sprint = sprint;
 	}
-    
-    
+
 }
