@@ -48,7 +48,9 @@
                         {{ item.priority }}
                       </v-chip>
                     </template>
-                  
+                  <template v-slot:item.user.name="{ item }">
+                    {{ item.user.name}}  {{ item.user.lastName }}
+                  </template>
                   </v-data-table>
                 </v-container>
               </v-card-text>
