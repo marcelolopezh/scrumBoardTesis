@@ -85,6 +85,13 @@
                               {{ item.state }}
                             </v-chip>
                           </template>
+                          <template v-slot:item.startDate="{ item }">
+                            {{ item.startDate | moment("DD-MM-YYYY")}}
+                          </template>
+                          <template v-slot:item.endDate="{ item }">
+                            {{ item.endDate | moment("DD-MM-YYYY")}}
+                          </template>
+                           
                         </v-data-table>
                         <div class="text-center pt-2">
                           <v-pagination
@@ -264,8 +271,9 @@ export default {
       formData.append("name", this.sprintName);
       formData.append("objetive", this.sprintObjetive);
       //2020-04-01T09:18:18Z
-      formData.append("startDate", this.sprintStartDate+"T00:00:00Z");
-      formData.append("endDate", this.sprintEndDate+"T23:59:00Z");
+      console.log(this.sprintStartDate + " " + this.sprintEndDate)
+      formData.append("startDate", this.sprintStartDate+" 00:00:00");
+      formData.append("endDate", this.sprintEndDate+" 23:59:59");
       formData.append("projectId", this.project.id);
       await axios
         .post(this.apiUrl + "createSprint", formData, {
