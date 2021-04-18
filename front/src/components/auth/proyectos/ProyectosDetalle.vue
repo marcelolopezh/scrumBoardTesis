@@ -3,12 +3,28 @@
     <v-row class="pa-5" v-if="loaded">
       <v-col>
         <v-card>
-          <v-card-title
-            ><v-icon @click="goBack()" color="primary" class="mr-2"
-              >mdi-arrow-left-circle</v-icon
-            >{{ project.name }} - {{ project.description }}</v-card-title
-          >
+          <v-card-title>
+            <v-chip
+              @click="goBack()"
+              class="ma-2"
+              color="primary"
+              text-color="white"
+            >
+              <v-icon left> mdi-arrow-left-circle </v-icon>
+              Volver
+            </v-chip>
+          </v-card-title>
+
           <v-card-text>
+            <v-alert color="#E0E0E0">
+              <h2 class="mx-4 text-center">
+                {{ project.name }}
+              </h2>
+              <h3 class="mx-4 text-center">
+                {{ project.description }}
+              </h3>
+            </v-alert>
+
             <v-container
               ><v-row>
                 <v-col cols="3">
@@ -17,29 +33,38 @@
                       <v-list dense>
                         <v-subheader>Miembros del Equipo</v-subheader
                         ><v-list-item v-for="item in members" :key="item.id">
-                          <v-list-item-icon>
-                            <v-icon>mdi-account</v-icon>
-                          </v-list-item-icon>
-                          <v-list-item-content>
-                            <v-list-item-title
-                              >{{ item.name }}
-                              {{ item.lastName }}</v-list-item-title
-                            >
-                          </v-list-item-content>
+                          <v-chip
+                            class="ma-2"
+                            color="primary"
+                            text-color="white"
+                          >
+                            <v-icon left>mdi-account </v-icon>
+                            <v-list-item-content>
+                              <v-list-item-title
+                                >{{ item.name }}
+                                {{ item.lastName }}</v-list-item-title
+                              >
+                            </v-list-item-content></v-chip
+                          >
                         </v-list-item></v-list
                       >
                       <v-list dense>
                         <v-subheader>Clientes</v-subheader>
                         <v-list-item v-for="item in clients" :key="item.id">
-                          <v-list-item-icon>
-                            <v-icon>mdi-account</v-icon>
-                          </v-list-item-icon>
-                          <v-list-item-content>
-                            <v-list-item-title
-                              >{{ item.name }}
-                              {{ item.lastName }}</v-list-item-title
-                            >
-                          </v-list-item-content>
+                          <v-chip
+                            class="ma-2"
+                            color="amber"
+                            text-color="white"
+                          >
+                            <v-icon left>mdi-account</v-icon>
+
+                            <v-list-item-content>
+                              <v-list-item-title
+                                >{{ item.name }}
+                                {{ item.lastName }}</v-list-item-title
+                              >
+                            </v-list-item-content></v-chip
+                          >
                         </v-list-item></v-list
                       >
                     </v-card-text>
@@ -47,11 +72,10 @@
                 </v-col>
                 <v-col cols="9">
                   <v-card>
-                    <v-card-title>Sprints</v-card-title>
+                    <v-card-title>Listado de Sprints </v-card-title>
                     <v-card-text
                       ><div>
                         <v-data-table
-                          dense
                           :headers="headers"
                           :items="project.sprints"
                           :page.sync="page"
@@ -135,7 +159,7 @@
           <v-text-field
             v-model="sprintObjetive"
             label="Objetivo Sprint"
-            prepend-icon="mdi-calendar"
+            prepend-icon="mdi-clipboard-text"
             clearable
           ></v-text-field>
 
@@ -242,14 +266,8 @@ export default {
       pageCount: 0,
       itemsPerPage: 10,
       headers: [
-        {
-          text: "#",
-          sortable: false,
-          value: "id",
-          width: "5%",
-        },
-        { text: "Nombre", value: "name", width: "10%" },
-        { text: "Objetivo", value: "objetive", width:"40%" },
+        { text: "Nombre", value: "name", width: "15%" },
+        { text: "Objetivo", value: "objetive", width: "40%" },
         { text: "Estado", value: "state", width: "15%" },
         { text: "Inicio", value: "startDate", width: "15%" },
         { text: "Termino", value: "endDate", width: "15%" },
@@ -268,9 +286,9 @@ export default {
     this.getInfo();
   },
   methods: {
-    sprintClick(value){
-      let sprint = value.id
-      this.$router.push("/app/proyectos/"+this.project.id+"/"+sprint)
+    sprintClick(value) {
+      let sprint = value.id;
+      this.$router.push("/app/proyectos/" + this.project.id + "/" + sprint);
     },
     async createSprint() {
       const token = localStorage.getItem("token");

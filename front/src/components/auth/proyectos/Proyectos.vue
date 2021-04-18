@@ -42,12 +42,14 @@
                       v-model="name"
                       label="Nombre de Proyecto"
                       required
+                      prepend-icon="mdi-border-color"
                     ></v-text-field>
 
                     <v-text-field
                       v-model="description"
                       label="Descripcion de Proyecto"
                       required
+                      prepend-icon="mdi-format-list-bulleted"
                     ></v-text-field>
 
                     <v-autocomplete
@@ -59,6 +61,7 @@
                       small-chips
                       label="Listado de Miembros"
                       multiple
+                      prepend-icon="mdi-human-queue"
                     >
                     </v-autocomplete>
 
@@ -71,6 +74,7 @@
                       small-chips
                       label="Listado de Clientes"
                       multiple
+                      prepend-icon="mdi-human-queue"
                     >
                     </v-autocomplete>
 

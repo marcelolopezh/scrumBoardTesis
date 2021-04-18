@@ -13,7 +13,7 @@
               <v-card-text>
                 <v-container>
                   <v-data-table
-                    dense
+                    
                     :headers="headers"
                     :items="sprint.tasks"
                     :page.sync="page"
@@ -22,6 +22,32 @@
                     class="elevation-1"
                     @page-count="pageCount = $event"
                   >
+                    <template v-slot:item.state="{ item }">
+                      <v-chip
+                        style="width: 100%"
+                        v-if="item.state == 'No Iniciado'"
+                        color="red"
+                        dark
+                      >
+                        {{ item.state }}
+                      </v-chip>
+                      <v-chip
+                        style="width: 100%"
+                        v-if="item.state == 'Iniciado'"
+                        color="yellow"
+                        dark
+                      >
+                        {{ item.state }}
+                      </v-chip>
+                      <v-chip
+                        style="width: 100%"
+                        v-if="item.state == 'Terminado'"
+                        color="green"
+                        dark
+                      >
+                        {{ item.state }}
+                      </v-chip>
+                    </template>
                     <template v-slot:item.priority="{ item }">
                       <v-chip
                         style="width: 100%"
@@ -48,9 +74,11 @@
                         {{ item.priority }}
                       </v-chip>
                     </template>
-                  <template v-slot:item.user.name="{ item }">
-                    {{ item.user.name}}  {{ item.user.lastName }}
-                  </template>
+                    <template v-slot:item.user.name="{ item }">
+                      <v-chip style="width: 100%" color="primary">
+                        {{ item.user.name }} {{ item.user.lastName }}</v-chip
+                      >
+                    </template>
                   </v-data-table>
                 </v-container>
               </v-card-text>
@@ -86,7 +114,7 @@
           <v-text-field
             v-model="taskDescription"
             label="Descripción Tarea"
-            prepend-icon="mdi-calendar"
+            prepend-icon="mdi-clipboard-text"
             clearable
           ></v-text-field>
 
@@ -106,7 +134,7 @@
             menu-props="auto"
             label="Prioridad"
             hide-details
-            prepend-icon="mdi-map"
+            prepend-icon="mdi-podium-silver"
             single-line
           ></v-select>
 
@@ -116,7 +144,7 @@
             menu-props="auto"
             label="Responsable de Tarea"
             hide-details
-            prepend-icon="mdi-map"
+            prepend-icon="mdi-account"
             single-line
           ></v-select> </v-card-text
         ><v-card-actions>
@@ -156,16 +184,10 @@ export default {
       pageCount: 0,
       itemsPerPage: 10,
       headers: [
-        {
-          text: "#",
-          sortable: false,
-          value: "id",
-          width: "5%",
-        },
-        { text: "Nombre", value: "name", width: "10%" },
+        { text: "Nombre", value: "name", width: "19%" },
         { text: "Descripción", value: "description", width: "40%" },
-        { text: "Estado", value: "state", width: "15%" },
-        { text: "Prioridad", value: "priority", width: "15%" },
+        { text: "Estado", value: "state", width: "14%" },
+        { text: "Prioridad", value: "priority", width: "12%" },
         { text: "Responsable", value: "user.name", width: "15%" },
       ],
       priorityList: [
@@ -186,8 +208,8 @@ export default {
     this.getInfo();
   },
   methods: {
-    getName(){
-      return "Hola"
+    getName() {
+      return "Hola";
     },
     async createTask() {
       const token = localStorage.getItem("token");
@@ -197,7 +219,7 @@ export default {
       formData.append("hours", this.taskHours);
       formData.append("priority", this.taskPriority);
       formData.append("responsable", this.responsable);
-      formData.append("sprint", this.id)
+      formData.append("sprint", this.id);
       await axios
         .post(this.apiUrl + "createTask", formData, {
           headers: {
@@ -221,8 +243,8 @@ export default {
         })
         .then((response) => (this.sprint = response.data))
         .catch((error) => console.log(error));
-      console.log("THIS SPRINT =>")
-      console.log(this.sprint)
+      console.log("THIS SPRINT =>");
+      console.log(this.sprint);
       await axios
         .get(this.apiUrl + "getInfoProject/" + this.projectId, {
           headers: {
