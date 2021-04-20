@@ -4,6 +4,7 @@
       <v-navigation-drawer v-model="drawer" app dark>
         <navDrawer />
       </v-navigation-drawer>
+      <router-link to="/app/home" id="routerLinkTo"></router-link>
 
       <v-app-bar app dark>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
@@ -34,7 +35,8 @@
     <v-main>
       <v-container>
         <router-view />
-        <v-row> </v-row>
+
+        <v-row>  </v-row>
       </v-container>
     </v-main>
     <v-footer dark padless>
@@ -57,7 +59,7 @@ export default {
     };
   },
   mounted() {
-    // CONFIRMAR TOKEN
+   document.querySelector("#routerLinkTo").click();
     this.isTokenPresent();
   },
   methods: {

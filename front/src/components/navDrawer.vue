@@ -1,6 +1,6 @@
 <template>
   <v-card class="mx-auto" max-width="300" tile>
-    <v-list rounded>
+    <v-list dense>
       <v-subheader>Secciones</v-subheader>
       <v-list-item-group color="primary">
         <router-link to="/app/dashboard">
@@ -14,7 +14,7 @@
           </v-list-item>
         </router-link>
         <router-link to="/app/proyectos">
-          <v-list-item>
+          <v-list-item> 
             <v-list-item-icon>
               <v-icon>mdi-folder-star-multiple</v-icon>
             </v-list-item-icon>

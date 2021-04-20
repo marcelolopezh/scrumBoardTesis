@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Auth from "../components/auth/MainAuth.vue"
 import App from "../App.vue"
 import NoAuth from "../components/no-auth/MainNoAuth.vue"
+import Home from "../components/auth/home/Home.vue"
 import DashBoard from "../components/auth/dashboard/DashBoard.vue"
 import Proyectos from "../components/auth/proyectos/Proyectos.vue"
 import ProyectoDetalle from "../components/auth/proyectos/ProyectosDetalle.vue"
@@ -14,6 +15,7 @@ const routes = [
   { path: '/login', component: NoAuth },
   {
     path: '/app', component: Auth, children: [
+      { path: 'home', component : Home},
       { path: 'dashboard', component: DashBoard },
       { path: 'proyectos', component: Proyectos },
       { path: 'proyectos/:id', component: ProyectoDetalle },
