@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-row class="pa-5" v-if="loaded">
+    <v-row v-if="loaded">
       <v-col>
         <v-card color="#FAFAFA">
           <v-card-text>
-            <v-alert >
+            <v-alert>
               <v-chip
                 @click="goBack()"
                 class="ma-2"
@@ -20,7 +20,7 @@
               </h3>
             </v-alert>
 
-            <v-container
+            <v-container fluid
               ><v-row>
                 <v-col cols="3">
                   <v-card>
@@ -46,7 +46,11 @@
                       <v-list dense>
                         <v-subheader>Clientes</v-subheader>
                         <v-list-item v-for="item in clients" :key="item.id">
-                          <v-chip class="ma-2" color="primary" text-color="white">
+                          <v-chip
+                            class="ma-2"
+                            color="primary"
+                            text-color="white"
+                          >
                             <v-icon left>mdi-account</v-icon>
 
                             <v-list-item-content>
@@ -74,7 +78,6 @@
                           hide-default-footer
                           class="elevation-1"
                           @page-count="pageCount = $event"
-                          @click:row="sprintClick"
                         >
                           <template v-slot:[`item.state`]="{ item }">
                             <v-chip
@@ -82,6 +85,7 @@
                               v-if="item.state == 'No Iniciado'"
                               color="red"
                               dark
+                              outlined
                             >
                               {{ item.state }}
                             </v-chip>
@@ -107,6 +111,31 @@
                           </template>
                           <template v-slot:[`item.endDate`]="{ item }">
                             {{ item.endDate | moment("DD-MM-YYYY") }}
+                          </template>
+                          <template v-slot:[`item.acciones`]="{ item }">
+                            <v-chip color="primary">
+                              <v-icon
+                                dense
+                                class="mx-1"
+                                @click="editItem(item)"
+                              >
+                                mdi-pencil
+                              </v-icon>
+                              <v-icon
+                                dense
+                                class="mx-1"
+                                @click="deleteItem(item)"
+                              >
+                                mdi-delete
+                              </v-icon>
+                              <v-icon
+                                dense
+                                class="mx-1"
+                                @click="goToSprint(item)"
+                              >
+                                mdi-eye
+                              </v-icon></v-chip
+                            >
                           </template>
                         </v-data-table>
                         <div class="text-center pt-2">
@@ -241,6 +270,7 @@
 
 <script>
 import axios from "axios";
+import Swal from "sweetalert2";
 export default {
   name: "ProyectosDetalle",
 
@@ -258,11 +288,17 @@ export default {
       pageCount: 0,
       itemsPerPage: 10,
       headers: [
-        { text: "Nombre", value: "name", width: "15%" },
-        { text: "Objetivo", value: "objetive", width: "40%" },
-        { text: "Estado", value: "state", width: "15%" },
-        { text: "Inicio", value: "startDate", width: "15%" },
-        { text: "Termino", value: "endDate", width: "15%" },
+        { text: "Nombre", value: "name", width: "20%", align: "center" },
+        { text: "Objetivo", value: "objetive", width: "20%", align: "center" },
+        { text: "Estado", value: "state", align: "center" },
+        { text: "Inicio", value: "startDate", align: "center" },
+        { text: "Termino", value: "endDate", align: "center" },
+        {
+          text: "Acciones",
+          value: "acciones",
+          sortable: false,
+          align: "center",
+        },
       ],
       sprintName: null,
       sprintObjetive: null,
@@ -278,9 +314,44 @@ export default {
     this.getInfo();
   },
   methods: {
-    sprintClick(value) {
-      let sprint = value.id;
-      this.$router.push("/app/proyectos/" + this.project.id + "/" + sprint);
+    deleteItem(item) {
+      Swal.fire({
+        title: "Sprint - " + item.name,
+        showDenyButton: true,
+        confirmButtonText: `Eliminar`,
+        icon: "info",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const token = localStorage.getItem("token");
+          console.log(this.apiUrl + "deleteSprint/" + item.id);
+          await axios
+            .delete(this.apiUrl + "deleteSprint/" + item.id, {
+              headers: {
+                Authorization: token,
+              },
+            })
+            .then(() => {
+              Swal.fire({
+                title: "Eliminado",
+                icon: "success",
+              });
+              for (let sprint of this.project.sprints) {
+                if (item == sprint) this.project.sprints.pop(sprint);
+              }
+            })
+            .catch(() =>
+              Swal.fire({
+                title: "Error!",
+                text:
+                  "El Sprint no pudo ser eliminado debido a que posee tareas",
+                icon: "error",
+              })
+            );
+        }
+      });
+    },
+    goToSprint(item) {
+      this.$router.push("/app/proyectos/" + this.project.id + "/" + item.id);
     },
     async createSprint() {
       const token = localStorage.getItem("token");

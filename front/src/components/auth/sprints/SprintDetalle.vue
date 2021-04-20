@@ -1,6 +1,6 @@
 <template >
   <div v-if="loaded">
-    <v-row class="pa-5">
+    <v-row>
       <v-col>
         <v-card color="#FAFAFA">
           <v-card-text>
@@ -14,9 +14,9 @@
                 <v-icon left> mdi-arrow-left-circle </v-icon>
                 Volver
               </v-chip>
-              <h2 class="text-center h1">Sprint : {{ sprint.name }}</h2>
+              <h2 class="text-center">{{ sprint.name.toUpperCase() }}</h2>
               <h3 class="text-center">
-                {{ sprint.objetive }}
+                {{ sprint.objetive.toUpperCase() }}
               </h3>
             </v-alert>
             <v-container>
@@ -96,10 +96,10 @@
                             >
                           </template>
                           <template v-slot:[`item.acciones`]="{ item }">
-                            <v-icon small class="mr-2" @click="editItem(item)">
+                            <v-icon dense class="mr-2" @click="editItem(item)">
                               mdi-pencil
                             </v-icon>
-                            <v-icon small @click="deleteItem(item)">
+                            <v-icon dense @click="deleteItem(item)">
                               mdi-delete
                             </v-icon>
                           </template>
@@ -260,7 +260,6 @@ export default {
       Swal.fire({
         title: "Tarea : " + item.name,
         showDenyButton: true,
-
         confirmButtonText: `Eliminar`,
       }).then(async (result) => {
         if (result.isConfirmed) {
@@ -268,7 +267,6 @@ export default {
             if (item == task) this.sprint.tasks.pop(task);
           }
           const token = localStorage.getItem("token");
-          console.log(this.apiUrl + "deleteTask/" + item.id,)
           await axios
             .delete(this.apiUrl + "deleteTask/" + item.id, {
               headers: {
@@ -337,3 +335,12 @@ export default {
   },
 };
 </script>
+<style scoped>
+swal-title {
+  margin: 0px;
+  font-size: 245px;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.21);
+  margin-bottom: 28px;
+  color: red;
+}
+</style>
