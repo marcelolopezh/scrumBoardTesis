@@ -29,4 +29,8 @@ public class SprintService {
 		}
 	}
 
+	public void deleteById(Long id) {
+		sprintRepository.deleteById(id);
+	}
+
 }

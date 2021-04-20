@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.marcelo.scrumBoard.models.Project;
 import com.marcelo.scrumBoard.models.Sprint;
+import com.marcelo.scrumBoard.models.Task;
 import com.marcelo.scrumBoard.services.ProjectService;
 import com.marcelo.scrumBoard.services.SprintService;
 
@@ -54,6 +56,12 @@ public class sprintController {
 	@GetMapping("/getInfoSprint/{id}")
 	private ResponseEntity<Sprint> getInfoSprint(@PathVariable("id") Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(sprintService.findById(id));
+	}
+	
+	@DeleteMapping("/deleteSprint/{id}")
+	private ResponseEntity<Sprint> deleteTask(@PathVariable("id") Long id){
+		sprintService.deleteById(id);
+		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 }
 
