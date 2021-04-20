@@ -1,27 +1,22 @@
-<template >
+<template>
   <div>
     <v-row class="pa-5" v-if="loaded">
       <v-col>
-        <v-card>
-          <v-card-title>
-            <v-chip
-              @click="goBack()"
-              class="ma-2"
-              color="primary"
-              text-color="white"
-            >
-              <v-icon left> mdi-arrow-left-circle </v-icon>
-              Volver
-            </v-chip>
-          </v-card-title>
-
+        <v-card color="#FAFAFA">
           <v-card-text>
-            <v-alert color="#E0E0E0">
-              <h2 class="mx-4 text-center">
-                {{ project.name }}
-              </h2>
-              <h3 class="mx-4 text-center">
-                {{ project.description }}
+            <v-alert >
+              <v-chip
+                @click="goBack()"
+                class="ma-2"
+                color="primary"
+                text-color="white"
+              >
+                <v-icon left> mdi-arrow-left-circle </v-icon>
+                Volver
+              </v-chip>
+              <h2 class="text-center">{{ project.name.toUpperCase() }}</h2>
+              <h3 class="text-center">
+                {{ project.description.toUpperCase() }}
               </h3>
             </v-alert>
 
@@ -51,11 +46,7 @@
                       <v-list dense>
                         <v-subheader>Clientes</v-subheader>
                         <v-list-item v-for="item in clients" :key="item.id">
-                          <v-chip
-                            class="ma-2"
-                            color="amber"
-                            text-color="white"
-                          >
+                          <v-chip class="ma-2" color="primary" text-color="white">
                             <v-icon left>mdi-account</v-icon>
 
                             <v-list-item-content>
@@ -85,7 +76,7 @@
                           @page-count="pageCount = $event"
                           @click:row="sprintClick"
                         >
-                          <template v-slot:item.state="{ item }">
+                          <template v-slot:[`item.state`]="{ item }">
                             <v-chip
                               style="width: 100%"
                               v-if="item.state == 'No Iniciado'"
@@ -111,10 +102,10 @@
                               {{ item.state }}
                             </v-chip>
                           </template>
-                          <template v-slot:item.startDate="{ item }">
+                          <template v-slot:[`item.startDate`]="{ item }">
                             {{ item.startDate | moment("DD-MM-YYYY") }}
                           </template>
-                          <template v-slot:item.endDate="{ item }">
+                          <template v-slot:[`item.endDate`]="{ item }">
                             {{ item.endDate | moment("DD-MM-YYYY") }}
                           </template>
                         </v-data-table>
@@ -122,6 +113,7 @@
                           <v-pagination
                             v-model="page"
                             :length="pageCount"
+                            circle
                           ></v-pagination>
                         </div>
                       </div> </v-card-text

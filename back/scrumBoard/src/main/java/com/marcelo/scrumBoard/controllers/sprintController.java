@@ -1,13 +1,16 @@
 package com.marcelo.scrumBoard.controllers;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -27,15 +30,20 @@ public class sprintController {
 	@PostMapping("/createSprint")
 	private ResponseEntity<Project> createSprint(@RequestParam("name") String name,
 			@RequestParam("objetive") String objetive, @RequestParam("projectId") Long projectId,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") Date startDate,
-			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") Date endDate) {
-
+			@RequestParam  String startDate,
+			@RequestParam  String endDate) throws ParseException {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date startDateF = sdf.parse(startDate);
+		Date endDateF   = sdf.parse(endDate);
+		
+		
 		Sprint sprint = new Sprint();
 		sprint.setName(name);
 		sprint.setObjetive(objetive);
 		sprint.setState("No Iniciado");
-		sprint.setStartDate(startDate);
-		sprint.setEndDate(endDate);
+		sprint.setStartDate(startDateF);
+		sprint.setEndDate(endDateF);
 		Project project = projectService.findById(projectId);
 		sprint = sprintService.save(sprint);
 		sprint.setProject(project);
@@ -43,4 +51,9 @@ public class sprintController {
 		return ResponseEntity.status(HttpStatus.OK).body(project);
 	}
 
+	@GetMapping("/getInfoSprint/{id}")
+	private ResponseEntity<Sprint> getInfoSprint(@PathVariable("id") Long id) {
+		return ResponseEntity.status(HttpStatus.OK).body(sprintService.findById(id));
+	}
 }
+

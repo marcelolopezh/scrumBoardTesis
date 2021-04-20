@@ -13,10 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tasks")
@@ -28,6 +26,7 @@ public class Task {
 	private String description;
 	private String state;
 	private Integer hours;
+	private String priority;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
@@ -39,6 +38,7 @@ public class Task {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sprint_id")
+	@JsonIgnore
 	private Sprint sprint;
 
 	@PrePersist
@@ -123,5 +123,14 @@ public class Task {
 	public void setSprint(Sprint sprint) {
 		this.sprint = sprint;
 	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
+	}
+	
 
 }

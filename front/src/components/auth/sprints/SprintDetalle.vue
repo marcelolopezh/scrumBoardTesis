@@ -1,102 +1,135 @@
 <template >
   <div v-if="loaded">
-    <v-card>
-      <v-card-text>
-        <v-row class="pa-5">
-          <v-col>
-            <v-card>
-              <v-card-title
-                ><v-icon @click="goBack()" color="primary" class="mr-2"
-                  >mdi-arrow-left-circle</v-icon
-                >{{ sprint.name }} - {{ sprint.objetive }}</v-card-title
+    <v-row class="pa-5">
+      <v-col>
+        <v-card color="#FAFAFA">
+          <v-card-text>
+            <v-alert>
+              <v-chip
+                @click="goBack()"
+                class="ma-2"
+                color="primary"
+                text-color="white"
               >
-              <v-card-text>
-                <v-container>
-                  <v-data-table
-                    
-                    :headers="headers"
-                    :items="sprint.tasks"
-                    :page.sync="page"
-                    :items-per-page="itemsPerPage"
-                    hide-default-footer
-                    class="elevation-1"
-                    @page-count="pageCount = $event"
-                  >
-                    <template v-slot:item.state="{ item }">
-                      <v-chip
-                        style="width: 100%"
-                        v-if="item.state == 'No Iniciado'"
-                        color="red"
-                        dark
-                      >
-                        {{ item.state }}
-                      </v-chip>
-                      <v-chip
-                        style="width: 100%"
-                        v-if="item.state == 'Iniciado'"
-                        color="yellow"
-                        dark
-                      >
-                        {{ item.state }}
-                      </v-chip>
-                      <v-chip
-                        style="width: 100%"
-                        v-if="item.state == 'Terminado'"
-                        color="green"
-                        dark
-                      >
-                        {{ item.state }}
-                      </v-chip>
-                    </template>
-                    <template v-slot:item.priority="{ item }">
-                      <v-chip
-                        style="width: 100%"
-                        v-if="item.priority == 'Alta'"
-                        color="red"
-                        dark
-                      >
-                        {{ item.priority }}
-                      </v-chip>
-                      <v-chip
-                        style="width: 100%"
-                        v-if="item.priority == 'Media'"
-                        color="yellow"
-                        dark
-                      >
-                        {{ item.priority }}
-                      </v-chip>
-                      <v-chip
-                        style="width: 100%"
-                        v-if="item.priority == 'Baja'"
-                        color="success"
-                        dark
-                      >
-                        {{ item.priority }}
-                      </v-chip>
-                    </template>
-                    <template v-slot:item.user.name="{ item }">
-                      <v-chip style="width: 100%" color="primary">
-                        {{ item.user.name }} {{ item.user.lastName }}</v-chip
-                      >
-                    </template>
-                  </v-data-table>
-                </v-container>
-              </v-card-text>
-              <v-btn
-                :loading="loading"
-                :disabled="loading"
-                color="purple"
-                class="ma-2 white--text float-right"
-                @click="dialog = true"
-              >
-                Nueva Tarea
-                <v-icon right dark> mdi-plus-circle-outline </v-icon>
-              </v-btn>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
+                <v-icon left> mdi-arrow-left-circle </v-icon>
+                Volver
+              </v-chip>
+              <h2 class="text-center h1">Sprint : {{ sprint.name }}</h2>
+              <h3 class="text-center">
+                {{ sprint.objetive }}
+              </h3>
+            </v-alert>
+            <v-container>
+              <v-row>
+                <v-col cols="12">
+                  <v-card>
+                    <v-card-title>Listado de Tareas</v-card-title>
+                    <v-card-text>
+                      <div>
+                        <v-data-table
+                          :headers="headers"
+                          :items="sprint.tasks"
+                          :page.sync="page"
+                          :items-per-page="itemsPerPage"
+                          hide-default-footer
+                          class="elevation-1"
+                          @page-count="pageCount = $event"
+                        >
+                          <template v-slot:[`item.state`]="{ item }">
+                            <v-chip
+                              style="width: 100%"
+                              v-if="item.state == 'No Iniciado'"
+                              color="red"
+                              dark
+                            >
+                              {{ item.state }}
+                            </v-chip>
+                            <v-chip
+                              style="width: 100%"
+                              v-if="item.state == 'Iniciado'"
+                              color="yellow"
+                              dark
+                            >
+                              {{ item.state }}
+                            </v-chip>
+                            <v-chip
+                              style="width: 100%"
+                              v-if="item.state == 'Terminado'"
+                              color="green"
+                              dark
+                            >
+                              {{ item.state }}
+                            </v-chip>
+                          </template>
+                          <template v-slot:[`item.priority`]="{ item }">
+                            <v-chip
+                              v-if="item.priority == 'Alta'"
+                              color="red"
+                              dark
+                            >
+                              {{ item.priority }}
+                            </v-chip>
+                            <v-chip
+                              v-if="item.priority == 'Media'"
+                              color="yellow"
+                              dark
+                            >
+                              {{ item.priority }}
+                            </v-chip>
+                            <v-chip
+                              v-if="item.priority == 'Baja'"
+                              color="success"
+                              dark
+                            >
+                              {{ item.priority }}
+                            </v-chip>
+                          </template>
+                          <template v-slot:[`item.hours`]="{ item }">
+                            <v-chip color="primary">
+                              {{ item.hours }} H
+                            </v-chip>
+                          </template>
+                          <template v-slot:[`item.user.name`]="{ item }">
+                            <v-chip style="width: 100%" color="primary">
+                              {{ item.user.name }}
+                              {{ item.user.lastName }}</v-chip
+                            >
+                          </template>
+                          <template v-slot:[`item.acciones`]="{ item }">
+                            <v-icon small class="mr-2" @click="editItem(item)">
+                              mdi-pencil
+                            </v-icon>
+                            <v-icon small @click="deleteItem(item)">
+                              mdi-delete
+                            </v-icon>
+                          </template>
+                        </v-data-table>
+                        <div class="text-center pt-2">
+                          <v-pagination
+                            v-model="page"
+                            :length="pageCount"
+                            circle
+                          ></v-pagination>
+                        </div>
+                      </div> </v-card-text
+                    ><v-btn
+                      :loading="loading"
+                      :disabled="loading"
+                      color="purple"
+                      class="ma-2 white--text float-right"
+                      @click="dialog = true"
+                    >
+                      Nueva Tarea
+                      <v-icon right dark> mdi-plus-circle-outline </v-icon>
+                    </v-btn>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
 
     <!-- DIALOG NEW SPRINT -->
     <v-dialog v-model="dialog" max-width="500px">
@@ -168,6 +201,7 @@
 
 <script>
 import axios from "axios";
+import Swal from "sweetalert2";
 export default {
   name: "SprintDetalle",
 
@@ -184,11 +218,25 @@ export default {
       pageCount: 0,
       itemsPerPage: 10,
       headers: [
-        { text: "Nombre", value: "name", width: "19%" },
-        { text: "Descripción", value: "description", width: "40%" },
-        { text: "Estado", value: "state", width: "14%" },
-        { text: "Prioridad", value: "priority", width: "12%" },
-        { text: "Responsable", value: "user.name", width: "15%" },
+        { text: "Nombre", value: "name", align: "center" },
+        {
+          text: "Descripción",
+          value: "description",
+          align: "center",
+        },
+        { text: "Estado", value: "state", align: "center" },
+        {
+          text: "Prioridad",
+          value: "priority",
+          align: "center ",
+        },
+        { text: "Estimado", value: "hours", align: "center" },
+        {
+          text: "Responsable",
+          value: "user.name",
+          align: "center",
+        },
+        { text: "Acciones", value: "acciones", sortable: false },
       ],
       priorityList: [
         { text: "Alta", value: "Alta" },
@@ -208,8 +256,29 @@ export default {
     this.getInfo();
   },
   methods: {
-    getName() {
-      return "Hola";
+    deleteItem(item) {
+      Swal.fire({
+        title: "Tarea : " + item.name,
+        showDenyButton: true,
+
+        confirmButtonText: `Eliminar`,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          for (let task of this.sprint.tasks) {
+            if (item == task) this.sprint.tasks.pop(task);
+          }
+          const token = localStorage.getItem("token");
+          console.log(this.apiUrl + "deleteTask/" + item.id,)
+          await axios
+            .delete(this.apiUrl + "deleteTask/" + item.id, {
+              headers: {
+                Authorization: token,
+              },
+            })
+            .then(() => Swal.fire("Eliminado!", "", "success"))
+            .catch((error) => console.log(error));
+        }
+      });
     },
     async createTask() {
       const token = localStorage.getItem("token");

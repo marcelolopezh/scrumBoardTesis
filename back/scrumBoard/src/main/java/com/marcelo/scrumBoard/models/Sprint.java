@@ -15,10 +15,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -32,12 +28,8 @@ public class Sprint {
     private String name;
     private String objetive;
     private String state;
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'hh:mm")
-    private Date startDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'hh:mm")
+    private Date startDate;
     private Date endDate;
     
     @Column(updatable=false)
@@ -136,6 +128,14 @@ public class Sprint {
 
 	public void setProject(Project project) {
 		this.project = project;
+	}
+
+	public List<Task> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(List<Task> tasks) {
+		this.tasks = tasks;
 	}
     
     
