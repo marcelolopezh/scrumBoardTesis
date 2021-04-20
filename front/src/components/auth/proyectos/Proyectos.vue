@@ -7,27 +7,6 @@
           <v-row>
             <v-col md="6">
               <v-card>
-                <v-card-title>Mis Proyectos</v-card-title>
-                <v-card-text>Listado de Proyectos</v-card-text>
-                <v-list dense v-if="myProjects!=null">
-                  <v-list-item-group v-model="selectedProject" color="primary">
-                    <v-list-item v-for="(item) in myProjects" :key="item.id" @click="routerTo(item)">
-                      <v-list-item-icon>
-                        <v-icon>mdi-file-document-multiple</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          v-text="item.name"
-                        ></v-list-item-title>
-                        {{ item.description }}
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list-item-group>
-                </v-list>
-              </v-card>
-            </v-col>
-            <v-col md="6">
-              <v-card>
                 <v-card-title>Crear Nuevo Proyecto</v-card-title>
                 <v-card-text>
                   <v-alert type="error" v-if="errors">
@@ -88,6 +67,30 @@
                     </v-btn>
                   </v-form>
                 </v-card-text>
+              </v-card> </v-col
+            ><v-col md="6">
+              <v-card>
+                <v-card-title>Mis Proyectos</v-card-title>
+                <v-card-text>Listado de Proyectos</v-card-text>
+                <v-list dense v-if="myProjects != null">
+                  <v-list-item-group v-model="selectedProject" color="primary">
+                    <v-list-item
+                      v-for="item in myProjects"
+                      :key="item.id"
+                      @click="routerTo(item)"
+                    >
+                      <v-list-item-icon>
+                        <v-icon>mdi-file-document-multiple</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          v-text="item.name"
+                        ></v-list-item-title>
+                        {{ item.description }}
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list-item-group>
+                </v-list>
               </v-card>
             </v-col>
           </v-row>
@@ -115,7 +118,7 @@ export default {
       success: false,
       errorMsg: "",
       myProjects: null,
-      selectedProject : null
+      selectedProject: null,
     };
   },
   mounted() {
@@ -123,8 +126,8 @@ export default {
     this.getAllMembers();
   },
   methods: {
-    routerTo(item){
-      this.$router.push('/app/proyectos/'+item.id)
+    routerTo(item) {
+      this.$router.push("/app/proyectos/" + item.id);
     },
     async getMyProjects() {
       const email = localStorage.getItem("email");
@@ -170,7 +173,7 @@ export default {
           this.errors = false;
           this.success = true;
           this.errorMsg = "Proyecto Creado!";
-          this.myProjects.push(response.data)
+          this.myProjects.push(response.data);
         })
         .catch(() => {
           this.errors = true;
