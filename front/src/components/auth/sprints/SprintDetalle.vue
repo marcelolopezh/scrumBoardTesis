@@ -96,12 +96,18 @@
                             >
                           </template>
                           <template v-slot:[`item.acciones`]="{ item }">
-                            <v-icon dense class="mr-2" @click="editItem(item)">
-                              mdi-pencil
-                            </v-icon>
-                            <v-icon dense @click="deleteItem(item)">
-                              mdi-delete
-                            </v-icon>
+                            <v-chip color="primary">
+                              <v-icon
+                                dense
+                                class="mr-2"
+                                @click="editItem(item)"
+                              >
+                                mdi-pencil
+                              </v-icon>
+                              <v-icon dense @click="deleteItem(item)">
+                                mdi-delete
+                              </v-icon>
+                            </v-chip>
                           </template>
                         </v-data-table>
                         <div class="text-center pt-2">
@@ -258,7 +264,7 @@ export default {
   methods: {
     deleteItem(item) {
       Swal.fire({
-        title: "Tarea : " + item.name,
+        title: "Tarea - " + item.name,
         showDenyButton: true,
         confirmButtonText: `Eliminar`,
       }).then(async (result) => {
@@ -273,7 +279,7 @@ export default {
                 Authorization: token,
               },
             })
-            .then(() => Swal.fire("Eliminado!", "", "success"))
+            .then(() => Swal.fire("Tarea Eliminada!", "", "success"))
             .catch((error) => console.log(error));
         }
       });

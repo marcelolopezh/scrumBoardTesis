@@ -332,7 +332,7 @@ export default {
             })
             .then(() => {
               Swal.fire({
-                title: "Eliminado",
+                title: "Sprint Eliminado!",
                 icon: "success",
               });
               for (let sprint of this.project.sprints) {
