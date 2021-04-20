@@ -1,5 +1,6 @@
 package com.marcelo.scrumBoard.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.marcelo.scrumBoard.models.Project;
 import com.marcelo.scrumBoard.models.User;
+import com.marcelo.scrumBoard.services.ProjectService;
 import com.marcelo.scrumBoard.services.UserService;
 
 @RestController
@@ -20,7 +22,8 @@ import com.marcelo.scrumBoard.services.UserService;
 public class userController {
 	@Autowired
 	UserService userService;
-
+	@Autowired
+	ProjectService projectService;
 	@GetMapping("/getAllMembers")
 	public ResponseEntity<List<User>> getAllMembers() {
 		List<User> allUsers = userService.findAll();
@@ -28,8 +31,14 @@ public class userController {
 	}
 
 	@PostMapping("/getAllData")
-	public ResponseEntity<User> getAllData(@RequestParam("email") String email) {
+	public ResponseEntity<List<Project>> getAllData(@RequestParam("email") String email) {
+		// RETORNA PROYECTOS DE LOS CUAL EL EMAIL PARAM ES OWNER
 		User user = userService.findByEmail(email);
-		return ResponseEntity.status(HttpStatus.OK).body(user);
+		List<Project> allProjects = projectService.findAll();
+		List<Project> projectsToReturn = new ArrayList<Project>();
+		for(int i = 0 ; i<allProjects.size();i++ ) {
+			if(allProjects.get(i).getUser().equals(user)) projectsToReturn.add(allProjects.get(i));
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(projectsToReturn);
 	}
 }

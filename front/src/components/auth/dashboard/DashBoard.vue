@@ -4,39 +4,39 @@
       <v-card>
         <v-card-title>Resumen de Proyectos</v-card-title>
         <v-card-text>
-          <v-list-item v-for="project in projects" :key="project.id">
-          </v-list-item>
-          <v-col cols="6" align="center" justify="center">
-            <v-card class="mt-4" max-width="400">
-              <v-sheet
-                class="v-sheet--offset mx-auto"
-                color="cyan"
-                max-width="calc(100% - 32px)"
-              >
-                <v-sparkline
-                  :labels="labels"
-                  :value="value"
-                  color="white"
-                  line-width="2"
-                  padding="16"
-                ></v-sparkline>
-              </v-sheet>
-
-              <v-card-text class="pt-0">
-                <div class="title font-weight-light mb-2">
-                  User Registrations
-                </div>
-                <div class="subheading font-weight-light grey--text">
-                  Last Campaign Performance
-                </div>
-                <v-divider class="my-2"></v-divider>
-                <v-icon class="mr-2" small> mdi-clock </v-icon>
-                <span class="caption grey--text font-weight-light"
-                  >last registration 26 minutes ago</span
+          <v-list-item v-for="project in allData" :key="project.id">
+            <v-col cols="6" align="center" justify="center">
+              <v-card class="mt-4" max-width="400">
+                <v-sheet
+                  class="v-sheet--offset mx-auto"
+                  color="cyan"
+                  max-width="calc(100% - 32px)"
                 >
-              </v-card-text>
-            </v-card>
-          </v-col>
+                  <v-sparkline
+                    :labels="labels"
+                    :value="value"
+                    color="white"
+                    line-width="2"
+                    padding="16"
+                  ></v-sparkline>
+                </v-sheet>
+
+                <v-card-text class="pt-0">
+                  <div class="title font-weight-light mb-2">
+                    {{ project.name.toUpperCase() }}
+                  </div>
+                  <div class="subheading font-weight-light grey--text">
+                    {{ project.description.toUpperCase() }}
+                  </div>
+                  <v-divider class="my-2"></v-divider>
+                  <v-icon class="mr-2" small> mdi-clock </v-icon>
+                  <span class="caption grey--text font-weight-light"
+                    >Última modificación {{  project.updatedAt | moment("YYYY-MM-DD - HH:MM")}}</span
+                  >
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-list-item>
         </v-card-text>
       </v-card>
     </v-container>
@@ -71,7 +71,6 @@ export default {
         })
         .then((response) => {
           this.allData = response.data;
-          console.log(response.data);
         })
         .catch((error) => console.log(error));
     },
