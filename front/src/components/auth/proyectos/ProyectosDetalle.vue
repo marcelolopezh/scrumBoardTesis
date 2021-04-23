@@ -45,7 +45,7 @@
                       >
                       <v-list dense>
                         <v-subheader>Clientes</v-subheader>
-                        <v-list-item v-for="item in clients" :key="item.id">
+                        <v-list-item v-for="item in interesteds" :key="item.id">
                           <v-chip
                             class="ma-2"
                             color="primary"
@@ -283,7 +283,7 @@ export default {
       project: null,
       loaded: false,
       members: [],
-      clients: [],
+      interesteds: [],
       page: 1,
       pageCount: 0,
       itemsPerPage: 10,
@@ -378,7 +378,7 @@ export default {
 
     async getInfo() {
       this.members = [];
-      this.clients = [];
+      this.interesteds = [];
       const token = localStorage.getItem("token");
       await axios
         .get(this.apiUrl + "getInfoProject/" + this.id, {
@@ -391,8 +391,8 @@ export default {
           for (var i = 0; i < this.project.members.length; i++) {
             this.members.push(this.project.members[i]);
           }
-          for (var j = 0; j < this.project.clients.length; j++) {
-            this.clients.push(this.project.clients[j]);
+          for (var j = 0; j < this.project.interesteds.length; j++) {
+            this.interesteds.push(this.project.interesteds[j]);
           }
           console.log(this.project);
           this.loaded = true;

@@ -1,44 +1,42 @@
 <template class="mt-5">
-  <v-container fill-height>
-    <v-row justify="center" align="center">
-      <v-col cols="12" sm="6">
+  <v-container>
+    <v-row>
+      <v-col cols="12" >
         <v-card class="pa-6">
           <v-card-title>Inicio de Sesión</v-card-title>
-          <v-alert type="error" v-if="errorLogin">
-            Ups! Algo ha salido mal
-          </v-alert>
-          <v-form ref="form">
-            <v-text-field
-              v-model="email"
-              label="Username"
-              required
-              prepend-icon="mdi-account"
-            ></v-text-field>
-            <v-text-field
-              v-model="password"
-              label="Password"
-              required
-              type="password"
-              prepend-icon="mdi-lock"
-              autocomplete="on"
-            ></v-text-field>
-            <v-btn
-              :loading="loading"
-              color="success"
-              class="mr-4"
-              @click="pre_login()"
-            >
-              Ingresar
-            </v-btn>
+          <v-card-text>
+            <v-alert type="error" v-if="errorLogin">
+              Ups! Algo ha salido mal
+            </v-alert>
+            <v-form ref="form">
+              <v-text-field
+                v-model="email"
+                label="Username"
+                required
+                prepend-icon="mdi-account"
+              ></v-text-field>
+              <v-text-field
+                v-model="password"
+                label="Password"
+                required
+                type="password"
+                prepend-icon="mdi-lock"
+                autocomplete="on"
+              ></v-text-field>
+              <v-btn
+                :loading="loading"
+                color="success"
+                class="mr-4"
+                @click="pre_login()"
+              >
+                Ingresar
+              </v-btn>
 
-            <v-btn
-              color="secondary"
-              class="mr-4"
-              @click="changeForms()"
-            >
-              Registrarse
-            </v-btn>
-          </v-form>
+              <v-btn color="secondary" class="mr-4" @click="changeForms()">
+                Registrarse
+              </v-btn>
+            </v-form>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>

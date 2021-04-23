@@ -18,35 +18,33 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
 @Entity
-@Table(name="sprints")
+@Table(name = "sprints")
 public class Sprint {
 	@Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String objetive;
-    private String state;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	private String name;
+	private String objetive;
+	private String state;
 
-    private Date startDate;
-    private Date endDate;
-    
-    @Column(updatable=false)
-    private Date createdAt;
-    private Date updatedAt;
-    
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="project_id")
-    @JsonIgnore
-    private Project project;
-    
-    @OneToMany(mappedBy="sprint",  fetch = FetchType.LAZY)
-    private List<Task> tasks;
-    
-    public Sprint() {
-    	
-    }
+	private Date startDate;
+	private Date endDate;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "project_id")
+	@JsonIgnore
+	private Project project;
+
+	@OneToMany(mappedBy = "sprint", fetch = FetchType.LAZY)
+	private List<Task> tasks;
+	@Column(updatable = false)
+	private Date createdAt;
+	private Date updatedAt;
+
+	public Sprint() {
+
+	}
 
 	@PrePersist
 	protected void onCreate() {
@@ -58,6 +56,7 @@ public class Sprint {
 	protected void onUpdate() {
 		this.updatedAt = new Date();
 	}
+
 	public Long getId() {
 		return id;
 	}
@@ -137,6 +136,5 @@ public class Sprint {
 	public void setTasks(List<Task> tasks) {
 		this.tasks = tasks;
 	}
-    
-    
+
 }

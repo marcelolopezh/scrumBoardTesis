@@ -34,14 +34,14 @@ public class taskController {
 	private ResponseEntity<Task> createTask(
 			@RequestParam("name") String name, 
 			@RequestParam("description") String description,
-			@RequestParam("hours") Integer hours,
+			@RequestParam("taskEstimatedHours") Integer estimatedHours,
 			@RequestParam("priority") String priority,
 			@RequestParam("responsable") Long userId,
 			@RequestParam("sprint") Long sprintId) {
 		Task task = new Task();
 		task.setName(name);
 		task.setDescription(description);
-		task.setHours(hours);
+		task.setEstimatedHours(estimatedHours);
 		task.setPriority(priority);
 		User user = userService.findById(userId);
 		Sprint sprint = sprintService.findById(sprintId);

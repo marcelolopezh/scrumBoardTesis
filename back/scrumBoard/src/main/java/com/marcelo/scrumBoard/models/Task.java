@@ -25,7 +25,7 @@ public class Task {
 	private String name;
 	private String description;
 	private String state;
-	private Integer hours;
+	private Integer estimadedHours;
 	private String priority;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -84,12 +84,12 @@ public class Task {
 		this.state = state;
 	}
 
-	public Integer getHours() {
-		return hours;
+	public Integer getEstimatedHours() {
+		return estimadedHours;
 	}
 
-	public void setHours(Integer hours) {
-		this.hours = hours;
+	public void setEstimatedHours(Integer estimatedHours) {
+		this.estimadedHours = estimatedHours;
 	}
 
 	public User getUser() {

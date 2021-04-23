@@ -29,6 +29,7 @@ public class Project implements Serializable{
 	private Long id;
 	private String name;
 	private String description;
+	private String objetive;
 	
 	@Column(updatable=false)
 	private Date createdAt;
@@ -52,12 +53,12 @@ public class Project implements Serializable{
 	
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
-			name = "projects_clients",
+			name = "projects_interesteds",
 			joinColumns = @JoinColumn (name="project_id"),
 			inverseJoinColumns = @JoinColumn (name="user_id")
 			)
 
-	private List<User> clients;
+	private List<User> interesteds;
 	
 	
 	public Project() {
@@ -120,11 +121,17 @@ public class Project implements Serializable{
 	public void setMembers(List<User> members) {
 		this.members = members;
 	}
-	public List<User> getClients() {
-		return clients;
+	public List<User> getInteresteds() {
+		return interesteds;
 	}
-	public void setClients(List<User> clients) {
-		this.clients = clients;
+	public void setInteresteds(List<User> interesteds) {
+		this.interesteds = interesteds;
+	}
+	public String getObjetive() {
+		return objetive;
+	}
+	public void setObjetive(String objetive) {
+		this.objetive = objetive;
 	}
     
     

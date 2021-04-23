@@ -84,9 +84,9 @@
                               {{ item.priority }}
                             </v-chip>
                           </template>
-                          <template v-slot:[`item.hours`]="{ item }">
+                          <template v-slot:[`item.estimatedHours`]="{ item }">
                             <v-chip color="primary">
-                              {{ item.hours }} H
+                              {{ item.estimatedHours }} H
                             </v-chip>
                           </template>
                           <template v-slot:[`item.user.name`]="{ item }">
@@ -158,7 +158,7 @@
           ></v-text-field>
 
           <v-text-field
-            v-model="taskHours"
+            v-model="taskEstimatedHours"
             label="Horas Estimadas"
             prepend-icon="mdi-clock"
             clearable
@@ -218,7 +218,7 @@ export default {
       sprint: null,
       taskName: null,
       taskDescription: null,
-      taskHours: null,
+      taskEstimatedHours: null,
       dialog: false,
       page: 1,
       pageCount: 0,
@@ -236,7 +236,7 @@ export default {
           value: "priority",
           align: "center ",
         },
-        { text: "Estimado", value: "hours", align: "center" },
+        { text: "Estimado", value: "estimatedHours", align: "center" },
         {
           text: "Responsable",
           value: "user.name",
@@ -289,7 +289,7 @@ export default {
       let formData = new FormData();
       formData.append("name", this.taskName);
       formData.append("description", this.taskDescription);
-      formData.append("hours", this.taskHours);
+      formData.append("taskEstimatedHours", this.taskEstimatedHours);
       formData.append("priority", this.taskPriority);
       formData.append("responsable", this.responsable);
       formData.append("sprint", this.id);

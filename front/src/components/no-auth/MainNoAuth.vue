@@ -1,18 +1,25 @@
-<template >
-  <v-row class="pa-5">
-    <v-col>
-      <v-card-text v-if="showLogin"
-        ><Login
-          @showLogin="showLogin = $event"
-          @showRegister="showRegister = $event"
-      /></v-card-text>
-      <v-card-text v-if="showRegister"
-        ><Registro
-          @showLogin="showLogin = $event"
-          @showRegister="showRegister = $event"
-      /></v-card-text>
-    </v-col>
-  </v-row>
+<template>
+  <v-container  fill-height>
+    <v-row>
+      <v-col cols="5" class="justify-center ma-auto full-height">
+        <h1>ScrumBoard - Taller de Integracion V</h1>
+      </v-col>
+      <v-col cols="7">
+        <div v-if="showLogin">
+          <Login
+            @showLogin="showLogin = $event"
+            @showRegister="showRegister = $event"
+          />
+        </div>
+        <div v-if="showRegister">
+          <Registro
+            @showLogin="showLogin = $event"
+            @showRegister="showRegister = $event"
+          />
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 
@@ -32,3 +39,7 @@ export default {
   methods: {},
 };
 </script>
+
+<style scoped>
+
+</style>

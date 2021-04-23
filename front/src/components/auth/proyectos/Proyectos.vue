@@ -19,14 +19,21 @@
                   <v-form ref="form" v-model="valid" lazy-validation>
                     <v-text-field
                       v-model="name"
-                      label="Nombre de Proyecto"
+                      label="Nombre del Proyecto"
                       required
                       prepend-icon="mdi-border-color"
                     ></v-text-field>
 
                     <v-text-field
                       v-model="description"
-                      label="Descripcion de Proyecto"
+                      label="Descripcion del Proyecto"
+                      required
+                      prepend-icon="mdi-format-list-bulleted"
+                    ></v-text-field>
+
+                    <v-text-field
+                      v-model="objetive"
+                      label="Objetivo del Proyecto"
                       required
                       prepend-icon="mdi-format-list-bulleted"
                     ></v-text-field>
@@ -45,7 +52,7 @@
                     </v-autocomplete>
 
                     <v-autocomplete
-                      v-model="selectedClients"
+                      v-model="selectedInteresteds"
                       :items="allMembers"
                       item-value="id"
                       :item-text="(item) => item.name + ' ' + item.lastName"
@@ -110,9 +117,10 @@ export default {
       name: null,
       description: null,
       valid: true,
+      objetive:null,
       allMembers: [],
       selectedMembers: [],
-      selectedClients: [],
+      selectedInteresteds: [],
       apiUrl: "http://localhost:8080/",
       errors: false,
       success: false,
@@ -160,8 +168,9 @@ export default {
       let formData = new FormData();
       formData.append("name", this.name);
       formData.append("description", this.description);
+      formData.append("objetive", this.objetive)
       formData.append("selectedMembers", this.selectedMembers);
-      formData.append("selectedClients", this.selectedClients);
+      formData.append("selectedInteresteds", this.selectedInteresteds);
       formData.append("email", email);
       await axios
         .post(this.apiUrl + "createProject", formData, {

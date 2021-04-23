@@ -1,5 +1,5 @@
-<template>
-  <v-app id="inspire" dark v-cloak>
+<template  >
+  <v-app id="inspire" v-cloak>
     <router-view></router-view>
   </v-app>
 </template>
@@ -67,5 +67,9 @@ a {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+div[data-app='true'] {
+  background: url('assets/conectados.png') no-repeat  center bottom   !important;
+  background-size: cover;
 }
 </style>

@@ -27,51 +27,52 @@ public class projectController {
 	ProjectService projectService;
 
 	@PostMapping("/createProject")
-	public ResponseEntity<Project> createProject(
-			@RequestParam("name") String name, 
+	public ResponseEntity<Project> createProject(@RequestParam("name") String name,
 			@RequestParam("description") String description,
 			@RequestParam("selectedMembers") List<String> selectedMembers,
-			@RequestParam("selectedClients") List<String> selectedClients,
-			@RequestParam("email") String email) {
-		if(name!=null && description != null && selectedMembers.size()!=0 && selectedClients.size()!=0 && email != null) {
+			@RequestParam("selectedInteresteds") List<String> selectedInteresteds, @RequestParam("email") String email,
+			@RequestParam("objetive") String objetive) {
+		if (name != null && description != null && objetive != null && selectedMembers.size() != 0
+				&& selectedInteresteds.size() != 0 && email != null) {
 			Project project = new Project();
 			project.setUser(userService.findByEmail(email));
 			project.setName(name);
 			List<User> selectedMembersArray = new ArrayList<User>();
 			User user = new User();
-			for(int i = 0; i<selectedMembers.size(); i++) {
-				user = userService.findById( Long.parseLong(selectedMembers.get(i)) );
+			for (int i = 0; i < selectedMembers.size(); i++) {
+				user = userService.findById(Long.parseLong(selectedMembers.get(i)));
 				selectedMembersArray.add(user);
 			}
 			project.setMembers(selectedMembersArray);
-			List<User> selectedClientsArray = new ArrayList<User>();
-			for(int i = 0; i<selectedClients.size(); i++) {
-				user = userService.findById( Long.parseLong(selectedClients.get(i)) );
-				selectedClientsArray.add(user);
+			List<User> selectedInterestedsArray = new ArrayList<User>();
+			for (int i = 0; i < selectedInteresteds.size(); i++) {
+				user = userService.findById(Long.parseLong(selectedInteresteds.get(i)));
+				selectedInterestedsArray.add(user);
 			}
-			project.setClients(selectedClientsArray);
+			project.setInteresteds(selectedInterestedsArray);
 			project.setDescription(description);
 			project = projectService.createProject(project);
 			return ResponseEntity.status(HttpStatus.OK).body(project);
-		}else{
+		} else {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
 	}
-	
+
 	@PostMapping("/getMyProjects")
-	public ResponseEntity<List<Project>> getMyProjects(@RequestParam("email") String email){
+	public ResponseEntity<List<Project>> getMyProjects(@RequestParam("email") String email) {
 		List<Project> AllProjects = projectService.findAll();
 		List<Project> MyProj = new ArrayList<Project>();
 		User user = userService.findByEmail(email);
-		for(int i  = 0 ; i< AllProjects.size(); i++) {
-			if(AllProjects.get(i).getUser()==user) MyProj.add(AllProjects.get(i));
+		for (int i = 0; i < AllProjects.size(); i++) {
+			if (AllProjects.get(i).getUser() == user)
+				MyProj.add(AllProjects.get(i));
 		}
-	
+
 		return ResponseEntity.status(HttpStatus.OK).body(MyProj);
 	}
-	
+
 	@GetMapping("/getInfoProject/{id}")
-	public  ResponseEntity<Project> getInfoProject(@PathVariable("id") Long id) {
+	public ResponseEntity<Project> getInfoProject(@PathVariable("id") Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(projectService.findById(id));
 	}
 

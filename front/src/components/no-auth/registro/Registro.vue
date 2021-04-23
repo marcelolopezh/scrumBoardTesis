@@ -1,58 +1,63 @@
 <template class="mt-5">
-  <v-container fill-height>
-    <v-row justify="center" align="center">
-      <v-col cols="12" sm="6">
+  <v-container>
+    <v-row>
+      <v-col cols="12">
         <v-card class="pa-6">
           <v-card-title>Registro</v-card-title>
-          <v-alert type="error" v-if="errorRegister"> {{ errorMsg }} </v-alert>
-          <v-alert type="success" v-if="successRegister">
-            {{ successMsg }}
-          </v-alert>
-          <v-form ref="form">
-            <v-text-field
-              v-model="name"
-              label="Nombre"
-              required
-              prepend-icon="mdi-account"
-            ></v-text-field>
-            <v-text-field
-              v-model="lastName"
-              label="Apellidos"
-              required
-              prepend-icon="mdi-account"
-            ></v-text-field>
-            <v-text-field
-              v-model="email"
-              label="Email"
-              required
-              prepend-icon="mdi-email"
-            ></v-text-field>
-            <v-text-field
-              v-model="password"
-              label="Password"
-              required
-              type="password"
-              prepend-icon="mdi-lock"
-            ></v-text-field>
-            <v-text-field
-              v-model="passwordConfirm"
-              label="Confirmar Password"
-              required
-              type="password"
-              prepend-icon="mdi-lock"
-            ></v-text-field>
-            <v-btn right color="secondary" class="mr-4" @click="pre_register()">
-              Registrarse
-            </v-btn>
+          <v-card-text>
+            <v-alert type="error" v-if="errorRegister">
+              {{ errorMsg }}
+            </v-alert>
+            <v-alert type="success" v-if="successRegister">
+              {{ successMsg }}
+            </v-alert>
+            <v-form ref="form">
+              <v-text-field
+                v-model="name"
+                label="Nombre"
+                required
+                prepend-icon="mdi-account"
+              ></v-text-field>
+              <v-text-field
+                v-model="lastName"
+                label="Apellidos"
+                required
+                prepend-icon="mdi-account"
+              ></v-text-field>
+              <v-text-field
+                v-model="email"
+                label="Email"
+                required
+                prepend-icon="mdi-email"
+              ></v-text-field>
+              <v-text-field
+                v-model="password"
+                label="Password"
+                required
+                type="password"
+                prepend-icon="mdi-lock"
+              ></v-text-field>
+              <v-text-field
+                v-model="passwordConfirm"
+                label="Confirmar Password"
+                required
+                type="password"
+                prepend-icon="mdi-lock"
+              ></v-text-field>
+              <v-btn
+                right
+                color="secondary"
+                class="mr-4"
+                @click="pre_register()"
+              >
+                Registrarse
+              </v-btn>
 
-            <v-btn
-              color="success"
-              class="mr-4"
-              @click="changeForms()"
-            >
-              Ingresar
-            </v-btn>
-          </v-form>
+              <v-btn color="success" class="mr-4" @click="changeForms()">
+                Ingresar
+              </v-btn>
+            </v-form>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -84,9 +89,9 @@ export default {
   mounted() {},
 
   methods: {
-    changeForms(){
-      this.$emit("showLogin",true)
-      this.$emit("showRegister",false)
+    changeForms() {
+      this.$emit("showLogin", true);
+      this.$emit("showRegister", false);
     },
     validateEmail(email) {
       const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
