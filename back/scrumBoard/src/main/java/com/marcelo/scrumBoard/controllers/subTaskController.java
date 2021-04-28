@@ -35,9 +35,8 @@ public class subTaskController {
 	private ResponseEntity<SubTask> createSubTask(
 			@RequestParam("name") String name, 
 			@RequestParam("description") String description,
-			@RequestParam("taskEstimatedHours") Integer estimatedHours,
+			@RequestParam("estimatedHours") Integer estimatedHours,
 			@RequestParam("priority") String priority,
-			@RequestParam("responsable") Long userId,
 			@RequestParam("taskId") Long taskId) {
 		SubTask subTask = new SubTask();
 		subTask.setName(name);

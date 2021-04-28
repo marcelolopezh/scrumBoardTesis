@@ -34,6 +34,8 @@
                           hide-default-footer
                           class="elevation-1"
                           @page-count="pageCount = $event"
+                          show-expand
+                       
                         >
                           <template v-slot:[`item.state`]="{ item }">
                             <v-chip
@@ -99,16 +101,35 @@
                             <v-chip color="primary">
                               <v-icon
                                 dense
-                                class="mr-2"
+                                class="mx-1"
                                 @click="editItem(item)"
                               >
                                 mdi-pencil
                               </v-icon>
-                              <v-icon dense @click="deleteItem(item)">
+                              <v-icon
+                                dense
+                                class="mx-1"
+                                @click="deleteItem(item)"
+                              >
                                 mdi-delete
+                              </v-icon>
+                              <v-icon
+                                dense
+                                class="mx-1"
+                                @click="
+                                  dialogSubTask = true;
+                                  selectedTask = item;
+                                "
+                              >
+                                mdi-plus
                               </v-icon>
                             </v-chip>
                           </template>
+
+                          <template v-slot:expanded-item="{ item }">
+                            {{ item.subtasks }}
+                          </template>
+
                         </v-data-table>
                         <div class="text-center pt-2">
                           <v-pagination
@@ -137,12 +158,12 @@
       </v-col>
     </v-row>
 
-    <!-- DIALOG NEW SPRINT -->
+    <!-- DIALOG NEW TASK -->
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
         <v-card-title> Crear Nueva Tarea </v-card-title>
         <v-card-text>
-          <!-- FORM TO CREATE SPRINT -->
+          <!-- FORM TO CREATE TASK -->
           <v-text-field
             v-model="taskName"
             label="Nombre Tarea"
@@ -201,6 +222,73 @@
         </v-card-actions></v-card
       >
     </v-dialog>
+
+    <!-- DIALOG NEW TASK -->
+    <v-dialog v-model="dialogSubTask" max-width="500px">
+      <v-card>
+        <v-card-title> Crear Nueva Sub Tarea </v-card-title>
+        <v-card-text>
+          <!-- FORM TO CREATE TASK -->
+          <v-text-field
+            v-model="taskName"
+            label="Nombre Sub Tarea"
+            prepend-icon="mdi-card-text"
+            clearable
+          ></v-text-field>
+
+          <v-text-field
+            v-model="taskDescription"
+            label="Descripción Sub Tarea"
+            prepend-icon="mdi-clipboard-text"
+            clearable
+          ></v-text-field>
+
+          <v-text-field
+            v-model="taskEstimatedHours"
+            label="Horas Estimadas Sub Tarea"
+            prepend-icon="mdi-clock"
+            clearable
+            number
+            type="number"
+          ></v-text-field>
+
+          <v-select
+            class="mb-5"
+            v-model="taskPriority"
+            :items="priorityList"
+            menu-props="auto"
+            label="Prioridad Sub Tarea"
+            hide-details
+            prepend-icon="mdi-podium-silver"
+            single-line
+          ></v-select>
+
+          <!--<v-select
+            v-model="responsable"
+            :items="members"
+            menu-props="auto"
+            label="Responsable de Tarea"
+            hide-details
+            prepend-icon="mdi-account"
+            single-line
+          ></v-select>--> </v-card-text
+        ><v-card-actions>
+          <v-btn color="danger" text @click="dialogSubTask = false">
+            Cerrar
+          </v-btn>
+          <v-btn
+            color="purple"
+            text
+            @click="
+              dialog = false;
+              createSubTask();
+            "
+          >
+            Crear Sub Tarea
+          </v-btn>
+        </v-card-actions></v-card
+      >
+    </v-dialog>
   </div>
 </template>
 
@@ -214,35 +302,50 @@ export default {
   data() {
     return {
       apiUrl: "http://localhost:8080/",
+      selectedTask: null,
       loaded: false,
       sprint: null,
       taskName: null,
       taskDescription: null,
       taskEstimatedHours: null,
       dialog: false,
+      dialogSubTask: false,
       page: 1,
       pageCount: 0,
       itemsPerPage: 10,
       headers: [
-        { text: "Nombre", value: "name", align: "center" },
+        { text: "Nombre", value: "name", align: "center", width: "15%" },
         {
           text: "Descripción",
           value: "description",
           align: "center",
         },
-        { text: "Estado", value: "state", align: "center" },
+        { text: "Estado", value: "state", align: "center", width: "25% " },
         {
           text: "Prioridad",
           value: "priority",
           align: "center ",
+          width: "10% ",
         },
-        { text: "Estimado", value: "estimatedHours", align: "center" },
+        {
+          text: "Estimado",
+          value: "estimatedHours",
+          align: "center",
+          width: "10% ",
+        },
         {
           text: "Responsable",
           value: "user.name",
           align: "center",
+          width: "20% ",
         },
-        { text: "Acciones", value: "acciones", sortable: false },
+        {
+          text: "Acciones",
+          value: "acciones",
+          sortable: false,
+          align: "center",
+          width: "20%",
+        },
       ],
       priorityList: [
         { text: "Alta", value: "Alta" },
@@ -337,6 +440,24 @@ export default {
         });
       }
       this.loaded = true;
+    },
+
+    async createSubTask() {
+      const token = localStorage.getItem("token");
+      let formData = new FormData();
+      formData.append("name", this.taskName);
+      formData.append("description", this.taskDescription);
+      formData.append("estimatedHours", this.taskEstimatedHours);
+      formData.append("priority", this.taskPriority);
+      formData.append("taskId", this.selectedTask.id);
+      await axios
+        .post(this.apiUrl + "createSubTask", formData, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then(() => this.getInfo())
+        .catch((error) => console.log(error));
     },
   },
 };
