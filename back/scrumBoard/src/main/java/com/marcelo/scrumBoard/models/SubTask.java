@@ -1,7 +1,6 @@
 package com.marcelo.scrumBoard.models;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -19,8 +17,8 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "tasks")
-public class Task {
+@Table(name="subtasks")
+public class SubTask {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -29,23 +27,16 @@ public class Task {
 	private String state;
 	private Integer estimatedHours;
 	private String priority;
-
+	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
-
+	@JoinColumn(name = "stask_id")
+	@JsonIgnore
+	private Task task;
+	
 	@Column(updatable = false)
 	private Date createdAt;
 	private Date updatedAt;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "sprint_id")
-	@JsonIgnore
-	private Sprint sprint;
 	
-	@OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
-	private List<SubTask> subtasks;
-
 	@PrePersist
 	protected void onCreate() {
 		this.createdAt = new Date();
@@ -89,12 +80,28 @@ public class Task {
 		this.state = state;
 	}
 
-	public User getUser() {
-		return user;
+	public Integer getEstimatedHours() {
+		return estimatedHours;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setEstimatedHours(Integer estimatedHours) {
+		this.estimatedHours = estimatedHours;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
 	}
 
 	public Date getCreatedAt() {
@@ -112,38 +119,6 @@ public class Task {
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-
-	public Sprint getSprint() {
-		return sprint;
-	}
-
-	public void setSprint(Sprint sprint) {
-		this.sprint = sprint;
-	}
-
-	public String getPriority() {
-		return priority;
-	}
-
-	public void setPriority(String priority) {
-		this.priority = priority;
-	}
-
-	public Integer getEstimatedHours() {
-		return estimatedHours;
-	}
-
-	public void setEstimatedHours(Integer estimatedHours) {
-		this.estimatedHours = estimatedHours;
-	}
-
-	public List<SubTask> getSubtasks() {
-		return subtasks;
-	}
-
-	public void setSubtasks(List<SubTask> subtasks) {
-		this.subtasks = subtasks;
-	}
 	
-
+	
 }
