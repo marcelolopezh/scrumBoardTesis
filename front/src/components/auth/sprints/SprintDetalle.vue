@@ -35,7 +35,6 @@
                           class="elevation-1"
                           @page-count="pageCount = $event"
                           show-expand
-                       
                         >
                           <template v-slot:[`item.state`]="{ item }">
                             <v-chip
@@ -49,7 +48,7 @@
                             <v-chip
                               style="width: 100%"
                               v-if="item.state == 'Iniciado'"
-                              color="yellow"
+                              color="orange"
                               dark
                             >
                               {{ item.state }}
@@ -73,7 +72,7 @@
                             </v-chip>
                             <v-chip
                               v-if="item.priority == 'Media'"
-                              color="yellow"
+                              color="orange"
                               dark
                             >
                               {{ item.priority }}
@@ -126,10 +125,93 @@
                             </v-chip>
                           </template>
 
-                          <template v-slot:expanded-item="{ item }">
-                            {{ item.subtasks }}
-                          </template>
+                          <template v-slot:expanded-item="{ headers, item }">
+                            <td :colspan="headers.length">
+                              <v-data-table
+                                hide-default-footer
+                                :headers="headersSubTask"
+                                :items="getSubTasksFromTask(item)"
+                                item-key="name"
+                                class="elevation-1 ml-9"
+                              >
+                                <template v-slot:[`item.state`]="{ item }">
+                                  <v-chip
+                                    style="width: 100%"
+                                    v-if="item.state == 'No Iniciado'"
+                                    color="red"
+                                    dark
+                                  >
+                                    {{ item.state }}
+                                  </v-chip>
+                                  <v-chip
+                                    style="width: 100%"
+                                    v-if="item.state == 'Iniciado'"
+                                    color="yellow"
+                                    dark
+                                  >
+                                    {{ item.state }}
+                                  </v-chip>
+                                  <v-chip
+                                    style="width: 100%"
+                                    v-if="item.state == 'Terminado'"
+                                    color="green"
+                                    dark
+                                  >
+                                    {{ item.state }}
+                                  </v-chip>
+                                </template>
+                                <template v-slot:[`item.priority`]="{ item }">
+                                  <v-chip
+                                    v-if="item.priority == 'Alta'"
+                                    color="red"
+                                    dark
+                                  >
+                                    {{ item.priority }}
+                                  </v-chip>
+                                  <v-chip
+                                    v-if="item.priority == 'Media'"
+                                    color="orange"
+                                    dark
+                                  >
+                                    {{ item.priority }}
+                                  </v-chip>
+                                  <v-chip
+                                    v-if="item.priority == 'Baja'"
+                                    color="success"
+                                    dark
+                                  >
+                                    {{ item.priority }}
+                                  </v-chip>
+                                </template>
+                                <template
+                                  v-slot:[`item.estimatedHours`]="{ item }"
+                                >
+                                  <v-chip color="primary">
+                                    {{ item.estimatedHours }} H
+                                  </v-chip>
+                                </template>
 
+                                <template v-slot:[`item.acciones`]="{ item }">
+                                  <v-chip color="primary">
+                                    <v-icon
+                                      dense
+                                      class="mx-1"
+                                      @click="editItem(item)"
+                                    >
+                                      mdi-pencil
+                                    </v-icon>
+                                    <v-icon
+                                      dense
+                                      class="mx-1"
+                                      @click="deleteItem(item)"
+                                    >
+                                      mdi-delete
+                                    </v-icon>
+                                  </v-chip>
+                                </template>
+                              </v-data-table>
+                            </td>
+                          </template>
                         </v-data-table>
                         <div class="text-center pt-2">
                           <v-pagination
@@ -319,8 +401,9 @@ export default {
           text: "Descripción",
           value: "description",
           align: "center",
+          width: "25%",
         },
-        { text: "Estado", value: "state", align: "center", width: "25% " },
+        { text: "Estado", value: "state", align: "center", width: "10% " },
         {
           text: "Prioridad",
           value: "priority",
@@ -337,14 +420,44 @@ export default {
           text: "Responsable",
           value: "user.name",
           align: "center",
-          width: "20% ",
+          width: "15% ",
         },
         {
           text: "Acciones",
           value: "acciones",
           sortable: false,
           align: "center",
-          width: "20%",
+          width: "15%",
+        },
+      ],
+      headersSubTask: [
+        { text: "Nombre", value: "name", align: "center", width: "15%" },
+        {
+          text: "Descripción",
+          value: "description",
+          align: "center",
+          width: "25%",
+        },
+        { text: "Estado", value: "state", align: "center", width: "10% " },
+        {
+          text: "Prioridad",
+          value: "priority",
+          align: "center ",
+          width: "10% ",
+        },
+        {
+          text: "Estimado",
+          value: "estimatedHours",
+          align: "center",
+          width: "10% ",
+        },
+
+        {
+          text: "Acciones",
+          value: "acciones",
+          sortable: false,
+          align: "center",
+          width: "30%",
         },
       ],
       priorityList: [
@@ -365,6 +478,10 @@ export default {
     this.getInfo();
   },
   methods: {
+    getSubTasksFromTask(item) {
+      return item.subtasks;
+    },
+
     deleteItem(item) {
       Swal.fire({
         title: "Tarea - " + item.name,
