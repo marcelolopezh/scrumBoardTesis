@@ -47,7 +47,7 @@ public class taskController {
 		Sprint sprint = sprintService.findById(sprintId);
 		task.setUser(user);
 		task.setSprint(sprint);
-		task.setState("No Iniciado");
+		task.setState("Pendiente");
 		task = taskService.save(task);
 		return ResponseEntity.status(HttpStatus.OK).body(task);
 	}

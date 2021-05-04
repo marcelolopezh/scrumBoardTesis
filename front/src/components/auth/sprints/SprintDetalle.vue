@@ -39,16 +39,16 @@
                           <template v-slot:[`item.state`]="{ item }">
                             <v-chip
                               style="width: 100%"
-                              v-if="item.state == 'No Iniciado'"
-                              color="red"
+                              v-if="item.state == 'Pendiente'"
+                              color="info"
                               dark
                             >
                               {{ item.state }}
                             </v-chip>
                             <v-chip
                               style="width: 100%"
-                              v-if="item.state == 'Iniciado'"
-                              color="orange"
+                              v-if="item.state == 'En Curso'"
+                              color="warning"
                               dark
                             >
                               {{ item.state }}
@@ -56,7 +56,7 @@
                             <v-chip
                               style="width: 100%"
                               v-if="item.state == 'Terminado'"
-                              color="green"
+                              color="success"
                               dark
                             >
                               {{ item.state }}
@@ -136,25 +136,22 @@
                               >
                                 <template v-slot:[`item.state`]="{ item }">
                                   <v-chip
-                                    style="width: 100%"
-                                    v-if="item.state == 'No Iniciado'"
-                                    color="red"
+                                    v-if="item.state == 'Pendiente'"
+                                    color="info"
                                     dark
                                   >
                                     {{ item.state }}
                                   </v-chip>
                                   <v-chip
-                                    style="width: 100%"
-                                    v-if="item.state == 'Iniciado'"
-                                    color="yellow"
+                                    v-if="item.state == 'En Curso'"
+                                    color="warning"
                                     dark
                                   >
                                     {{ item.state }}
                                   </v-chip>
                                   <v-chip
-                                    style="width: 100%"
                                     v-if="item.state == 'Terminado'"
-                                    color="green"
+                                    color="success"
                                     dark
                                   >
                                     {{ item.state }}
@@ -234,6 +231,104 @@
                   </v-card>
                 </v-col>
               </v-row>
+            </v-container>
+            <v-container>
+              <v-card>
+                <v-card-title>Tablero KanBan</v-card-title>
+                <v-card-text>
+                  <v-row>
+                    <v-col cols="4">
+                      <v-card>
+                        <v-card-title>Pendiente</v-card-title>
+                        <v-card-text
+                          ><v-alert
+                            border="top"
+                            colored-border
+                            color="info"
+                            elevation="2"
+                          >
+                            <v-list dense>
+                              <v-list-item-group>
+                                <v-list-item
+                                  v-for="item in sprint.tasks"
+                                  :key="item.id"
+                                >
+                                  <v-list-item-icon>
+                                    <v-icon>mdi-pencil </v-icon>
+                                  </v-list-item-icon>
+                                  <v-list-item-content>
+                                    <v-list-item-title
+                                      v-text="item.name"
+                                    ></v-list-item-title>
+                                  </v-list-item-content>
+                                </v-list-item>
+                              </v-list-item-group>
+                            </v-list> </v-alert
+                        ></v-card-text>
+                      </v-card>
+                    </v-col>
+                    <v-col cols="4">
+                      <v-card>
+                        <v-card-title>En Curso</v-card-title>
+                        <v-card-text
+                          ><v-alert
+                            border="top"
+                            colored-border
+                            color="warning"
+                            elevation="2"
+                          >
+                            <v-list dense>
+                              <v-list-item-group>
+                                <v-list-item
+                                  v-for="item in sprint.tasks"
+                                  :key="item.id"
+                                >
+                                  <v-list-item-icon>
+                                    <v-icon>mdi-pencil </v-icon>
+                                  </v-list-item-icon>
+                                  <v-list-item-content>
+                                    <v-list-item-title
+                                      v-text="item.name"
+                                    ></v-list-item-title>
+                                  </v-list-item-content>
+                                </v-list-item>
+                              </v-list-item-group>
+                            </v-list> </v-alert
+                        ></v-card-text>
+                      </v-card> </v-col
+                    ><v-col cols="4">
+                      <v-card>
+                        <v-card-title>Terminado</v-card-title>
+                        <v-card-text
+                          ><v-alert
+                            border="top"
+                            colored-border
+                            color="success"
+                            elevation="2"
+                          >
+                            <v-list dense>
+                              <v-list-item-group>
+                                <v-list-item
+                                  v-for="item in sprint.tasks"
+                                  :key="item.id"
+                                >
+                                  <v-list-item-icon>
+                                    <v-icon>mdi-pencil </v-icon>
+                                  </v-list-item-icon>
+                                  <v-list-item-content>
+                                    <v-list-item-title
+                                      v-text="item.name"
+                                    ></v-list-item-title>
+                                  </v-list-item-content>
+                                </v-list-item>
+                              </v-list-item-group>
+                            </v-list> </v-alert
+                        ></v-card-text>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
             </v-container>
           </v-card-text>
         </v-card>
