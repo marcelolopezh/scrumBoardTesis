@@ -35,10 +35,10 @@
                           class="elevation-1"
                           @page-count="pageCount = $event"
                           show-expand
+                          right
                         >
                           <template v-slot:[`item.state`]="{ item }">
                             <v-chip
-                              style="width: 100%"
                               v-if="item.state == 'Pendiente'"
                               color="info"
                               dark
@@ -46,7 +46,6 @@
                               {{ item.state }}
                             </v-chip>
                             <v-chip
-                              style="width: 100%"
                               v-if="item.state == 'En Curso'"
                               color="warning"
                               dark
@@ -54,7 +53,6 @@
                               {{ item.state }}
                             </v-chip>
                             <v-chip
-                              style="width: 100%"
                               v-if="item.state == 'Terminado'"
                               color="success"
                               dark
@@ -128,11 +126,13 @@
                           <template v-slot:expanded-item="{ headers, item }">
                             <td :colspan="headers.length">
                               <v-data-table
+                                dense
                                 hide-default-footer
+                                disable-sort
                                 :headers="headersSubTask"
                                 :items="getSubTasksFromTask(item)"
                                 item-key="name"
-                                class="elevation-1 ml-9"
+                                style="margin-left: -1rem"
                               >
                                 <template v-slot:[`item.state`]="{ item }">
                                   <v-chip
@@ -544,75 +544,82 @@ export default {
       taskDescription: null,
       taskEstimatedHours: null,
       dialog: false,
-      dialogSubTask:false,
+      dialogSubTask: false,
       dialogSubTaskEdit: false,
       page: 1,
       pageCount: 0,
       itemsPerPage: 10,
       headers: [
-        { text: "Nombre", value: "name", align: "center", width: "15%" },
+        { text: "Nombre", value: "name", align: "start", width: "15%" },
         {
           text: "Descripción",
           value: "description",
-          align: "center",
           width: "25%",
+          align: "center",
         },
-        { text: "Estado", value: "state", align: "center", width: "10% " },
+        { text: "Estado", value: "state", width: "10% ", align: "center" },
         {
           text: "Prioridad",
           value: "priority",
-          align: "center ",
           width: "10% ",
+          align: "center",
         },
         {
           text: "Estimado",
           value: "estimatedHours",
-          align: "center",
           width: "10% ",
+          align: "center",
         },
         {
           text: "Responsable",
           value: "user.name",
-          align: "center",
           width: "15% ",
+          align: "center",
         },
         {
           text: "Acciones",
           value: "acciones",
           sortable: false,
-          align: "center",
           width: "15%",
+          align: "center",
         },
+        { text: "", value: "data-table-expand", align: "center" },
       ],
       headersSubTask: [
-        { text: "Nombre", value: "name", align: "center", width: "15%" },
+        { text: "", value: "name", align: "start", width: "15%" },
         {
-          text: "Descripción",
+          text: "",
           value: "description",
-          align: "center",
           width: "25%",
-        },
-        { text: "Estado", value: "state", align: "center", width: "10% " },
-        {
-          text: "Prioridad",
-          value: "priority",
-          align: "center ",
-          width: "10% ",
-        },
-        {
-          text: "Estimado",
-          value: "estimatedHours",
           align: "center",
-          width: "10% ",
         },
-
+        { text: "", value: "state", width: "10% ", align: "center" },
         {
-          text: "Acciones",
+          text: "",
+          value: "priority",
+          width: "10% ",
+          align: "center",
+        },
+        {
+          text: "",
+          value: "estimatedHours",
+          width: "10% ",
+          align: "center",
+        },
+        {
+          text: "",
+          value: "user.name",
+          width: "15% ",
+          align: "center",
+        },
+        {
+          text: "",
           value: "acciones",
           sortable: false,
+          width: "15%",
           align: "center",
-          width: "30%",
         },
+        { text: "", value: "data-table-expand", align: "center" },
       ],
       priorityList: [
         { text: "Alta", value: "Alta" },
