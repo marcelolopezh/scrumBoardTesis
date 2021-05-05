@@ -249,21 +249,19 @@
                             color="info"
                             elevation="2"
                           >
-                            <v-list
-                              dense
-                              v-for="item in sprint.tasks"
-                              :key="item.id"
-                            >
-                              <v-list-item-group>
-                                <v-list-item v-if="item.state == 'Pendiente'">
-                                  <v-list-item-content>
-                                    <v-list-item-title
-                                      v-text="item.name"
-                                    ></v-list-item-title>
-                                  </v-list-item-content>
-                                </v-list-item>
-                              </v-list-item-group>
-                            </v-list> </v-alert
+                            <div v-for="item in sprint.tasks" :key="item.id">
+                              <v-list v-if="item.state == 'Pendiente'" dense>
+                                <v-list-item-group>
+                                  <v-list-item>
+                                    <v-list-item-content>
+                                      <v-list-item-title
+                                        v-text="item.name"
+                                      ></v-list-item-title>
+                                    </v-list-item-content>
+                                  </v-list-item>
+                                </v-list-item-group>
+                              </v-list>
+                            </div> </v-alert
                         ></v-card-text>
                       </v-card>
                     </v-col>
@@ -277,21 +275,19 @@
                             color="warning"
                             elevation="2"
                           >
-                            <v-list
-                              dense
-                              v-for="item in sprint.tasks"
-                              :key="item.id"
-                            >
-                              <v-list-item-group>
-                                <v-list-item v-if="item.state == 'En Curso'">
-                                  <v-list-item-content>
-                                    <v-list-item-title
-                                      v-text="item.name"
-                                    ></v-list-item-title>
-                                  </v-list-item-content>
-                                </v-list-item>
-                              </v-list-item-group>
-                            </v-list> </v-alert
+                            <div v-for="item in sprint.tasks" :key="item.id">
+                              <v-list v-if="item.state == 'En Curso'" dense>
+                                <v-list-item-group>
+                                  <v-list-item>
+                                    <v-list-item-content>
+                                      <v-list-item-title
+                                        v-text="item.name"
+                                      ></v-list-item-title>
+                                    </v-list-item-content>
+                                  </v-list-item>
+                                </v-list-item-group>
+                              </v-list>
+                            </div></v-alert
                         ></v-card-text>
                       </v-card> </v-col
                     ><v-col cols="4">
@@ -304,21 +300,19 @@
                             color="success"
                             elevation="2"
                           >
-                            <v-list
-                              dense
-                              v-for="item in sprint.tasks"
-                              :key="item.id"
-                            >
-                              <v-list-item-group>
-                                <v-list-item v-if="item.state == 'Terminado'">
-                                  <v-list-item-content>
-                                    <v-list-item-title
-                                      v-text="item.name"
-                                    ></v-list-item-title>
-                                  </v-list-item-content>
-                                </v-list-item>
-                              </v-list-item-group>
-                            </v-list> </v-alert
+                           <div v-for="item in sprint.tasks" :key="item.id">
+                              <v-list v-if="item.state == 'Terminado'" dense>
+                                <v-list-item-group>
+                                  <v-list-item>
+                                    <v-list-item-content>
+                                      <v-list-item-title
+                                        v-text="item.name"
+                                      ></v-list-item-title>
+                                    </v-list-item-content>
+                                  </v-list-item>
+                                </v-list-item-group>
+                              </v-list>
+                            </div> </v-alert
                         ></v-card-text>
                       </v-card>
                     </v-col>
