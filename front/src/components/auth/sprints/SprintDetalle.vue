@@ -193,7 +193,7 @@
                                     <v-icon
                                       dense
                                       class="mx-1"
-                                      @click="editItem(item)"
+                                      @click="editSubTask(item)"
                                     >
                                       mdi-pencil
                                     </v-icon>
@@ -232,6 +232,8 @@
                 </v-col>
               </v-row>
             </v-container>
+
+            <!-- TABLERO KANBAN-->
             <v-container>
               <v-card>
                 <v-card-title>Tablero KanBan</v-card-title>
@@ -247,15 +249,13 @@
                             color="info"
                             elevation="2"
                           >
-                            <v-list dense>
+                            <v-list
+                              dense
+                              v-for="item in sprint.tasks"
+                              :key="item.id"
+                            >
                               <v-list-item-group>
-                                <v-list-item
-                                  v-for="item in sprint.tasks"
-                                  :key="item.id"
-                                >
-                                  <v-list-item-icon>
-                                    <v-icon>mdi-pencil </v-icon>
-                                  </v-list-item-icon>
+                                <v-list-item v-if="item.state == 'Pendiente'">
                                   <v-list-item-content>
                                     <v-list-item-title
                                       v-text="item.name"
@@ -277,15 +277,13 @@
                             color="warning"
                             elevation="2"
                           >
-                            <v-list dense>
+                            <v-list
+                              dense
+                              v-for="item in sprint.tasks"
+                              :key="item.id"
+                            >
                               <v-list-item-group>
-                                <v-list-item
-                                  v-for="item in sprint.tasks"
-                                  :key="item.id"
-                                >
-                                  <v-list-item-icon>
-                                    <v-icon>mdi-pencil </v-icon>
-                                  </v-list-item-icon>
+                                <v-list-item v-if="item.state == 'En Curso'">
                                   <v-list-item-content>
                                     <v-list-item-title
                                       v-text="item.name"
@@ -306,15 +304,13 @@
                             color="success"
                             elevation="2"
                           >
-                            <v-list dense>
+                            <v-list
+                              dense
+                              v-for="item in sprint.tasks"
+                              :key="item.id"
+                            >
                               <v-list-item-group>
-                                <v-list-item
-                                  v-for="item in sprint.tasks"
-                                  :key="item.id"
-                                >
-                                  <v-list-item-icon>
-                                    <v-icon>mdi-pencil </v-icon>
-                                  </v-list-item-icon>
+                                <v-list-item v-if="item.state == 'Terminado'">
                                   <v-list-item-content>
                                     <v-list-item-title
                                       v-text="item.name"
@@ -466,6 +462,68 @@
         </v-card-actions></v-card
       >
     </v-dialog>
+
+    <!-- DIALOG EDIT SUBTASK -->
+    <v-dialog v-model="dialogSubTaskEdit" max-width="500px">
+      <v-card>
+        <v-card-title> Editar {{ subTaskName }} </v-card-title>
+        <v-card-text>
+          <!-- FORM TO CREATE TASK -->
+          <v-text-field
+            v-model="subTaskName"
+            label="Nombre Sub Tarea"
+            prepend-icon="mdi-card-text"
+            clearable
+          ></v-text-field>
+
+          <v-text-field
+            v-model="subTaskDescription"
+            label="Descripción Sub Tarea"
+            prepend-icon="mdi-clipboard-text"
+            clearable
+          ></v-text-field>
+
+          <v-text-field
+            v-model="subTaskEstimatedHours"
+            label="Horas Estimadas Sub Tarea"
+            prepend-icon="mdi-clock"
+            clearable
+            number
+            type="number"
+          ></v-text-field>
+
+          <v-select
+            class="mb-5"
+            v-model="subTaskPriority"
+            :items="priorityList"
+            menu-props="auto"
+            label="Prioridad Sub Tarea"
+            hide-details
+            prepend-icon="mdi-podium-silver"
+            single-line
+          ></v-select>
+
+          <v-select
+            class="mb-5"
+            v-model="subTaskState"
+            :items="stateList"
+            menu-props="auto"
+            label="Estado"
+            hide-details
+            prepend-icon="mdi-podium-silver"
+            single-line
+          ></v-select> </v-card-text
+        ><v-card-actions>
+          <v-btn color="danger" text @click="dialogSubTaskEdit = false">
+            Cerrar
+          </v-btn>
+          <v-btn color="purple" text @click="_editSubTask()">
+            <v-icon right dark> mdi-content-save-outline </v-icon>
+            Editar Sub Tarea
+          </v-btn>
+        </v-card-actions></v-card
+      >
+    </v-dialog>
   </div>
 </template>
 
@@ -486,7 +544,8 @@ export default {
       taskDescription: null,
       taskEstimatedHours: null,
       dialog: false,
-      dialogSubTask: false,
+      dialogSubTask:false,
+      dialogSubTaskEdit: false,
       page: 1,
       pageCount: 0,
       itemsPerPage: 10,
@@ -560,11 +619,22 @@ export default {
         { text: "Media", value: "Media" },
         { text: "Baja", value: "Baja" },
       ],
+      stateList: [
+        { text: "Pendiente", value: "Pendiente" },
+        { text: "En Curso", value: "En Curso" },
+        { text: "Terminado", value: "Terminado" },
+      ],
       project: null,
       members: [],
       responsable: null,
       loading: false,
       taskPriority: null,
+      subTaskId: null,
+      subTaskName: null,
+      subTaskDescription: null,
+      subTaskEstimatedHours: null,
+      subTaskPriority: null,
+      subTaskState: null,
     };
   },
   mounted() {
@@ -577,7 +647,34 @@ export default {
       return item.subtasks;
     },
 
-    deleteItem(item) {
+    editSubTask(item) {
+      this.subTaskId = item.id;
+      this.subTaskName = item.name;
+      this.subTaskDescription = item.description;
+      this.subTaskEstimatedHours = item.estimatedHours;
+      this.subTaskPriority = item.priority;
+      this.subTaskState = item.state;
+      this.dialogSubTaskEdit = true;
+    },
+    async _editSubTask() {
+      let formData = new FormData();
+      formData.append("name", this.subTaskName);
+      formData.append("description", this.subTaskDescription);
+      formData.append("estimatedHours", this.subTaskEstimatedHours);
+      formData.append("priority", this.subTaskPriority);
+      formData.append("state", this.subTaskState);
+      const token = localStorage.getItem("token");
+      await axios
+        .post(this.apiUrl + "editSubTask/" + this.subTaskId, formData, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then(() => this.getInfo())
+        .catch((error) => console.log(error));
+    },
+
+    async deleteItem(item) {
       Swal.fire({
         title: "Tarea - " + item.name,
         showDenyButton: true,
@@ -621,6 +718,7 @@ export default {
       this.$router.go(-1);
     },
     async getInfo() {
+      this.dialogSubTaskEdit = false;
       this.members = [];
       let token = localStorage.getItem("token");
       await axios
@@ -631,8 +729,8 @@ export default {
         })
         .then((response) => (this.sprint = response.data))
         .catch((error) => console.log(error));
-      console.log("THIS SPRINT =>");
-      console.log(this.sprint);
+      /*console.log("THIS SPRINT =>");
+      console.log(this.sprint);*/
       await axios
         .get(this.apiUrl + "getInfoProject/" + this.projectId, {
           headers: {
@@ -674,12 +772,16 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style>
 swal-title {
   margin: 0px;
   font-size: 245px;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.21);
   margin-bottom: 28px;
   color: red;
+}
+.swal-modal {
+  background-color: rgba(63, 255, 106, 0.69);
+  border: 3px solid white;
 }
 </style>
