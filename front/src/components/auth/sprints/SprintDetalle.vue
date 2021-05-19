@@ -202,7 +202,7 @@
                                     <v-icon
                                       dense
                                       class="mx-1"
-                                      @click="deleteItem(item)"
+                                      @click="deleteSubTask(item)"
                                     >
                                       mdi-delete
                                     </v-icon>
@@ -655,7 +655,7 @@ export default {
       subTaskPriority: null,
       subTaskState: null,
       rules: [
-        (v) => v && v >= 1 || `Valor requerido`,
+        (v) => (v && v >= 1) || `Valor requerido`,
         (v) =>
           v <= this.selectedTask.estimatedHours ||
           `Sobrepasa la cantidad de horas acumuladas`,
@@ -713,7 +713,7 @@ export default {
 
     async deleteItem(item) {
       Swal.fire({
-        title: "Tarea - " + item.name,
+        title: "Eliminar Tarea - " + item.name,
         showDenyButton: true,
         confirmButtonText: `Eliminar`,
       }).then(async (result) => {
@@ -733,6 +733,34 @@ export default {
         }
       });
     },
+    async deleteSubTask(item) {
+      Swal.fire({
+        title: "Eliminar Sub Tarea - " + item.name,
+        showDenyButton: true,
+        confirmButtonText: `Eliminar`,
+      }).then(async (result) => {
+        console.log(this.sprint);
+        if (result.isConfirmed) {
+          for (let task of this.sprint.tasks) {
+            for (let subtask of task.subtasks) {
+              // ARREGLAR ESTA LINEA
+               if (item == subtask) this.sprint.tasks.subtasks.pop(subtask);
+            }
+          }
+    
+          const token = localStorage.getItem("token");
+          await axios
+            .delete(this.apiUrl + "deleteSubTask/" + item.id, {
+              headers: {
+                Authorization: token,
+              },
+            })
+            .then(() => Swal.fire("Sub Tarea Eliminada!", "", "success"))
+            .catch((error) => console.log(error));
+        }
+      });
+    },
+
     async createTask() {
       const token = localStorage.getItem("token");
       let formData = new FormData();
