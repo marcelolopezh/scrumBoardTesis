@@ -256,8 +256,11 @@
                                 <v-list-item-group>
                                   <v-list-item>
                                     <v-list-item-content>
-                                      <v-list-item-title
-                                        ><strong>{{
+                                      <v-list-item-title>
+                                        <v-icon class="mr-1"
+                                          >mdi-clipboard-check-outline</v-icon
+                                        >
+                                        <strong>{{
                                           item.name
                                         }}</strong></v-list-item-title
                                       >
@@ -286,6 +289,9 @@
                                   <v-list-item>
                                     <v-list-item-content>
                                       <v-list-item-title>
+                                        <v-icon class="mr-1"
+                                          >mdi-clipboard-check-outline</v-icon
+                                        >
                                         <strong>{{ item.name }}</strong>
                                       </v-list-item-title>
                                     </v-list-item-content>
@@ -311,7 +317,9 @@
                                 <v-list-item-group>
                                   <v-list-item>
                                     <v-list-item-content>
-                                      <v-list-item-title
+                                      <v-list-item-title>
+                                        <v-icon class="mr-1"
+                                          >mdi-clipboard-check-outline</v-icon
                                         ><strong>{{
                                           item.name
                                         }}</strong></v-list-item-title
@@ -426,6 +434,7 @@
             clearable
             number
             type="number"
+            :rules="rules"
           ></v-text-field>
 
           <v-select
@@ -645,6 +654,9 @@ export default {
       subTaskEstimatedHours: null,
       subTaskPriority: null,
       subTaskState: null,
+      rules: [
+        (v) => (v <= this.selectedTask.estimatedHours) || `Sobrepasa la cantidad de horas acumuladas`,
+      ],
     };
   },
   mounted() {
