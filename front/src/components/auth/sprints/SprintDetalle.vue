@@ -655,7 +655,14 @@ export default {
       subTaskPriority: null,
       subTaskState: null,
       rules: [
-        (v) => (v <= this.selectedTask.estimatedHours) || `Sobrepasa la cantidad de horas acumuladas`,
+        (v) => v && v >= 1 || `Valor requerido`,
+        (v) =>
+          v <= this.selectedTask.estimatedHours ||
+          `Sobrepasa la cantidad de horas acumuladas`,
+        (v) =>
+          this.getTotalSubTasksHours(v, this.selectedTask) <=
+            this.selectedTask.estimatedHours ||
+          `Sobrepasa la cantidad de horas acumuladas`,
       ],
     };
   },
@@ -665,6 +672,14 @@ export default {
     this.getInfo();
   },
   methods: {
+    getTotalSubTasksHours(v, item) {
+      let totalHours = 0;
+      for (item of item.subtasks) {
+        totalHours += item.estimatedHours;
+      }
+      return parseInt(v) + parseInt(totalHours);
+    },
+
     getSubTasksFromTask(item) {
       return item.subtasks;
     },
