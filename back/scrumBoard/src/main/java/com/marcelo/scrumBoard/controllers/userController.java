@@ -18,7 +18,7 @@ import com.marcelo.scrumBoard.services.ProjectService;
 import com.marcelo.scrumBoard.services.UserService;
 
 @RestController
-@CrossOrigin({ "http://localhost:8081" })
+@CrossOrigin(origins = "http://localhost:8081")
 public class userController {
 	@Autowired
 	UserService userService;

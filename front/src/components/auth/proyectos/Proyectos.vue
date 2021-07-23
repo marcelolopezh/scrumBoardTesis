@@ -85,6 +85,7 @@
                       v-for="item in myProjects"
                       :key="item.id"
                       @click="routerTo(item)"
+                      class="projectList"
                     >
                       <v-list-item-icon>
                         <v-icon>mdi-file-document-multiple</v-icon>

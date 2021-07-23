@@ -28,8 +28,9 @@ public class ScrumBoardApplication {
 			http.csrf().disable()
 					.addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
 					.authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-					.antMatchers(HttpMethod.POST, "/register").permitAll()
+					.antMatchers(HttpMethod.POST, "/createUser").permitAll()
 					.antMatchers(HttpMethod.POST, "/login").permitAll()
+					.antMatchers(HttpMethod.GET, "/getAllProjects").permitAll()
 					.anyRequest().authenticated();
 			http.cors().and();
 		}

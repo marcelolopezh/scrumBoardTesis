@@ -34,12 +34,9 @@ public class sprintController {
 			@RequestParam("objetive") String objetive, @RequestParam("projectId") Long projectId,
 			@RequestParam  String startDate,
 			@RequestParam  String endDate) throws ParseException {
-		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date startDateF = sdf.parse(startDate);
 		Date endDateF   = sdf.parse(endDate);
-		
-		
 		Sprint sprint = new Sprint();
 		sprint.setName(name);
 		sprint.setObjetive(objetive);

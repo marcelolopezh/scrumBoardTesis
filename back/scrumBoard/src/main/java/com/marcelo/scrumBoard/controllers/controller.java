@@ -52,7 +52,7 @@ public class controller {
 		else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 	}
 	
-	@PostMapping("/register")
+	@PostMapping("/createUser")
 	public ResponseEntity<User> registerPost(
 			@RequestParam("name") String name,
 			@RequestParam("lastName") String lastName,

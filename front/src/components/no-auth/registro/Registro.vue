@@ -71,7 +71,7 @@ export default {
 
   data() {
     return {
-      apiUrl: "http://localhost:8080/register",
+      apiUrl: "http://localhost:8080/createUser",
       name: null,
       lastName: null,
       password: null,

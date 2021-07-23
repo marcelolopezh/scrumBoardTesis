@@ -8,9 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.marcelo.scrumBoard.models.Project;
@@ -57,6 +59,14 @@ public class projectController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
 	}
+	
+	@GetMapping("/getAllProjects")
+	public ResponseEntity<List<Project>> getAllProjects() {
+		List<Project> allProjects = projectService.findAll();
+		return ResponseEntity.status(HttpStatus.OK).body(allProjects);
+	}
+	
+	
 
 	@PostMapping("/getMyProjects")
 	public ResponseEntity<List<Project>> getMyProjects(@RequestParam("email") String email) {
@@ -67,7 +77,6 @@ public class projectController {
 			if (AllProjects.get(i).getUser() == user)
 				MyProj.add(AllProjects.get(i));
 		}
-
 		return ResponseEntity.status(HttpStatus.OK).body(MyProj);
 	}
 
@@ -76,4 +85,41 @@ public class projectController {
 		return ResponseEntity.status(HttpStatus.OK).body(projectService.findById(id));
 	}
 
+	@DeleteMapping("/deleteProject/{id}")
+	public ResponseEntity<Project> deleteProject(@PathVariable("id") Long id){
+		Project project = projectService.findById(id);
+		if(project == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}else {
+			projectService.deleteProject(id);
+			return ResponseEntity.status(HttpStatus.OK).body(null);
+		}
+	}
+	
+	@PutMapping("/updateProject/{id}")
+	public ResponseEntity<Project> updateProject(@PathVariable("id") Long id, @RequestParam("name") String name,
+			@RequestParam("description") String description,
+			@RequestParam("selectedMembers") List<String> selectedMembers,
+			@RequestParam("selectedInteresteds") List<String> selectedInteresteds, @RequestParam("email") String email,
+			@RequestParam("objetive") String objetive){
+		Project project = projectService.findById(id);
+		project.setName(name);
+		project.setDescription(description);
+		List<User> selectedMembersArray = new ArrayList<User>();
+		User user = new User();
+		for (int i = 0; i < selectedMembers.size(); i++) {
+			user = userService.findById(Long.parseLong(selectedMembers.get(i)));
+			selectedMembersArray.add(user);
+		}
+		project.setMembers(selectedMembersArray);
+		List<User> selectedInterestedsArray = new ArrayList<User>();
+		for (int i = 0; i < selectedInteresteds.size(); i++) {
+			user = userService.findById(Long.parseLong(selectedInteresteds.get(i)));
+			selectedInterestedsArray.add(user);
+		}
+		project.setInteresteds(selectedInterestedsArray);
+		project.setObjetive(objetive);
+		projectService.createProject(project);
+		return ResponseEntity.status(HttpStatus.OK).body(project);
+	}
 }
