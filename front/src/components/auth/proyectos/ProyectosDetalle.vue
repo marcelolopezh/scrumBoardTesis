@@ -77,15 +77,24 @@
                                         <v-icon>mdi-calendar-clock</v-icon>
                                       </v-avatar>
                                     </v-chip>
+                                    <v-chip color="indigo" text-color="white">
+                                      <span
+                                        v-text="
+                                          task.user.name +
+                                          ' ' +
+                                          task.user.lastName
+                                        "
+                                      ></span>
+                                      <v-avatar>
+                                        <v-icon>mdi-account</v-icon>
+                                      </v-avatar>
+                                    </v-chip>
                                   </v-chip-group>
                                   <v-text-field
                                     v-on:keyup.enter="createSubTask(task.id)"
                                     v-model="addSubTask"
-                                    placeholder="Check List"
+                                    placeholder="Check List Sub Tareas"
                                   >
-                                    <v-icon slot="append" color="green">
-                                      mdi-check
-                                    </v-icon>
                                   </v-text-field>
                                   <div
                                     v-for="subtask in task.subtasks"
@@ -97,7 +106,14 @@
                                       :value="subtask.id"
                                       hide-details
                                       :checked="subtask.state"
-                                    ></v-checkbox>
+                                      ><v-icon
+                                        slot="append"
+                                        color="red"
+                                        @click="deleteSubTask(subtask.id)"
+                                      >
+                                        mdi-delete
+                                      </v-icon></v-checkbox
+                                    >
                                   </div>
                                 </v-expansion-panel-content>
                               </v-expansion-panel>
@@ -107,7 +123,10 @@
                                 small
                                 color="success"
                                 dark
-                                @click="dialogTask = true"
+                                @click="
+                                  dialogTask = true;
+                                  sprintIdCreateTask = sprint.id;
+                                "
                               >
                                 Crear Tarea
                                 <v-icon dark right> mdi-plus </v-icon>
@@ -365,6 +384,7 @@ export default {
         { text: "En Curso", value: "En Curso" },
         { text: "Terminado", value: "Terminado" },
       ],
+      sprintIdCreateTask: null,
     };
   },
   mounted() {
@@ -381,7 +401,6 @@ export default {
       }).then(async (result) => {
         if (result.isConfirmed) {
           const token = localStorage.getItem("token");
-          console.log(this.apiUrl + "deleteSprint/" + item.id);
           await axios
             .delete(this.apiUrl + "deleteSprint/" + item.id, {
               headers: {
@@ -416,7 +435,6 @@ export default {
       formData.append("name", this.sprintName);
       formData.append("objetive", this.sprintObjetive);
       //2020-04-01T09:18:18Z
-      console.log(this.sprintStartDate + " " + this.sprintEndDate);
       formData.append("startDate", this.sprintStartDate + " 00:00:00");
       formData.append("endDate", this.sprintEndDate + " 23:59:59");
       formData.append("projectId", this.project.id);
@@ -426,7 +444,7 @@ export default {
             Authorization: token,
           },
         })
-        .then(async () => this.getInfo())
+        .then(async () => this.getInfo(), this.clearVars())
         .catch((error) => console.log(error));
     },
     goBack() {
@@ -455,7 +473,6 @@ export default {
           value: this.project.members[i].id,
         });
       }
-      console.log("THIS MEMBERS -> ", this.members);
       this.loaded = true;
     },
     async createSubTask(taskId) {
@@ -473,6 +490,17 @@ export default {
         .catch((error) => console.log(error));
       this.addSubTask = null;
     },
+    async deleteSubTask(subTaskId) {
+      const token = localStorage.getItem("token");
+      await axios
+        .delete(this.apiUrl + "deleteSubTask/" + subTaskId, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then(() => this.getInfo())
+        .catch((error) => console.log(error));
+    },
     async createTask() {
       const token = localStorage.getItem("token");
       let formData = new FormData();
@@ -481,7 +509,7 @@ export default {
       formData.append("taskEstimatedHours", this.taskEstimatedHours);
       formData.append("priority", this.taskPriority);
       formData.append("responsable", this.responsable);
-      formData.append("sprint", this.id);
+      formData.append("sprint", this.sprintIdCreateTask);
       console.log(formData);
       await axios
         .post(this.apiUrl + "createTask", formData, {
@@ -489,8 +517,21 @@ export default {
             Authorization: token,
           },
         })
-        .then(() => this.getInfo())
+        .then(() => this.getInfo(), this.clearVars())
         .catch((error) => console.log(error));
+    },
+
+    clearVars() {
+      this.taskName = null;
+      this.taskDescription = null;
+      this.taskEstimatedHours = null;
+      this.taskPriority = null;
+      this.responsable = null;
+      this.sprintIdCreateTask = null;
+      this.sprintName = null;
+      this.sprintObjetive = null;
+      this.sprintStartDate = null;
+      this.sprintEndDate = null;
     },
   },
 };
