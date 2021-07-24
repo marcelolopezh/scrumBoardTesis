@@ -35,106 +35,146 @@
               </v-row>
 
               <v-card>
-                <v-card-title>Listado de Sprints </v-card-title>
+                <v-card-title class="justify-center"
+                  >Listado de Sprints
+                </v-card-title>
                 <v-card-text>
-                  <v-row>
-                    <v-col
-                      class="rounded-lg"
-                      v-for="sprint in project.sprints"
-                      :key="sprint.id"
+                  <v-row align="center">
+                    <v-item-group
+                      v-model="window"
+                      class="shrink mr-6"
+                      mandatory
+                      tag="v-flex"
                     >
-                      <v-card color="#EEEEEE" elevation="2" outlined shaped>
-                        <v-card-text>
-                          <div>
-                            <h3 class="text-center" v-text="sprint.name"></h3>
-                            <h4
-                              class="text-center"
-                              v-text="sprint.objetive"
-                            ></h4>
-                            <v-divider class="mt-5 mb-5"></v-divider>
+                      <v-item
+                        v-for="sprint in sprintList"
+                        :key="sprint.id"
+                        v-slot="{ active, toggle }"
+                      >
+                        <div>
+                          <v-btn :input-value="active" icon @click="toggle">
+                            <v-icon>mdi-record</v-icon>
+                          </v-btn>
+                        </div>
+                      </v-item>
+                    </v-item-group>
+                    <v-col>
+                      <v-window v-model="window" class="elevation-1" vertical>
+                        <v-window-item
+                          v-for="sprint in project.sprints"
+                          :key="sprint.id"
+                        >
+                          <v-card color="#EEEEEE" elevation="2" outlined shaped>
+                            <v-card-text>
+                              <div>
+                                <h3
+                                  class="text-center"
+                                  v-text="sprint.name"
+                                ></h3>
+                                <h4
+                                  class="text-center"
+                                  v-text="sprint.objetive"
+                                ></h4>
+                                <v-divider class="mt-5 mb-5"></v-divider>
 
-                            <v-expansion-panels class="mb-6">
-                              <v-expansion-panel
-                                v-for="task in sprint.tasks"
-                                :key="task.id"
-                                v-bind:style="{ maxHeight: 10 + '%' }"
-                              >
-                                <v-expansion-panel-header>
-                                  <div v-text="task.name"></div
-                                ></v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                  <div
-                                    class="text-center"
-                                    v-text="task.description"
-                                  ></div>
-                                  <v-chip-group
-                                    active-class="primary--text"
-                                    column
+                                <v-expansion-panels class="mb-6">
+                                  <v-expansion-panel
+                                    v-for="task in sprint.tasks"
+                                    :key="task.id"
+                                    v-bind:style="{ maxHeight: 10 + '%' }"
                                   >
-                                    <v-chip color="indigo" text-color="white">
-                                      <span v-text="task.estimatedHours"></span>
-                                      <v-avatar>
-                                        <v-icon>mdi-calendar-clock</v-icon>
-                                      </v-avatar>
-                                    </v-chip>
-                                    <v-chip color="indigo" text-color="white">
-                                      <span
-                                        v-text="
-                                          task.user.name +
-                                          ' ' +
-                                          task.user.lastName
-                                        "
-                                      ></span>
-                                      <v-avatar>
-                                        <v-icon>mdi-account</v-icon>
-                                      </v-avatar>
-                                    </v-chip>
-                                  </v-chip-group>
-                                  <v-text-field
-                                    v-on:keyup.enter="createSubTask(task.id)"
-                                    v-model="addSubTask"
-                                    placeholder="Check List Sub Tareas"
-                                  >
-                                  </v-text-field>
-                                  <div
-                                    v-for="subtask in task.subtasks"
-                                    :key="subtask.id"
-                                  >
-                                    <v-checkbox
-                                      :label="subtask.description"
-                                      color="success"
-                                      :value="subtask.id"
-                                      hide-details
-                                      :checked="subtask.state"
-                                      ><v-icon
-                                        slot="append"
-                                        color="red"
-                                        @click="deleteSubTask(subtask.id)"
+                                    <v-expansion-panel-header>
+                                      <div v-text="task.name"></div
+                                    ></v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                      <div
+                                        class="text-center"
+                                        v-text="task.description"
+                                      ></div>
+                                      <v-chip-group
+                                        active-class="primary--text"
+                                        column
                                       >
-                                        mdi-delete
-                                      </v-icon></v-checkbox
-                                    >
-                                  </div>
-                                </v-expansion-panel-content>
-                              </v-expansion-panel>
-                            </v-expansion-panels>
-                            <div class="my-2 text-center">
-                              <v-btn
-                                small
-                                color="success"
-                                dark
-                                @click="
-                                  dialogTask = true;
-                                  sprintIdCreateTask = sprint.id;
-                                "
-                              >
-                                Crear Tarea
-                                <v-icon dark right> mdi-plus </v-icon>
-                              </v-btn>
-                            </div>
-                          </div>
-                        </v-card-text>
-                      </v-card>
+                                        <v-chip
+                                          color="secondary"
+                                          text-color="white"
+                                          class="ma-2"
+                                        >
+                                          <v-avatar>
+                                            <v-icon>mdi-clock-time-three-outline</v-icon>
+                                          </v-avatar>
+                                          <span
+                                            v-text="task.estimatedHours + ' H'"
+                                          ></span>
+                                        </v-chip>
+                                        <v-chip
+                                          color="secondary"
+                                          text-color="white"
+                                          class="ma-2"
+
+                                        >
+                                         <v-avatar>
+                                            <v-icon>mdi-account</v-icon>
+                                          </v-avatar>
+                                          <span
+                                            v-text="
+                                              task.user.name +
+                                              ' ' +
+                                              task.user.lastName
+                                            "
+                                          ></span>
+                                         
+                                        </v-chip>
+                                      </v-chip-group>
+                                      <v-text-field
+                                        v-on:keyup.enter="
+                                          createSubTask(task.id)
+                                        "
+                                        v-model="addSubTask"
+                                        placeholder="Check List Sub Tareas"
+                                      >
+                                      </v-text-field>
+                                      <div
+                                        v-for="subtask in task.subtasks"
+                                        :key="subtask.id"
+                                      >
+                                        <v-checkbox
+                                          :label="subtask.description"
+                                          color="success"
+                                          :value="subtask.id"
+                                          hide-details
+                                          :checked="subtask.state"
+                                          ><v-icon
+                                            slot="append"
+                                            color="red"
+                                            @click="deleteSubTask(subtask.id)"
+                                          >
+                                            mdi-delete
+                                          </v-icon></v-checkbox
+                                        >
+                                      </div>
+                                    </v-expansion-panel-content>
+                                  </v-expansion-panel>
+                                </v-expansion-panels>
+                                <div class="my-2 text-center">
+                                  <v-btn
+                                    small
+                                    color="success"
+                                    dark
+                                    @click="
+                                      dialogTask = true;
+                                      sprintIdCreateTask = sprint.id;
+                                    "
+                                  >
+                                    Crear Tarea
+                                    <v-icon dark right> mdi-plus </v-icon>
+                                  </v-btn>
+                                </div>
+                              </div>
+                            </v-card-text>
+                          </v-card>
+                        </v-window-item>
+                      </v-window>
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -385,6 +425,8 @@ export default {
         { text: "Terminado", value: "Terminado" },
       ],
       sprintIdCreateTask: null,
+      sprintList: null,
+      window: 0,
     };
   },
   mounted() {
@@ -434,7 +476,6 @@ export default {
       var formData = new FormData();
       formData.append("name", this.sprintName);
       formData.append("objetive", this.sprintObjetive);
-      //2020-04-01T09:18:18Z
       formData.append("startDate", this.sprintStartDate + " 00:00:00");
       formData.append("endDate", this.sprintEndDate + " 23:59:59");
       formData.append("projectId", this.project.id);
@@ -473,6 +514,7 @@ export default {
           value: this.project.members[i].id,
         });
       }
+      this.sprintList = this.project.sprints;
       this.loaded = true;
     },
     async createSubTask(taskId) {
