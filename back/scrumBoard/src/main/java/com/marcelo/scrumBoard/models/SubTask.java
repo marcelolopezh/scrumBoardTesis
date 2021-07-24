@@ -22,11 +22,8 @@ public class SubTask {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String name;
 	private String description;
-	private String state;
-	private Integer estimatedHours;
-	private String priority;
+	private Boolean state;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "stask_id")
@@ -56,14 +53,6 @@ public class SubTask {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -72,28 +61,12 @@ public class SubTask {
 		this.description = description;
 	}
 
-	public String getState() {
+	public Boolean getState() {
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setState(Boolean state) {
 		this.state = state;
-	}
-
-	public Integer getEstimatedHours() {
-		return estimatedHours;
-	}
-
-	public void setEstimatedHours(Integer estimatedHours) {
-		this.estimatedHours = estimatedHours;
-	}
-
-	public String getPriority() {
-		return priority;
-	}
-
-	public void setPriority(String priority) {
-		this.priority = priority;
 	}
 
 	public Task getTask() {
@@ -118,7 +91,5 @@ public class SubTask {
 
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
-	}
-	
-	
+	}	
 }

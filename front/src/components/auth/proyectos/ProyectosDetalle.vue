@@ -20,152 +20,251 @@
               </h3>
             </v-alert>
 
-            <v-container fluid
-              ><v-row>
-                <v-col cols="3">
-                  <v-card>
-                    <v-card-text>
-                      <v-list dense>
-                        <v-subheader>Miembros del Equipo</v-subheader
-                        ><v-list-item v-for="item in members" :key="item.id">
-                          <v-chip
-                            class="ma-2"
-                            color="primary"
-                            text-color="white"
-                          >
-                            <v-icon left>mdi-account </v-icon>
-                            <v-list-item-content>
-                              <v-list-item-title
-                                >{{ item.name }}
-                                {{ item.lastName }}</v-list-item-title
-                              >
-                            </v-list-item-content></v-chip
-                          >
-                        </v-list-item></v-list
-                      >
-                      <v-list dense>
-                        <v-subheader>Clientes</v-subheader>
-                        <v-list-item v-for="item in interesteds" :key="item.id">
-                          <v-chip
-                            class="ma-2"
-                            color="primary"
-                            text-color="white"
-                          >
-                            <v-icon left>mdi-account</v-icon>
-
-                            <v-list-item-content>
-                              <v-list-item-title
-                                >{{ item.name }}
-                                {{ item.lastName }}</v-list-item-title
-                              >
-                            </v-list-item-content></v-chip
-                          >
-                        </v-list-item></v-list
-                      >
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-                <v-col cols="9">
-                  <v-card>
-                    <v-card-title>Listado de Sprints </v-card-title>
-                    <v-card-text
-                      ><div>
-                        <v-data-table
-                          :headers="headers"
-                          :items="project.sprints"
-                          :page.sync="page"
-                          :items-per-page="itemsPerPage"
-                          hide-default-footer
-                          class="elevation-1"
-                          @page-count="pageCount = $event"
-                        >
-                          <template v-slot:[`item.state`]="{ item }">
-                            <v-chip
-                              style="width: 100%"
-                              v-if="item.state == 'No Iniciado'"
-                              color="red"
-                              dark
-                              outlined
-                            >
-                              {{ item.state }}
-                            </v-chip>
-                            <v-chip
-                              style="width: 100%"
-                              v-if="item.state == 'Iniciado'"
-                              color="blue"
-                              dark
-                            >
-                              {{ item.state }}
-                            </v-chip>
-                            <v-chip
-                              style="width: 100%"
-                              v-if="item.state == 'Terminado'"
-                              color="success"
-                              dark
-                            >
-                              {{ item.state }}
-                            </v-chip>
-                          </template>
-                          <template v-slot:[`item.startDate`]="{ item }">
-                            {{ item.startDate | moment("DD-MM-YYYY") }}
-                          </template>
-                          <template v-slot:[`item.endDate`]="{ item }">
-                            {{ item.endDate | moment("DD-MM-YYYY") }}
-                          </template>
-                          <template v-slot:[`item.acciones`]="{ item }">
-                            <v-chip color="primary">
-                              <v-icon
-                                dense
-                                class="mx-1"
-                                @click="editItem(item)"
-                              >
-                                mdi-pencil
-                              </v-icon>
-                              <v-icon
-                                dense
-                                class="mx-1"
-                                @click="deleteItem(item)"
-                              >
-                                mdi-delete
-                              </v-icon>
-                              <v-icon
-                                dense
-                                class="mx-1"
-                                @click="goToSprint(item)"
-                              >
-                                mdi-eye
-                              </v-icon></v-chip
-                            >
-                          </template>
-                        </v-data-table>
-                        <div class="text-center pt-2">
-                          <v-pagination
-                            v-model="page"
-                            :length="pageCount"
-                            circle
-                          ></v-pagination>
-                        </div>
-                      </div> </v-card-text
-                    ><v-btn
-                      :loading="loading"
-                      :disabled="loading"
-                      color="success"
-                      class="ma-2 white--text float-right"
-                      @click="dialog = true"
-                    >
-                      Nuevo Sprint
-                      <v-icon right dark> mdi-plus-circle-outline </v-icon>
-                    </v-btn>
-                  </v-card>
+            <v-container fluid>
+              <v-row>
+                <v-col cols="12" class="text-right">
+                  <v-btn class="ma-2" color="primary" dark>
+                    Miembros
+                    <v-icon dark right> mdi-account-plus </v-icon>
+                  </v-btn>
+                  <v-btn class="ma-2" color="primary" dark>
+                    Interesados
+                    <v-icon dark right> mdi-account-plus </v-icon>
+                  </v-btn>
                 </v-col>
               </v-row>
+
+              <v-card>
+                <v-card-title class="justify-center"
+                  >Listado de Sprints
+                </v-card-title>
+                <v-card-text>
+                  <v-row align="center">
+                    <v-item-group
+                      v-model="window"
+                      class="shrink mr-6"
+                      mandatory
+                      tag="v-flex"
+                    >
+                      <v-item
+                        v-for="sprint in sprintList"
+                        :key="sprint.id"
+                        v-slot="{ active, toggle }"
+                      >
+                        <div>
+                          <v-btn :input-value="active" icon @click="toggle">
+                            <v-icon>mdi-record</v-icon>
+                          </v-btn>
+                        </div>
+                      </v-item>
+                    </v-item-group>
+                    <v-col>
+                      <v-window v-model="window" class="elevation-1" vertical>
+                        <v-window-item
+                          v-for="sprint in project.sprints"
+                          :key="sprint.id"
+                        >
+                          <v-card color="#EEEEEE" elevation="2" outlined shaped>
+                            <v-card-text>
+                              <div>
+                                <h3
+                                  class="text-center"
+                                  v-text="sprint.name"
+                                ></h3>
+                                <h4
+                                  class="text-center"
+                                  v-text="sprint.objetive"
+                                ></h4>
+                                <v-divider class="mt-5 mb-5"></v-divider>
+
+                                <v-expansion-panels class="mb-6">
+                                  <v-expansion-panel
+                                    v-for="task in sprint.tasks"
+                                    :key="task.id"
+                                    v-bind:style="{ maxHeight: 10 + '%' }"
+                                  >
+                                    <v-expansion-panel-header>
+                                      <div v-text="task.name"></div
+                                    ></v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                      <div
+                                        class="text-center"
+                                        v-text="task.description"
+                                      ></div>
+                                      <v-chip-group
+                                        active-class="primary--text"
+                                        column
+                                      >
+                                        <v-chip
+                                          color="secondary"
+                                          text-color="white"
+                                          class="ma-2"
+                                        >
+                                          <v-avatar>
+                                            <v-icon>mdi-clock-time-three-outline</v-icon>
+                                          </v-avatar>
+                                          <span
+                                            v-text="task.estimatedHours + ' H'"
+                                          ></span>
+                                        </v-chip>
+                                        <v-chip
+                                          color="secondary"
+                                          text-color="white"
+                                          class="ma-2"
+
+                                        >
+                                         <v-avatar>
+                                            <v-icon>mdi-account</v-icon>
+                                          </v-avatar>
+                                          <span
+                                            v-text="
+                                              task.user.name +
+                                              ' ' +
+                                              task.user.lastName
+                                            "
+                                          ></span>
+                                         
+                                        </v-chip>
+                                      </v-chip-group>
+                                      <v-text-field
+                                        v-on:keyup.enter="
+                                          createSubTask(task.id)
+                                        "
+                                        v-model="addSubTask"
+                                        placeholder="Check List Sub Tareas"
+                                      >
+                                      </v-text-field>
+                                      <div
+                                        v-for="subtask in task.subtasks"
+                                        :key="subtask.id"
+                                      >
+                                        <v-checkbox
+                                          :label="subtask.description"
+                                          color="success"
+                                          :value="subtask.id"
+                                          hide-details
+                                          :checked="subtask.state"
+                                          ><v-icon
+                                            slot="append"
+                                            color="red"
+                                            @click="deleteSubTask(subtask.id)"
+                                          >
+                                            mdi-delete
+                                          </v-icon></v-checkbox
+                                        >
+                                      </div>
+                                    </v-expansion-panel-content>
+                                  </v-expansion-panel>
+                                </v-expansion-panels>
+                                <div class="my-2 text-center">
+                                  <v-btn
+                                    small
+                                    color="success"
+                                    dark
+                                    @click="
+                                      dialogTask = true;
+                                      sprintIdCreateTask = sprint.id;
+                                    "
+                                  >
+                                    Crear Tarea
+                                    <v-icon dark right> mdi-plus </v-icon>
+                                  </v-btn>
+                                </div>
+                              </div>
+                            </v-card-text>
+                          </v-card>
+                        </v-window-item>
+                      </v-window>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
             </v-container>
+            <v-row>
+              <v-col cols="12" class="text-right">
+                <v-btn
+                  class="ma-2"
+                  color="primary"
+                  dark
+                  @click="dialogSprint = true"
+                >
+                  Crear Sprint
+                  <v-icon dark right> mdi-plus </v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
+    <!-- DIALOG NEW TASK -->
+    <v-dialog v-model="dialogTask" max-width="500px">
+      <v-card>
+        <v-card-title> Crear Nueva Tarea </v-card-title>
+        <v-card-text>
+          <!-- FORM TO CREATE TASK -->
+          <v-text-field
+            v-model="taskName"
+            label="Nombre Tarea"
+            prepend-icon="mdi-card-text"
+            clearable
+          ></v-text-field>
+
+          <v-text-field
+            v-model="taskDescription"
+            label="Descripción Tarea"
+            prepend-icon="mdi-clipboard-text"
+            clearable
+          ></v-text-field>
+
+          <v-text-field
+            v-model="taskEstimatedHours"
+            label="Horas Estimadas"
+            prepend-icon="mdi-clock"
+            clearable
+            number
+            type="number"
+          ></v-text-field>
+
+          <v-select
+            class="mb-5"
+            v-model="taskPriority"
+            :items="priorityList"
+            menu-props="auto"
+            label="Prioridad"
+            hide-details
+            prepend-icon="mdi-podium-silver"
+            single-line
+          ></v-select>
+
+          <v-select
+            v-model="responsable"
+            :items="members"
+            menu-props="auto"
+            label="Responsable de Tarea"
+            hide-details
+            prepend-icon="mdi-account"
+            single-line
+          ></v-select> </v-card-text
+        ><v-card-actions>
+          <v-btn color="danger" text @click="dialogTask = false">
+            Cerrar
+          </v-btn>
+          <v-btn
+            color="purple"
+            text
+            @click="
+              dialogTask = false;
+              createTask();
+            "
+          >
+            Crear Tarea
+          </v-btn>
+        </v-card-actions></v-card
+      >
+    </v-dialog>
     <!-- DIALOG NEW SPRINT -->
-    <v-dialog v-model="dialog" max-width="500px">
+    <v-dialog v-model="dialogSprint" max-width="500px">
       <v-card>
         <v-card-title> Crear Nuevo Sprint </v-card-title>
         <v-card-text>
@@ -203,7 +302,6 @@
               ></v-text-field>
             </template>
             <v-date-picker v-model="sprintStartDate" scrollable>
-              <v-spacer></v-spacer>
               <v-btn text color="primary" @click="modalStartSprint = false">
                 Cancel
               </v-btn>
@@ -250,12 +348,14 @@
             </v-date-picker>
           </v-dialog> </v-card-text
         ><v-card-actions>
-          <v-btn color="danger" text @click="dialog = false"> Cerrar </v-btn>
+          <v-btn color="danger" text @click="dialogSprint = false">
+            Cerrar
+          </v-btn>
           <v-btn
             color="success"
             text
             @click="
-              dialog = false;
+              dialogSprint = false;
               createSprint();
             "
           >
@@ -278,7 +378,8 @@ export default {
     return {
       apiUrl: "http://localhost:8080/",
       loading: false,
-      dialog: false,
+      dialogSprint: false,
+      dialogTask: false,
       id: null,
       project: null,
       loaded: false,
@@ -307,6 +408,25 @@ export default {
       modalStartSprint: false,
       modalEndSprint: false,
       menu: false,
+      responsable: null,
+      taskPriority: null,
+      taskName: null,
+      taskDescription: null,
+      taskEstimatedHours: null,
+      addSubTask: null,
+      priorityList: [
+        { text: "Alta", value: "Alta" },
+        { text: "Media", value: "Media" },
+        { text: "Baja", value: "Baja" },
+      ],
+      stateList: [
+        { text: "Pendiente", value: "Pendiente" },
+        { text: "En Curso", value: "En Curso" },
+        { text: "Terminado", value: "Terminado" },
+      ],
+      sprintIdCreateTask: null,
+      sprintList: null,
+      window: 0,
     };
   },
   mounted() {
@@ -323,7 +443,6 @@ export default {
       }).then(async (result) => {
         if (result.isConfirmed) {
           const token = localStorage.getItem("token");
-          console.log(this.apiUrl + "deleteSprint/" + item.id);
           await axios
             .delete(this.apiUrl + "deleteSprint/" + item.id, {
               headers: {
@@ -342,8 +461,7 @@ export default {
             .catch(() =>
               Swal.fire({
                 title: "Error!",
-                text:
-                  "El Sprint no pudo ser eliminado debido a que posee tareas",
+                text: "El Sprint no pudo ser eliminado debido a que posee tareas",
                 icon: "error",
               })
             );
@@ -358,8 +476,6 @@ export default {
       var formData = new FormData();
       formData.append("name", this.sprintName);
       formData.append("objetive", this.sprintObjetive);
-      //2020-04-01T09:18:18Z
-      console.log(this.sprintStartDate + " " + this.sprintEndDate);
       formData.append("startDate", this.sprintStartDate + " 00:00:00");
       formData.append("endDate", this.sprintEndDate + " 23:59:59");
       formData.append("projectId", this.project.id);
@@ -369,7 +485,7 @@ export default {
             Authorization: token,
           },
         })
-        .then(async () => this.getInfo())
+        .then(async () => this.getInfo(), this.clearVars())
         .catch((error) => console.log(error));
     },
     goBack() {
@@ -378,7 +494,6 @@ export default {
 
     async getInfo() {
       this.members = [];
-      this.interesteds = [];
       const token = localStorage.getItem("token");
       await axios
         .get(this.apiUrl + "getInfoProject/" + this.id, {
@@ -386,18 +501,89 @@ export default {
             Authorization: token,
           },
         })
-        .then((response) => {
-          this.project = response.data;
-          for (var i = 0; i < this.project.members.length; i++) {
-            this.members.push(this.project.members[i]);
-          }
-          for (var j = 0; j < this.project.interesteds.length; j++) {
-            this.interesteds.push(this.project.interesteds[j]);
-          }
-          console.log(this.project);
-          this.loaded = true;
+        .then((response) => (this.project = response.data))
+        .catch((error) => console.log(error));
+
+      console.log("THIS PROJECT -> ", this.project);
+      for (var i = 0; i < this.project.members.length; i++) {
+        this.members.push({
+          text:
+            this.project.members[i].name +
+            " " +
+            this.project.members[i].lastName,
+          value: this.project.members[i].id,
         });
+      }
+      this.sprintList = this.project.sprints;
+      this.loaded = true;
+    },
+    async createSubTask(taskId) {
+      const token = localStorage.getItem("token");
+      let formData = new FormData();
+      formData.append("description", this.addSubTask);
+      formData.append("taskId", taskId);
+      await axios
+        .post(this.apiUrl + "createSubTask", formData, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then(() => this.getInfo())
+        .catch((error) => console.log(error));
+      this.addSubTask = null;
+    },
+    async deleteSubTask(subTaskId) {
+      const token = localStorage.getItem("token");
+      await axios
+        .delete(this.apiUrl + "deleteSubTask/" + subTaskId, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then(() => this.getInfo())
+        .catch((error) => console.log(error));
+    },
+    async createTask() {
+      const token = localStorage.getItem("token");
+      let formData = new FormData();
+      formData.append("name", this.taskName);
+      formData.append("description", this.taskDescription);
+      formData.append("taskEstimatedHours", this.taskEstimatedHours);
+      formData.append("priority", this.taskPriority);
+      formData.append("responsable", this.responsable);
+      formData.append("sprint", this.sprintIdCreateTask);
+      console.log(formData);
+      await axios
+        .post(this.apiUrl + "createTask", formData, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then(() => this.getInfo(), this.clearVars())
+        .catch((error) => console.log(error));
+    },
+
+    clearVars() {
+      this.taskName = null;
+      this.taskDescription = null;
+      this.taskEstimatedHours = null;
+      this.taskPriority = null;
+      this.responsable = null;
+      this.sprintIdCreateTask = null;
+      this.sprintName = null;
+      this.sprintObjetive = null;
+      this.sprintStartDate = null;
+      this.sprintEndDate = null;
     },
   },
 };
 </script>
+
+<style scoped>
+.headerClass {
+  white-space: nowrap;
+  word-break: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>
