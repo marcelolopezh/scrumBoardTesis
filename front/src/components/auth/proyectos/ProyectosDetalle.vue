@@ -376,7 +376,7 @@ export default {
 
   data() {
     return {
-      apiUrl: process.env.APIURL,
+      apiUrl: process.env.VUE_APP_APIURL,
       loading: false,
       dialogSprint: false,
       dialogTask: false,

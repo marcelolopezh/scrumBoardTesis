@@ -17,7 +17,7 @@ export default {
       showLogin: false,
       showRegister: false,
       user: null,
-      apiUrl: "https://scrumboard-test-320816.ey.r.appspot.com/",
+      apiUrl: process.env.VUE_APP_APIURL,
       response: null,
       errors: null,
     };

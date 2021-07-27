@@ -136,7 +136,7 @@ export default {
       const axios = require("axios");
       // eslint-disable-next-line no-unused-vars
       const responsex = await axios
-        .post(this.apiUrl, formData)
+        .post(this.apiUrl + 'createUser', formData)
         .then((response) => console.log(response.data))
         .catch((error) => {
           this.errors = error;

@@ -122,7 +122,7 @@ export default {
       allMembers: [],
       selectedMembers: [],
       selectedInteresteds: [],
-      apiUrl: process.env.APIURL,
+      apiUrl: process.env.VUE_APP_APIURL,
       errors: false,
       success: false,
       errorMsg: "",
