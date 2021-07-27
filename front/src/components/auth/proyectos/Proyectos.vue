@@ -122,7 +122,7 @@ export default {
       allMembers: [],
       selectedMembers: [],
       selectedInteresteds: [],
-      apiUrl: "http://localhost:8080/",
+      apiUrl: process.env.APIURL,
       errors: false,
       success: false,
       errorMsg: "",

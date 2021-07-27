@@ -24,7 +24,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Controller
-@CrossOrigin(origins = "http://localhost:8081")
 public class controller {
 	@Autowired
 	UserService userService;

@@ -22,7 +22,6 @@ import com.marcelo.scrumBoard.services.ProjectService;
 import com.marcelo.scrumBoard.services.SprintService;
 
 @Controller
-@CrossOrigin(origins = "http://localhost:8081")
 public class sprintController {
 	@Autowired
 	SprintService sprintService;

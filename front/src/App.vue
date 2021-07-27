@@ -17,7 +17,7 @@ export default {
       showLogin: false,
       showRegister: false,
       user: null,
-      apiUrl: "http://localhost:8080/",
+      apiUrl: "https://scrumboard-test-320816.ey.r.appspot.com/",
       response: null,
       errors: null,
     };
