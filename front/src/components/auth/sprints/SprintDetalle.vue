@@ -548,7 +548,7 @@ export default {
 
   data() {
     return {
-      apiUrl: "http://localhost:8080/",
+      apiUrl: process.env.APIURL,
       selectedTask: null,
       loaded: false,
       sprint: null,

@@ -31,6 +31,7 @@ public class ScrumBoardApplication {
 					.antMatchers(HttpMethod.POST, "/createUser").permitAll()
 					.antMatchers(HttpMethod.POST, "/login").permitAll()
 					.antMatchers(HttpMethod.GET, "/getAllProjects").permitAll()
+					.antMatchers(HttpMethod.GET, "/test1").permitAll()
 					.anyRequest().authenticated();
 			http.cors().and();
 		}

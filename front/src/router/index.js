@@ -11,23 +11,25 @@ import SprintDetalle from "../components/auth/sprints/SprintDetalle.vue"
 Vue.use(VueRouter)
 
 const routes = [
-  { path: '/', component: App },
-  { path: '/login', component: NoAuth },
-  {
-    path: '/app', component: Auth, children: [
-      { path: 'home', component : Home},
-      { path: 'dashboard', component: DashBoard },
-      { path: 'proyectos', component: Proyectos },
-      { path: 'proyectos/:id', component: ProyectoDetalle },
-      { path: 'proyectos/:id/:sprint', component: SprintDetalle }
-    ]
-  },
+    { path: '/', component: App },
+    { path: '/login', component: NoAuth },
+    {
+        path: '/app',
+        component: Auth,
+        children: [
+            { path: 'home', component: Home },
+            { path: 'dashboard', component: DashBoard },
+            { path: 'proyectos', component: Proyectos },
+            { path: 'proyectos/:id', component: ProyectoDetalle },
+            { path: 'proyectos/:id/:sprint', component: SprintDetalle }
+        ]
+    },
 ]
 
 const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes
 })
 
 export default router

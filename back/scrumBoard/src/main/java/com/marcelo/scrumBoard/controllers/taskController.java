@@ -23,7 +23,6 @@ import com.marcelo.scrumBoard.services.TaskService;
 import com.marcelo.scrumBoard.services.UserService;
 
 @Controller
-@CrossOrigin(origins = "http://localhost:8081")
 public class taskController {
 	@Autowired
 	SprintService sprintService;

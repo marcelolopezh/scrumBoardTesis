@@ -1,7 +1,7 @@
 <template class="mt-5">
   <v-container>
     <v-row>
-      <v-col cols="12" >
+      <v-col cols="12">
         <v-card class="pa-6">
           <v-card-title>Inicio de Sesión</v-card-title>
           <v-card-text>
@@ -50,7 +50,7 @@ export default {
 
   data() {
     return {
-      apiUrl: "http://localhost:8080/login",
+      apiUrl: process.env.VUE_APP_APIURL,
       email: null,
       password: null,
       token: null,
@@ -83,7 +83,7 @@ export default {
       const axios = require("axios");
       // eslint-disable-next-line no-unused-vars
       const responsex = await axios
-        .post(this.apiUrl, formData)
+        .post(this.apiUrl+'login', formData)
         // eslint-disable-next-line no-unused-vars
         .then((response) => (this.data = response))
         .catch((error) => {
