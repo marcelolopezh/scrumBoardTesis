@@ -18,13 +18,7 @@ public class CORSConfig {
         registry
           .addMapping("/**")
           .allowedOrigins(
-            "capacitor://localhost",
-            "ionic://localhost",
-            "http://localhost",
-            "http://localhost:8080",
-            "http://localhost:8100",
-            "http://localhost:8081",
-            "*:*"
+            "http://168.232.167.174:8081"
           )
           .allowedHeaders("*")
           .allowCredentials(true)
