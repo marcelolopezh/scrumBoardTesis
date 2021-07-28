@@ -49,6 +49,20 @@
                           <v-card color="#EEEEEE" elevation="2" outlined shaped>
                             <v-card-text>
                               <div>
+                                <v-col
+                                  class="text-right"
+                                  @click="editSprint(sprint)"
+                                >
+                                  <v-btn
+                                    class="mx-2"
+                                    fab
+                                    dark
+                                    small
+                                    color="primary"
+                                  >
+                                    <v-icon>mdi-pencil</v-icon>
+                                  </v-btn>
+                                </v-col>
                                 <h3
                                   class="text-center"
                                   v-text="sprint.name"
@@ -196,7 +210,10 @@
                   class="ma-2"
                   color="primary"
                   dark
-                  @click="dialogSprint = true"
+                  @click="
+                    dialogSprint = true;
+                    clearVars();
+                  "
                 >
                   Crear Sprint
                   <v-icon dark right> mdi-plus </v-icon>
@@ -207,6 +224,7 @@
         </v-card>
       </v-col>
     </v-row>
+
     <!-- DIALOG NEW TASK -->
     <v-dialog v-model="dialogTask" max-width="500px">
       <v-card>
@@ -273,10 +291,12 @@
         </v-card-actions></v-card
       >
     </v-dialog>
+
     <!-- DIALOG NEW SPRINT -->
     <v-dialog v-model="dialogSprint" max-width="500px">
       <v-card>
-        <v-card-title> Crear Nuevo Sprint </v-card-title>
+        <v-card-title v-if="!sprintEdit"> Crear Nuevo Sprint </v-card-title>
+        <v-card-title v-if="sprintEdit"> Editar Sprint </v-card-title>
         <v-card-text>
           <!-- FORM TO CREATE SPRINT -->
           <v-text-field
@@ -362,6 +382,7 @@
             Cerrar
           </v-btn>
           <v-btn
+            v-if="!sprintEdit"
             color="success"
             text
             @click="
@@ -369,7 +390,18 @@
               createSprint();
             "
           >
-            Crear Sprint
+            Editar Sprint
+          </v-btn>
+          <v-btn
+            v-if="sprintEdit"
+            color="success"
+            text
+            @click="
+              dialogSprint = false;
+              _editSprint();
+            "
+          >
+            Editar Sprint
           </v-btn>
         </v-card-actions></v-card
       >
@@ -395,26 +427,11 @@ export default {
       loaded: false,
       members: [],
       interesteds: [],
-      page: 1,
-      pageCount: 0,
-      itemsPerPage: 10,
-      headers: [
-        { text: "Nombre", value: "name", width: "20%", align: "center" },
-        { text: "Objetivo", value: "objetive", width: "20%", align: "center" },
-        { text: "Estado", value: "state", align: "center" },
-        { text: "Inicio", value: "startDate", align: "center" },
-        { text: "Termino", value: "endDate", align: "center" },
-        {
-          text: "Acciones",
-          value: "acciones",
-          sortable: false,
-          align: "center",
-        },
-      ],
       sprintName: null,
       sprintObjetive: null,
       sprintStartDate: null,
       sprintEndDate: null,
+      sprintId: null,
       modalStartSprint: false,
       modalEndSprint: false,
       menu: false,
@@ -437,6 +454,7 @@ export default {
       sprintIdCreateTask: null,
       sprintList: null,
       window: 0,
+      sprintEdit: false,
     };
   },
   mounted() {
@@ -506,6 +524,33 @@ export default {
         .then(async () => this.getInfo(), this.clearVars())
         .catch((error) => console.log(error));
     },
+    async editSprint(sprint) {
+      this.sprintName = sprint.name;
+      this.sprintObjetive = sprint.objetive;
+      this.sprintStartDate = sprint.startDate.split("T")[0];
+      this.sprintEndDate = sprint.endDate.split("T")[0];
+      this.sprintId = sprint.id;
+      this.dialogSprint = true;
+      this.sprintEdit = true;
+    },
+    async _editSprint() {
+      const token = localStorage.getItem("token");
+      var formData = new FormData();
+      formData.append("name", this.sprintName);
+      formData.append("objetive", this.sprintObjetive);
+      formData.append("startDate", this.sprintStartDate + " 00:00:00");
+      formData.append("endDate", this.sprintEndDate + " 23:59:59");
+      formData.append("id", this.sprintId);
+      await axios
+        .put(this.apiUrl + "editSprint", formData, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then(async () => this.getInfo(), this.clearVars())
+        .catch((error) => console.log(error));
+    },
+
     goBack() {
       this.$router.go(-1);
     },
@@ -592,6 +637,7 @@ export default {
       this.sprintObjetive = null;
       this.sprintStartDate = null;
       this.sprintEndDate = null;
+      this.sprintId = null;
     },
   },
 };

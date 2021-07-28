@@ -11,7 +11,7 @@
             <v-form ref="form">
               <v-text-field
                 v-model="email"
-                label="Username"
+                label="Correo Electrónico"
                 required
                 prepend-icon="mdi-account"
               ></v-text-field>
