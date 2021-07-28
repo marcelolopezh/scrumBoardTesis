@@ -40,26 +40,8 @@
                 </v-card-title>
                 <v-card-text>
                   <v-row align="center">
-                    <v-item-group
-                      v-model="window"
-                      class="shrink mr-6"
-                      mandatory
-                      tag="v-flex"
-                    >
-                      <v-item
-                        v-for="sprint in sprintList"
-                        :key="sprint.id"
-                        v-slot="{ active, toggle }"
-                      >
-                        <div>
-                          <v-btn :input-value="active" icon @click="toggle">
-                            <v-icon>mdi-record</v-icon>
-                          </v-btn>
-                        </div>
-                      </v-item>
-                    </v-item-group>
                     <v-col>
-                      <v-window v-model="window" class="elevation-1" vertical>
+                      <v-window v-model="window" reverse>
                         <v-window-item
                           v-for="sprint in project.sprints"
                           :key="sprint.id"
@@ -101,7 +83,9 @@
                                           class="ma-2"
                                         >
                                           <v-avatar>
-                                            <v-icon>mdi-clock-time-three-outline</v-icon>
+                                            <v-icon
+                                              >mdi-clock-time-three-outline</v-icon
+                                            >
                                           </v-avatar>
                                           <span
                                             v-text="task.estimatedHours + ' H'"
@@ -111,9 +95,8 @@
                                           color="secondary"
                                           text-color="white"
                                           class="ma-2"
-
                                         >
-                                         <v-avatar>
+                                          <v-avatar>
                                             <v-icon>mdi-account</v-icon>
                                           </v-avatar>
                                           <span
@@ -123,7 +106,6 @@
                                               task.user.lastName
                                             "
                                           ></span>
-                                         
                                         </v-chip>
                                       </v-chip-group>
                                       <v-text-field
@@ -172,6 +154,34 @@
                                 </div>
                               </div>
                             </v-card-text>
+
+                            <v-card-actions class="justify-space-between">
+                              <v-btn text @click="prev">
+                                <v-icon>mdi-chevron-left</v-icon>
+                              </v-btn>
+                              <v-item-group
+                                v-model="window"
+                                class="text-center"
+                                mandatory
+                              >
+                                <v-item
+                                  v-for="n in project.sprints.length"
+                                  :key="`btn-${n}`"
+                                  v-slot="{ active, toggle }"
+                                >
+                                  <v-btn
+                                    :input-value="active"
+                                    icon
+                                    @click="toggle"
+                                  >
+                                    <v-icon>mdi-record</v-icon>
+                                  </v-btn>
+                                </v-item>
+                              </v-item-group>
+                              <v-btn text @click="next">
+                                <v-icon>mdi-chevron-right</v-icon>
+                              </v-btn>
+                            </v-card-actions>
                           </v-card>
                         </v-window-item>
                       </v-window>
@@ -434,6 +444,14 @@ export default {
     this.getInfo();
   },
   methods: {
+    next() {
+      this.window =
+        this.window + 1 === this.project.sprints.length ? 0 : this.window + 1;
+    },
+    prev() {
+      this.window =
+        this.window - 1 < 0 ? this.project.sprints.length - 1 : this.window - 1;
+    },
     deleteItem(item) {
       Swal.fire({
         title: "Sprint - " + item.name,

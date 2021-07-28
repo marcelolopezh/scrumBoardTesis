@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CORSConfig {
 
   // .allowedOrigins("http://localhost:8081")
-  // .allowedOrigins("http://localhost:8100")
+  // .allowedOrigins("http://168.232.167.174:8081")
   @Bean
   public WebMvcConfigurer CORSConfigurer() {
     return new WebMvcConfigurer() {
@@ -18,7 +18,8 @@ public class CORSConfig {
         registry
           .addMapping("/**")
           .allowedOrigins(
-            "http://168.232.167.174:8081"
+        	"http://168.232.167.174:8081",
+            "http://localhost:8081"
           )
           .allowedHeaders("*")
           .allowCredentials(true)
