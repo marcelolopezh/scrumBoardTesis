@@ -3,6 +3,7 @@ package com.marcelo.scrumBoard.models;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,7 +37,7 @@ public class Sprint {
 	@JsonIgnore
 	private Project project;
 
-	@OneToMany(mappedBy = "sprint", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "sprint", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<Task> tasks;
 	@Column(updatable = false)
 	private Date createdAt;

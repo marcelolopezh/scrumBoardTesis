@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.marcelo.scrumBoard.models.Sprint;
@@ -54,22 +54,27 @@ public class taskController {
 		return ResponseEntity.status(HttpStatus.OK).body(task);
 	}
 
+	@PutMapping("/editTask")
+	private ResponseEntity<Task> editTask(@RequestParam("name") String name,
+			@RequestParam("description") String description, 
+			@RequestParam("estimatedHours") Integer estimatedHours,
+			@RequestParam("priority") String priority, 
+			@RequestParam("responsable") Long userId,
+			@RequestParam("task_id") Long task_id) {
+		Task task = taskService.findById(task_id);
+		task.setName(name);
+		task.setDescription(description);
+		task.setEstimatedHours(estimatedHours);
+		task.setPriority(priority);
+		task.setUser(userService.findById(userId));
+		task = taskService.save(task);
+		return ResponseEntity.status(HttpStatus.OK).body(task);
+	}
+
 	@DeleteMapping("/deleteTask/{id}")
 	private ResponseEntity<Task> deleteTask(@PathVariable("id") Long id) {
-		Task task = taskService.findById(id);
-		try {
-			List<SubTask> subTaskList = task.getSubtasks();
-			if (task.getSubtasks() != null) {
-				for (int i = 0; i < subTaskList.size(); i++) {
-					subTaskList.get(i).setTask(null);
-					subTaskService.deleteById(subTaskList.get(i).getId());
-				}
-				taskService.deleteById(task.getId());
-			}
-			return ResponseEntity.status(HttpStatus.OK).body(null);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-		}
+		taskService.deleteById(id);
+		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 
 }
