@@ -23,14 +23,8 @@
             <v-container fluid>
               <v-row>
                 <v-col cols="12" class="text-right">
-                  <v-btn class="ma-2" color="primary" dark>
-                    Miembros
-                    <v-icon dark right> mdi-account-plus </v-icon>
-                  </v-btn>
-                  <v-btn class="ma-2" color="primary" dark>
-                    Interesados
-                    <v-icon dark right> mdi-account-plus </v-icon>
-                  </v-btn>
+                  <Members></Members>
+                  <Interesteds></Interesteds>
                 </v-col>
               </v-row>
 
@@ -546,7 +540,10 @@
 
 <script>
 import axios from "axios";
+import Members from "./Members.vue";
+import Interesteds from "./Interesteds.vue";
 export default {
+  components: { Members, Interesteds },
   name: "ProyectosDetalle",
 
   data() {
