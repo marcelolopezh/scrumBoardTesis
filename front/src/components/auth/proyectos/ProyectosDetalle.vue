@@ -49,20 +49,29 @@
                           <v-card color="#EEEEEE" elevation="2" outlined shaped>
                             <v-card-text>
                               <div>
-                                <v-col
-                                  class="text-right"
-                                  @click="editSprint(sprint)"
-                                >
+                                <v-col class="text-right">
                                   <v-btn
                                     class="mx-2"
                                     fab
                                     dark
                                     small
                                     color="primary"
+                                    @click="editSprint(sprint)"
                                   >
                                     <v-icon>mdi-pencil</v-icon>
                                   </v-btn>
+                                  <v-btn
+                                    class="mx-2"
+                                    fab
+                                    dark
+                                    small
+                                    color="red darken-1"
+                                    @click="deleteSprint(sprint)"
+                                  >
+                                    <v-icon>mdi-delete</v-icon>
+                                  </v-btn>
                                 </v-col>
+
                                 <h3
                                   class="text-center"
                                   v-text="sprint.name"
@@ -121,6 +130,29 @@
                                             "
                                           ></span>
                                         </v-chip>
+
+                                        <v-col class="text-right">
+                                          <v-btn
+                                            class="mx-2"
+                                            fab
+                                            dark
+                                            small
+                                            color="primary"
+                                            @click="editTask(task)"
+                                          >
+                                            <v-icon>mdi-tools</v-icon>
+                                          </v-btn>
+                                          <v-btn
+                                            class="mx-2"
+                                            fab
+                                            dark
+                                            small
+                                            color="red darken-1"
+                                            @click="deleteTask(task)"
+                                          >
+                                            <v-icon>mdi-delete</v-icon>
+                                          </v-btn>
+                                        </v-col>
                                       </v-chip-group>
                                       <v-text-field
                                         v-on:keyup.enter="
@@ -159,6 +191,7 @@
                                     dark
                                     @click="
                                       dialogTask = true;
+                                      clearVars();
                                       sprintIdCreateTask = sprint.id;
                                     "
                                   >
@@ -212,6 +245,7 @@
                   dark
                   @click="
                     dialogSprint = true;
+                    sprintEdit = false;
                     clearVars();
                   "
                 >
@@ -228,7 +262,8 @@
     <!-- DIALOG NEW TASK -->
     <v-dialog v-model="dialogTask" max-width="500px">
       <v-card>
-        <v-card-title> Crear Nueva Tarea </v-card-title>
+        <v-card-title v-if="!taskEdit"> Crear Nueva Tarea </v-card-title>
+        <v-card-title v-if="taskEdit"> Editar Tarea </v-card-title>
         <v-card-text>
           <!-- FORM TO CREATE TASK -->
           <v-text-field
@@ -275,11 +310,19 @@
             single-line
           ></v-select> </v-card-text
         ><v-card-actions>
-          <v-btn color="danger" text @click="dialogTask = false">
+          <v-btn
+            color="danger"
+            text
+            @click="
+              dialogTask = false;
+              clearVars();
+            "
+          >
             Cerrar
           </v-btn>
           <v-btn
-            color="purple"
+            v-if="!taskEdit"
+            color="success"
             text
             @click="
               dialogTask = false;
@@ -287,6 +330,17 @@
             "
           >
             Crear Tarea
+          </v-btn>
+          <v-btn
+            v-if="taskEdit"
+            color="success"
+            text
+            @click="
+              dialogTask = false;
+              _editTask();
+            "
+          >
+            Editar Tarea
           </v-btn>
         </v-card-actions></v-card
       >
@@ -378,7 +432,14 @@
             </v-date-picker>
           </v-dialog> </v-card-text
         ><v-card-actions>
-          <v-btn color="danger" text @click="dialogSprint = false">
+          <v-btn
+            color="danger"
+            text
+            @click="
+              dialogSprint = false;
+              clearVars();
+            "
+          >
             Cerrar
           </v-btn>
           <v-btn
@@ -390,7 +451,7 @@
               createSprint();
             "
           >
-            Editar Sprint
+            Crear Sprint
           </v-btn>
           <v-btn
             v-if="sprintEdit"
@@ -406,19 +467,92 @@
         </v-card-actions></v-card
       >
     </v-dialog>
+
+    <!-- LOADING MODAL -->
+    <v-dialog v-model="loadingModal" hide-overlay persistent width="300">
+      <v-card color="primary" dark>
+        <v-card-text>
+          Cargando, Por favor Espere ...
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <!-- DELETE SPRINT MODAL -->
+    <v-dialog v-model="dialogDeleteSprint" max-width="50%">
+      <v-card>
+        <v-card-title class="text-h5"
+          >Eliminar Sprint : '{{ sprintToDelete.name }}'</v-card-title
+        >
+        <v-card-text class="text-h6"
+          >Si elimina el sprint se eliminarán tareas y subtareas
+          asociadas</v-card-text
+        >
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-1" text @click="dialogDeleteSprint = false">
+            Cerrar
+          </v-btn>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="
+              dialogDeleteSprint = false;
+              _deleteSprint();
+            "
+          >
+            Aceptar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- DELETE TASK MODAL -->
+    <v-dialog v-model="dialogDeleteTask" max-width="50%">
+      <v-card>
+        <v-card-title class="text-h5"
+          >Eliminar Tarea : '{{ taskToDelete.name }}'</v-card-title
+        >
+        <v-card-text class="text-h6"
+          >Si elimina la tarea se eliminarán subtareas asociadas</v-card-text
+        >
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-1" text @click="dialogDeleteTask = false">
+            Cerrar
+          </v-btn>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="
+              dialogDeleteTask = false;
+              _deleteTask();
+            "
+          >
+            Aceptar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 
 <script>
 import axios from "axios";
-import Swal from "sweetalert2";
 export default {
   name: "ProyectosDetalle",
 
   data() {
     return {
       apiUrl: process.env.VUE_APP_APIURL,
+      loadingModal: false,
       loading: false,
       dialogSprint: false,
       dialogTask: false,
@@ -455,6 +589,11 @@ export default {
       sprintList: null,
       window: 0,
       sprintEdit: false,
+      taskEdit: false,
+      sprintToDelete: {},
+      dialogDeleteSprint: false,
+      taskToDelete: {},
+      dialogDeleteTask: false,
     };
   },
   mounted() {
@@ -470,44 +609,36 @@ export default {
       this.window =
         this.window - 1 < 0 ? this.project.sprints.length - 1 : this.window - 1;
     },
-    deleteItem(item) {
-      Swal.fire({
-        title: "Sprint - " + item.name,
-        showDenyButton: true,
-        confirmButtonText: `Eliminar`,
-        icon: "info",
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          const token = localStorage.getItem("token");
-          await axios
-            .delete(this.apiUrl + "deleteSprint/" + item.id, {
-              headers: {
-                Authorization: token,
-              },
-            })
-            .then(() => {
-              Swal.fire({
-                title: "Sprint Eliminado!",
-                icon: "success",
-              });
-              for (let sprint of this.project.sprints) {
-                if (item == sprint) this.project.sprints.pop(sprint);
-              }
-            })
-            .catch(() =>
-              Swal.fire({
-                title: "Error!",
-                text: "El Sprint no pudo ser eliminado debido a que posee tareas",
-                icon: "error",
-              })
-            );
-        }
-      });
+    deleteSprint(sprint) {
+      this.sprintToDelete = sprint;
+      this.dialogDeleteSprint = true;
     },
-    goToSprint(item) {
-      this.$router.push("/app/proyectos/" + this.project.id + "/" + item.id);
+    async _deleteSprint() {
+      this.loadingModal = true;
+      const token = localStorage.getItem("token");
+      await axios
+        .delete(this.apiUrl + "deleteSprint/" + this.sprintToDelete.id, {
+          headers: { Authorization: token },
+        })
+        .then(async () => this.getInfo(), this.clearVars())
+        .catch((error) => console.log(error));
+    },
+    deleteTask(task) {
+      this.taskToDelete = task;
+      this.dialogDeleteTask = true;
+    },
+    async _deleteTask() {
+      this.loadingModal = true;
+      const token = localStorage.getItem("token");
+      await axios
+        .delete(this.apiUrl + "deleteTask/" + this.taskToDelete.id, {
+          headers: { Authorization: token },
+        })
+        .then(async () => this.getInfo(), this.clearVars())
+        .catch((error) => console.log(error));
     },
     async createSprint() {
+      this.loadingModal = true;
       const token = localStorage.getItem("token");
       var formData = new FormData();
       formData.append("name", this.sprintName);
@@ -524,7 +655,7 @@ export default {
         .then(async () => this.getInfo(), this.clearVars())
         .catch((error) => console.log(error));
     },
-    async editSprint(sprint) {
+    editSprint(sprint) {
       this.sprintName = sprint.name;
       this.sprintObjetive = sprint.objetive;
       this.sprintStartDate = sprint.startDate.split("T")[0];
@@ -533,7 +664,18 @@ export default {
       this.dialogSprint = true;
       this.sprintEdit = true;
     },
+    editTask(task) {
+      this.responsable = task.user.id;
+      this.taskPriority = task.priority;
+      this.taskName = task.name;
+      this.taskDescription = task.description;
+      this.taskEstimatedHours = task.estimatedHours;
+      this.taskId = task.id;
+      this.dialogTask = true;
+      this.taskEdit = true;
+    },
     async _editSprint() {
+      this.loadingModal = true;
       const token = localStorage.getItem("token");
       var formData = new FormData();
       formData.append("name", this.sprintName);
@@ -550,7 +692,25 @@ export default {
         .then(async () => this.getInfo(), this.clearVars())
         .catch((error) => console.log(error));
     },
-
+    async _editTask() {
+      this.loadingModal = true;
+      const token = localStorage.getItem("token");
+      var formData = new FormData();
+      formData.append("name", this.taskName);
+      formData.append("description", this.taskDescription);
+      formData.append("estimatedHours", this.taskEstimatedHours);
+      formData.append("priority", this.taskPriority);
+      formData.append("responsable", this.responsable);
+      formData.append("task_id", this.taskId);
+      await axios
+        .put(this.apiUrl + "editTask", formData, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then(async () => this.getInfo(), this.clearVars())
+        .catch((error) => console.log(error));
+    },
     goBack() {
       this.$router.go(-1);
     },
@@ -566,8 +726,6 @@ export default {
         })
         .then((response) => (this.project = response.data))
         .catch((error) => console.log(error));
-
-      console.log("THIS PROJECT -> ", this.project);
       for (var i = 0; i < this.project.members.length; i++) {
         this.members.push({
           text:
@@ -579,8 +737,10 @@ export default {
       }
       this.sprintList = this.project.sprints;
       this.loaded = true;
+      this.loadingModal = false;
     },
     async createSubTask(taskId) {
+      this.loadingModal = true;
       const token = localStorage.getItem("token");
       let formData = new FormData();
       formData.append("description", this.addSubTask);
@@ -607,6 +767,7 @@ export default {
         .catch((error) => console.log(error));
     },
     async createTask() {
+      this.loadingModal = true;
       const token = localStorage.getItem("token");
       let formData = new FormData();
       formData.append("name", this.taskName);
@@ -615,7 +776,6 @@ export default {
       formData.append("priority", this.taskPriority);
       formData.append("responsable", this.responsable);
       formData.append("sprint", this.sprintIdCreateTask);
-      console.log(formData);
       await axios
         .post(this.apiUrl + "createTask", formData, {
           headers: {
@@ -638,6 +798,8 @@ export default {
       this.sprintStartDate = null;
       this.sprintEndDate = null;
       this.sprintId = null;
+      this.taskEdit = false;
+      this.sprintEdit = false;
     },
   },
 };
