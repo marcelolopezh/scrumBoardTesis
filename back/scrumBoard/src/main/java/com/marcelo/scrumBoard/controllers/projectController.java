@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,14 +57,12 @@ public class projectController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
 	}
-	
+
 	@GetMapping("/getAllProjects")
 	public ResponseEntity<List<Project>> getAllProjects() {
 		List<Project> allProjects = projectService.findAll();
 		return ResponseEntity.status(HttpStatus.OK).body(allProjects);
 	}
-	
-	
 
 	@PostMapping("/getMyProjects")
 	public ResponseEntity<List<Project>> getMyProjects(@RequestParam("email") String email) {
@@ -85,22 +82,22 @@ public class projectController {
 	}
 
 	@DeleteMapping("/deleteProject/{id}")
-	public ResponseEntity<Project> deleteProject(@PathVariable("id") Long id){
+	public ResponseEntity<Project> deleteProject(@PathVariable("id") Long id) {
 		Project project = projectService.findById(id);
-		if(project == null) {
+		if (project == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-		}else {
+		} else {
 			projectService.deleteProject(id);
 			return ResponseEntity.status(HttpStatus.OK).body(null);
 		}
 	}
-	
+
 	@PutMapping("/updateProject/{id}")
 	public ResponseEntity<Project> updateProject(@PathVariable("id") Long id, @RequestParam("name") String name,
 			@RequestParam("description") String description,
 			@RequestParam("selectedMembers") List<String> selectedMembers,
 			@RequestParam("selectedInteresteds") List<String> selectedInteresteds, @RequestParam("email") String email,
-			@RequestParam("objetive") String objetive){
+			@RequestParam("objetive") String objetive) {
 		Project project = projectService.findById(id);
 		project.setName(name);
 		project.setDescription(description);
@@ -121,4 +118,18 @@ public class projectController {
 		projectService.createProject(project);
 		return ResponseEntity.status(HttpStatus.OK).body(project);
 	}
+
+	@DeleteMapping("/deleteMemberFromTheProject/{project_id}/{member_id}")
+	public ResponseEntity<List<User>> deleteMemberFromTheProject(
+			@PathVariable("project_id") Long project_id,
+			@PathVariable("member_id") Long member_id) {
+
+		Project project = projectService.findById(project_id);
+		List<User> memberList = project.getMembers();
+		memberList.remove(userService.findById(member_id));
+		project.setMembers(memberList);
+		projectService.createProject(project);
+		return ResponseEntity.status(HttpStatus.OK).body(null);
+	}
+
 }

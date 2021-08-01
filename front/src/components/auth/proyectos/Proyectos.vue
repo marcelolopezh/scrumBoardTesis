@@ -40,7 +40,7 @@
 
                     <v-autocomplete
                       v-model="selectedMembers"
-                      :items="allMembers"
+                      :items="allMembersComputed"
                       item-value="id"
                       :item-text="(item) => item.name + ' ' + item.lastName"
                       chips
@@ -53,7 +53,7 @@
 
                     <v-autocomplete
                       v-model="selectedInteresteds"
-                      :items="allMembers"
+                      :items="allInterestedsComputed"
                       item-value="id"
                       :item-text="(item) => item.name + ' ' + item.lastName"
                       chips
@@ -61,6 +61,7 @@
                       label="Listado de Clientes"
                       multiple
                       prepend-icon="mdi-human-queue"
+                      :disabled="selectedMembers.length == 0"
                     >
                     </v-autocomplete>
 
@@ -118,8 +119,9 @@ export default {
       name: null,
       description: null,
       valid: true,
-      objetive:null,
+      objetive: null,
       allMembers: [],
+      allInteresteds: [],
       selectedMembers: [],
       selectedInteresteds: [],
       apiUrl: process.env.VUE_APP_APIURL,
@@ -133,6 +135,40 @@ export default {
   mounted() {
     this.getMyProjects();
     this.getAllMembers();
+  },
+  computed: {
+    allMembersComputed: function () {
+      var aux = [];
+      var flag = false;
+      for (var i = 0; i < this.allMembers.length; i++) {
+        flag = false;
+        for (var j = 0; j < this.selectedInteresteds.length; j++) {
+          if (this.allMembers[i].id == this.selectedInteresteds[j]) {
+            flag = true;
+          }
+        }
+        if (!flag) {
+          aux.push(this.allMembers[i]);
+        }
+      }
+      return aux;
+    },
+    allInterestedsComputed: function () {
+      var aux = [];
+      var flag = false;
+      for (var i = 0; i < this.allMembers.length; i++) {
+        flag = false;
+        for (var j = 0; j < this.selectedMembers.length; j++) {
+          if (this.allMembers[i].id == this.selectedMembers[j]) {
+            flag = true;
+          }
+        }
+        if (!flag) {
+          aux.push(this.allMembers[i]);
+        }
+      }
+      return aux;
+    },
   },
   methods: {
     routerTo(item) {
@@ -154,6 +190,7 @@ export default {
     },
     async getAllMembers() {
       const token = localStorage.getItem("token");
+      const email = localStorage.getItem("email");
       await axios
         .get(this.apiUrl + "getAllMembers", {
           headers: {
@@ -162,6 +199,14 @@ export default {
         })
         .then((response) => (this.allMembers = response.data))
         .catch((error) => console.log(error));
+      var index = 0;
+      for (var i = 0; i < this.allMembers.length; i++) {
+        if (this.allMembers[i].email == email) {
+          index = i;
+        }
+      }
+      this.allMembers.splice(index, 1);
+      this.allInteresteds = this.allMembers;
     },
     async createProject() {
       const token = localStorage.getItem("token");
@@ -169,7 +214,7 @@ export default {
       let formData = new FormData();
       formData.append("name", this.name);
       formData.append("description", this.description);
-      formData.append("objetive", this.objetive)
+      formData.append("objetive", this.objetive);
       formData.append("selectedMembers", this.selectedMembers);
       formData.append("selectedInteresteds", this.selectedInteresteds);
       formData.append("email", email);

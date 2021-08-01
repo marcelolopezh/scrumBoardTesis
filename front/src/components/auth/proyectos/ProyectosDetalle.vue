@@ -22,9 +22,16 @@
 
             <v-container fluid>
               <v-row>
-                <v-col cols="12" class="text-right">
-                  <Members></Members>
-                  <Interesteds></Interesteds>
+                <v-col cols="12" class="d-flex">
+                  <Members
+                    @event="getInfo"
+                    :members="members"
+                    :project_id="project.id"
+                  ></Members>
+                  <Interesteds
+                    :interesteds="interesteds"
+                    :project_id="project.id"
+                  ></Interesteds>
                 </v-col>
               </v-row>
 
@@ -593,6 +600,7 @@ export default {
       dialogDeleteTask: false,
     };
   },
+  
   mounted() {
     this.id = this.$route.params.id;
     this.getInfo();
@@ -713,7 +721,9 @@ export default {
     },
 
     async getInfo() {
+      console.log("ENTRE A GETINFO");
       this.members = [];
+      this.interesteds = [];
       const token = localStorage.getItem("token");
       await axios
         .get(this.apiUrl + "getInfoProject/" + this.id, {
@@ -730,6 +740,15 @@ export default {
             " " +
             this.project.members[i].lastName,
           value: this.project.members[i].id,
+        });
+      }
+      for (var j = 0; j < this.project.interesteds.length; j++) {
+        this.interesteds.push({
+          text:
+            this.project.interesteds[j].name +
+            " " +
+            this.project.interesteds[j].lastName,
+          value: this.project.interesteds[j].id,
         });
       }
       this.sprintList = this.project.sprints;
