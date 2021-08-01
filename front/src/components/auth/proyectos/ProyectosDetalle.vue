@@ -27,11 +27,13 @@
                     @event="getInfo"
                     :members="members"
                     :project_id="project.id"
+                    :loadingModal="loadingModal"
                   ></Members>
                   <Interesteds
                     @event="getInfo"
                     :interesteds="interesteds"
                     :project_id="project.id"
+                    :loadingModal="loadingModal"
                   ></Interesteds>
                 </v-col>
               </v-row>
@@ -722,7 +724,6 @@ export default {
     },
 
     async getInfo() {
-      console.log("ENTRE A GETINFO");
       this.members = [];
       this.interesteds = [];
       const token = localStorage.getItem("token");

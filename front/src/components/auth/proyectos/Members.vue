@@ -87,6 +87,7 @@ export default {
   watch: {
     members: function (newVal) {
       this.members_ = newVal;
+      this.getAllMembersAvailable()
     },
   },
   methods: {
@@ -139,7 +140,7 @@ export default {
             Authorization: token,
           },
         })
-        .then(this.$emit("event"))
+        .then(()=> this.$emit("event"))
         .catch((error) => console.log(error));
     },
   },

@@ -87,6 +87,7 @@ export default {
   watch: {
     interesteds: function (newVal) {
       this.interesteds_ = newVal;
+      this.getAllInterestedsAvailable()
     },
   },
   methods: {
@@ -139,7 +140,7 @@ export default {
             Authorization: token,
           },
         })
-        .then(this.$emit("event"))
+        .then(() =>this.$emit("event"))
         .catch((error) => console.log(error));
     },
   },
