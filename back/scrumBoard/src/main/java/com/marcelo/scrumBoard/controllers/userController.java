@@ -54,4 +54,18 @@ public class userController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(allMembers);
 	}
+	
+	@GetMapping("/getInterestedsAvailableToAddToTheProject/{id}")
+	public ResponseEntity<List<User>> getInterestedsAvailableToAddToTheProject(@PathVariable("id") Long project_id){
+		List<User> allInteresteds = userService.findAll();
+		Project project = projectService.findById(project_id);
+		allInteresteds.remove(project.getUser());
+		for(int i =0;i<project.getMembers().size();i++) {
+			allInteresteds.remove(project.getMembers().get(i));
+		}
+		for(int i =0;i<project.getInteresteds().size();i++) {
+			allInteresteds.remove(project.getInteresteds().get(i));
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(allInteresteds);
+	}
 }

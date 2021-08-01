@@ -29,6 +29,7 @@
                     :project_id="project.id"
                   ></Members>
                   <Interesteds
+                    @event="getInfo"
                     :interesteds="interesteds"
                     :project_id="project.id"
                   ></Interesteds>

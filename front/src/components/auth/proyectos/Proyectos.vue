@@ -22,6 +22,7 @@
                       label="Nombre del Proyecto"
                       required
                       prepend-icon="mdi-border-color"
+                      :rules="projectRules"
                     ></v-text-field>
 
                     <v-text-field
@@ -29,6 +30,7 @@
                       label="Descripcion del Proyecto"
                       required
                       prepend-icon="mdi-format-list-bulleted"
+                      :rules="projectRules"
                     ></v-text-field>
 
                     <v-text-field
@@ -36,6 +38,7 @@
                       label="Objetivo del Proyecto"
                       required
                       prepend-icon="mdi-format-list-bulleted"
+                      :rules="projectRules"
                     ></v-text-field>
 
                     <v-autocomplete
@@ -61,7 +64,6 @@
                       label="Listado de Clientes"
                       multiple
                       prepend-icon="mdi-human-queue"
-                      :disabled="selectedMembers.length == 0"
                     >
                     </v-autocomplete>
 
@@ -130,6 +132,11 @@ export default {
       errorMsg: "",
       myProjects: null,
       selectedProject: null,
+      projectRules: [
+        value => !!value || 'Campo Requerido',
+        value => (value && value.length >= 6) || 'Mínimo 6 Caracteres',
+        value => (value && value.length < 255) || 'Máximo 255 Caracteres'
+      ],
     };
   },
   mounted() {

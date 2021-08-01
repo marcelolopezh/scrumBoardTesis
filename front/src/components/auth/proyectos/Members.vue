@@ -44,6 +44,16 @@
               prepend-icon="mdi-human-queue"
             >
             </v-autocomplete>
+            <v-btn
+              class="ma-2"
+              small
+              fab
+              color="success"
+              :disabled="!selectedMembers.length > 0"
+              @click="addMembers(selectedMembers)"
+            >
+              <v-icon color="white"> mdi-plus </v-icon>
+            </v-btn>
           </v-form>
         </v-card-text>
         <v-card-actions class="justify-end">
@@ -74,6 +84,11 @@ export default {
     this.members_ = this.members;
     this.getAllMembersAvailable();
   },
+  watch: {
+    members: function (newVal) {
+      this.members_ = newVal;
+    },
+  },
   methods: {
     async deleteMember(member) {
       const token = localStorage.getItem("token");
@@ -90,7 +105,7 @@ export default {
             },
           }
         )
-        .then(() => this.$emit('event')) //THIS EVENT CALL GET INFO
+        .then(() => this.$emit("event")) //THIS EVENT CALL GET INFO
         .catch((error) => console.log(error));
     },
     async getAllMembersAvailable() {
@@ -107,6 +122,24 @@ export default {
           }
         )
         .then((response) => (this.allMembers = response.data))
+        .catch((error) => console.log(error));
+    },
+    async addMembers(members) {
+      const token = localStorage.getItem("token");
+      var membersToAdd = [];
+      for (var i = 0; i < members.length; i++) {
+        membersToAdd.push(members[i]);
+      }
+      var formData = new FormData();
+      formData.append("newMemberList", membersToAdd);
+      formData.append("project_id", this.project_id);
+      await axios
+        .put(this.apiUrl + "addMemberToProject/", formData, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then(this.$emit("event"))
         .catch((error) => console.log(error));
     },
   },

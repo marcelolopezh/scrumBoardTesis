@@ -32,8 +32,7 @@ public class projectController {
 			@RequestParam("selectedMembers") List<String> selectedMembers,
 			@RequestParam("selectedInteresteds") List<String> selectedInteresteds, @RequestParam("email") String email,
 			@RequestParam("objetive") String objetive) {
-		if (name != null && description != null && objetive != null && selectedMembers.size() != 0
-				&& selectedInteresteds.size() != 0 && email != null) {
+		if (name != null && description != null && objetive != null && email != null) {
 			Project project = new Project();
 			project.setUser(userService.findByEmail(email));
 			project.setName(name);
@@ -120,8 +119,7 @@ public class projectController {
 	}
 
 	@DeleteMapping("/deleteMemberFromTheProject/{project_id}/{member_id}")
-	public ResponseEntity<List<User>> deleteMemberFromTheProject(
-			@PathVariable("project_id") Long project_id,
+	public ResponseEntity<List<User>> deleteMemberFromTheProject(@PathVariable("project_id") Long project_id,
 			@PathVariable("member_id") Long member_id) {
 
 		Project project = projectService.findById(project_id);
@@ -131,5 +129,48 @@ public class projectController {
 		projectService.createProject(project);
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
+	
+	@DeleteMapping("/deleteInterestedFromTheProject/{project_id}/{member_id}")
+	public ResponseEntity<List<User>> deleteInterestedFromTheProject(@PathVariable("project_id") Long project_id,
+			@PathVariable("member_id") Long interested_id) {
 
+		Project project = projectService.findById(project_id);
+		List<User> interestedList = project.getInteresteds();
+		interestedList.remove(userService.findById(interested_id));
+		project.setInteresteds(interestedList);
+		projectService.createProject(project);
+		return ResponseEntity.status(HttpStatus.OK).body(null);
+	}
+
+	@PutMapping("/addMemberToProject")
+	public ResponseEntity<List<User>> addMemberToProeject(@RequestParam("newMemberList") List<Long> newMemberList,
+			@RequestParam("project_id") Long project_id) {
+		System.out.println(newMemberList);
+		Project project = projectService.findById(project_id);
+		List<User> memberList= project.getMembers();
+		for(int i = 0 ; i<newMemberList.size(); i++) {
+			User user = userService.findById(newMemberList.get(i));
+			if(!memberList.contains(user))
+					memberList.add(userService.findById(newMemberList.get(i)));
+		}
+		project.setMembers(memberList);
+		projectService.createProject(project);
+		return ResponseEntity.status(HttpStatus.OK).body(memberList);
+	}
+	
+	@PutMapping("/addInterestedToProject")
+	public ResponseEntity<List<User>> addInterestedToProject(@RequestParam("newInterestedList") List<Long> newMemberList,
+			@RequestParam("project_id") Long project_id) {
+		System.out.println(newMemberList);
+		Project project = projectService.findById(project_id);
+		List<User> memberList= project.getInteresteds();
+		for(int i = 0 ; i<newMemberList.size(); i++) {
+			User user = userService.findById(newMemberList.get(i));
+			if(!memberList.contains(user))
+					memberList.add(userService.findById(newMemberList.get(i)));
+		}
+		project.setInteresteds(memberList);
+		projectService.createProject(project);
+		return ResponseEntity.status(HttpStatus.OK).body(memberList);
+	}
 }
