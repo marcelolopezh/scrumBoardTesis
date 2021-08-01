@@ -22,15 +22,17 @@
 
             <v-container fluid>
               <v-row>
-                <v-col cols="12" class="text-right">
-                  <v-btn class="ma-2" color="primary" dark>
-                    Miembros
-                    <v-icon dark right> mdi-account-plus </v-icon>
-                  </v-btn>
-                  <v-btn class="ma-2" color="primary" dark>
-                    Interesados
-                    <v-icon dark right> mdi-account-plus </v-icon>
-                  </v-btn>
+                <v-col cols="12" class="d-flex">
+                  <Members
+                    @event="getInfo"
+                    :members="members"
+                    :project_id="project.id"
+                  ></Members>
+                  <Interesteds
+                    @event="getInfo"
+                    :interesteds="interesteds"
+                    :project_id="project.id"
+                  ></Interesteds>
                 </v-col>
               </v-row>
 
@@ -266,6 +268,18 @@
         <v-card-title v-if="taskEdit"> Editar Tarea </v-card-title>
         <v-card-text>
           <!-- FORM TO CREATE TASK -->
+            <v-select v-if="taskEdit"
+            class="mb-5"
+            v-model="taskState"
+            :items="stateList"
+            menu-props="auto"
+            label="Estado de Tarea"
+            hide-details
+            prepend-icon="mdi-podium-silver"
+            single-line
+            color="success"
+          ></v-select>
+
           <v-text-field
             v-model="taskName"
             label="Nombre Tarea"
@@ -546,7 +560,10 @@
 
 <script>
 import axios from "axios";
+import Members from "./Members.vue";
+import Interesteds from "./Interesteds.vue";
 export default {
+  components: { Members, Interesteds },
   name: "ProyectosDetalle",
 
   data() {
@@ -574,6 +591,7 @@ export default {
       taskName: null,
       taskDescription: null,
       taskEstimatedHours: null,
+      taskState:null,
       addSubTask: null,
       priorityList: [
         { text: "Alta", value: "Alta" },
@@ -596,6 +614,10 @@ export default {
       dialogDeleteTask: false,
     };
   },
+  created() {
+    this.interval = setInterval(() => this.getInfo(), 60000);
+  },
+
   mounted() {
     this.id = this.$route.params.id;
     this.getInfo();
@@ -671,6 +693,7 @@ export default {
       this.taskDescription = task.description;
       this.taskEstimatedHours = task.estimatedHours;
       this.taskId = task.id;
+      this.taskState = task.state;
       this.dialogTask = true;
       this.taskEdit = true;
     },
@@ -702,6 +725,7 @@ export default {
       formData.append("priority", this.taskPriority);
       formData.append("responsable", this.responsable);
       formData.append("task_id", this.taskId);
+      formData.append("state", this.taskState);
       await axios
         .put(this.apiUrl + "editTask", formData, {
           headers: {
@@ -717,6 +741,7 @@ export default {
 
     async getInfo() {
       this.members = [];
+      this.interesteds = [];
       const token = localStorage.getItem("token");
       await axios
         .get(this.apiUrl + "getInfoProject/" + this.id, {
@@ -733,6 +758,15 @@ export default {
             " " +
             this.project.members[i].lastName,
           value: this.project.members[i].id,
+        });
+      }
+      for (var j = 0; j < this.project.interesteds.length; j++) {
+        this.interesteds.push({
+          text:
+            this.project.interesteds[j].name +
+            " " +
+            this.project.interesteds[j].lastName,
+          value: this.project.interesteds[j].id,
         });
       }
       this.sprintList = this.project.sprints;
@@ -792,6 +826,7 @@ export default {
       this.taskEstimatedHours = null;
       this.taskPriority = null;
       this.responsable = null;
+      this.taskState = null;
       this.sprintIdCreateTask = null;
       this.sprintName = null;
       this.sprintObjetive = null;

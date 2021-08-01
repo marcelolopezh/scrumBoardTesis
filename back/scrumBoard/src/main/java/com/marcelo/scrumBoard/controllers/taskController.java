@@ -60,13 +60,15 @@ public class taskController {
 			@RequestParam("estimatedHours") Integer estimatedHours,
 			@RequestParam("priority") String priority, 
 			@RequestParam("responsable") Long userId,
-			@RequestParam("task_id") Long task_id) {
+			@RequestParam("task_id") Long task_id,
+			@RequestParam("state") String state) {
 		Task task = taskService.findById(task_id);
 		task.setName(name);
 		task.setDescription(description);
 		task.setEstimatedHours(estimatedHours);
 		task.setPriority(priority);
 		task.setUser(userService.findById(userId));
+		task.setState(state);
 		task = taskService.save(task);
 		return ResponseEntity.status(HttpStatus.OK).body(task);
 	}
