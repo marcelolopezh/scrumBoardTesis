@@ -173,7 +173,10 @@
                                           color="success"
                                           :value="subtask.id"
                                           hide-details
-                                          :checked="subtask.state"
+                                          v-model="subtask.state"
+                                          :true-value="true"
+                                          :false-value="false"
+                                          @click="checkSubTask(subtask.id)"
                                           ><v-icon
                                             slot="append"
                                             color="red"
@@ -268,7 +271,8 @@
         <v-card-title v-if="taskEdit"> Editar Tarea </v-card-title>
         <v-card-text>
           <!-- FORM TO CREATE TASK -->
-            <v-select v-if="taskEdit"
+          <v-select
+            v-if="taskEdit"
             class="mb-5"
             v-model="taskState"
             :items="stateList"
@@ -591,7 +595,7 @@ export default {
       taskName: null,
       taskDescription: null,
       taskEstimatedHours: null,
-      taskState:null,
+      taskState: null,
       addSubTask: null,
       priorityList: [
         { text: "Alta", value: "Alta" },
@@ -696,6 +700,18 @@ export default {
       this.taskState = task.state;
       this.dialogTask = true;
       this.taskEdit = true;
+    },
+    async checkSubTask(subtask) {
+      const token = localStorage.getItem("token");
+      var formData = new FormData();
+      formData.append("subTask", subtask);
+      await axios
+        .put(this.apiUrl + "checkUncheckSubTask/", formData, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .catch((error) => console.log(error));
     },
     async _editSprint() {
       this.loadingModal = true;

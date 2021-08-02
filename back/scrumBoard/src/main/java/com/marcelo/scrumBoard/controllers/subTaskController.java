@@ -1,15 +1,13 @@
 package com.marcelo.scrumBoard.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.marcelo.scrumBoard.models.SubTask;
@@ -51,5 +49,13 @@ public class subTaskController {
 	private ResponseEntity<SubTask> deleteSubTask(@PathVariable("id") Long id) {
 		subTaskService.deleteById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(null);
+	}
+	
+	@PutMapping("/checkUncheckSubTask")
+	private ResponseEntity<SubTask> checkUncheckSubTask(@RequestParam("subTask") Long id){
+		SubTask subTask = subTaskService.findById(id);
+		subTask.setState(!subTask.getState());
+		subTaskService.save(subTask);
+		return ResponseEntity.status(HttpStatus.OK).body(subTask);
 	}
 }
