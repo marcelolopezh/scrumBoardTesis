@@ -1,6 +1,6 @@
 package com.marcelo.scrumBoard.controllers;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.marcelo.scrumBoard.models.Sprint;
-import com.marcelo.scrumBoard.models.SubTask;
 import com.marcelo.scrumBoard.models.Task;
 import com.marcelo.scrumBoard.models.User;
 import com.marcelo.scrumBoard.services.ProjectService;
@@ -40,6 +39,9 @@ public class taskController {
 			@RequestParam("description") String description, @RequestParam("taskEstimatedHours") Integer estimatedHours,
 			@RequestParam("priority") String priority, @RequestParam("responsable") Long userId,
 			@RequestParam("sprint") Long sprintId) {
+		if(description==null || estimatedHours == null || priority == null || userId == null || sprintId == null) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
 		Task task = new Task();
 		task.setName(name);
 		task.setDescription(description);
@@ -63,6 +65,14 @@ public class taskController {
 			@RequestParam("task_id") Long task_id,
 			@RequestParam("state") String state) {
 		Task task = taskService.findById(task_id);
+		if("En Curso".equals(state) && task.getStarted_at()==null) {
+			LocalDateTime localDateTime = LocalDateTime.now();
+			task.setStarted_at(localDateTime);
+		}
+		if("Terminado".equals(state)) {
+			LocalDateTime localDateTime = LocalDateTime.now();
+			task.setFinished_at(localDateTime);
+		}
 		task.setName(name);
 		task.setDescription(description);
 		task.setEstimatedHours(estimatedHours);
