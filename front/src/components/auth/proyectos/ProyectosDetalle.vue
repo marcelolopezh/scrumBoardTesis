@@ -88,11 +88,24 @@
                                   <v-expansion-panel
                                     v-for="task in sprint.tasks"
                                     :key="task.id"
-                                    v-bind:style="{ maxHeight: 10 + '%' }"
                                   >
                                     <v-expansion-panel-header>
-                                      <div v-text="task.name"></div
-                                    ></v-expansion-panel-header>
+                                      <div v-text="task.name"></div>
+
+                                      <template v-slot:actions>
+                                        <v-icon color="danger" v-if="task.state=='Pendiente'">
+                                          mdi-stop-circle-outline
+                                        </v-icon>
+                                        <v-icon color="warning" v-if="task.state=='En Curso'">
+                                          mdi-progress-check
+                                        </v-icon>
+                                        <v-icon color="teal" v-if="task.state=='Terminado'">
+                                          mdi-check
+                                        </v-icon>
+                                      </template>
+                                      
+
+                                    </v-expansion-panel-header>
                                     <v-expansion-panel-content>
                                       <div
                                         class="text-center"
@@ -173,7 +186,10 @@
                                           color="success"
                                           :value="subtask.id"
                                           hide-details
-                                          :checked="subtask.state"
+                                          v-model="subtask.state"
+                                          :true-value="true"
+                                          :false-value="false"
+                                          @click="checkSubTask(subtask.id)"
                                           ><v-icon
                                             slot="append"
                                             color="red"
@@ -263,100 +279,104 @@
 
     <!-- DIALOG NEW TASK -->
     <v-dialog v-model="dialogTask" max-width="500px">
-      <v-card>
-        <v-card-title v-if="!taskEdit"> Crear Nueva Tarea </v-card-title>
-        <v-card-title v-if="taskEdit"> Editar Tarea </v-card-title>
-        <v-card-text>
-          <!-- FORM TO CREATE TASK -->
-            <v-select v-if="taskEdit"
-            class="mb-5"
-            v-model="taskState"
-            :items="stateList"
-            menu-props="auto"
-            label="Estado de Tarea"
-            hide-details
-            prepend-icon="mdi-podium-silver"
-            single-line
-            color="success"
-          ></v-select>
+      <v-form ref="form" v-model="valid" lazy-validation>
+        <v-card>
+          <v-card-title v-if="!taskEdit"> Crear Nueva Tarea </v-card-title>
+          <v-card-title v-if="taskEdit"> Editar Tarea </v-card-title>
+          <v-card-text>
+            <!-- FORM TO CREATE TASK -->
 
-          <v-text-field
-            v-model="taskName"
-            label="Nombre Tarea"
-            prepend-icon="mdi-card-text"
-            clearable
-          ></v-text-field>
+            <v-select
+              v-if="taskEdit"
+              class="mb-5"
+              v-model="taskState"
+              :items="stateList"
+              menu-props="auto"
+              label="Estado de Tarea"
+              hide-details
+              prepend-icon="mdi-podium-silver"
+              single-line
+              color="success"
+            ></v-select>
 
-          <v-text-field
-            v-model="taskDescription"
-            label="Descripción Tarea"
-            prepend-icon="mdi-clipboard-text"
-            clearable
-          ></v-text-field>
+            <v-text-field
+              v-model="taskName"
+              label="Nombre Tarea"
+              prepend-icon="mdi-card-text"
+              clearable
+            ></v-text-field>
 
-          <v-text-field
-            v-model="taskEstimatedHours"
-            label="Horas Estimadas"
-            prepend-icon="mdi-clock"
-            clearable
-            number
-            type="number"
-          ></v-text-field>
+            <v-text-field
+              v-model="taskDescription"
+              label="Descripción Tarea"
+              prepend-icon="mdi-clipboard-text"
+              clearable
+            ></v-text-field>
 
-          <v-select
-            class="mb-5"
-            v-model="taskPriority"
-            :items="priorityList"
-            menu-props="auto"
-            label="Prioridad"
-            hide-details
-            prepend-icon="mdi-podium-silver"
-            single-line
-          ></v-select>
+            <v-text-field
+              v-model="taskEstimatedHours"
+              label="Horas Estimadas"
+              prepend-icon="mdi-clock"
+              clearable
+              number
+              type="number"
+            ></v-text-field>
 
-          <v-select
-            v-model="responsable"
-            :items="members"
-            menu-props="auto"
-            label="Responsable de Tarea"
-            hide-details
-            prepend-icon="mdi-account"
-            single-line
-          ></v-select> </v-card-text
-        ><v-card-actions>
-          <v-btn
-            color="danger"
-            text
-            @click="
-              dialogTask = false;
-              clearVars();
-            "
-          >
-            Cerrar
-          </v-btn>
-          <v-btn
-            v-if="!taskEdit"
-            color="success"
-            text
-            @click="
-              dialogTask = false;
-              createTask();
-            "
-          >
-            Crear Tarea
-          </v-btn>
-          <v-btn
-            v-if="taskEdit"
-            color="success"
-            text
-            @click="
-              dialogTask = false;
-              _editTask();
-            "
-          >
-            Editar Tarea
-          </v-btn>
-        </v-card-actions></v-card
+            <v-select
+              class="mb-5"
+              v-model="taskPriority"
+              :items="priorityList"
+              menu-props="auto"
+              label="Prioridad"
+              hide-details
+              prepend-icon="mdi-podium-silver"
+              single-line
+            ></v-select>
+
+            <v-select
+              v-model="responsable"
+              :items="members"
+              menu-props="auto"
+              label="Responsable de Tarea"
+              hide-details
+              prepend-icon="mdi-account"
+              single-line
+            ></v-select> </v-card-text
+          ><v-card-actions>
+            <v-btn
+              color="danger"
+              text
+              @click="
+                dialogTask = false;
+                clearVars();
+              "
+            >
+              Cerrar
+            </v-btn>
+            <v-btn
+              v-if="!taskEdit"
+              color="success"
+              text
+              @click="
+                dialogTask = false;
+                createTask();
+              "
+            >
+              Crear Tarea
+            </v-btn>
+            <v-btn
+              v-if="taskEdit"
+              color="success"
+              text
+              @click="
+                dialogTask = false;
+                _editTask();
+              "
+            >
+              Editar Tarea
+            </v-btn>
+          </v-card-actions></v-card
+        ></v-form
       >
     </v-dialog>
 
@@ -591,7 +611,7 @@ export default {
       taskName: null,
       taskDescription: null,
       taskEstimatedHours: null,
-      taskState:null,
+      taskState: null,
       addSubTask: null,
       priorityList: [
         { text: "Alta", value: "Alta" },
@@ -612,6 +632,8 @@ export default {
       dialogDeleteSprint: false,
       taskToDelete: {},
       dialogDeleteTask: false,
+      projectRules: [(value) => !!value || "Campo Requerido"],
+      valid: true,
     };
   },
   created() {
@@ -675,7 +697,7 @@ export default {
           },
         })
         .then(async () => this.getInfo(), this.clearVars())
-        .catch((error) => console.log(error));
+        .catch((error) => console.log(error), this.getInfo());
     },
     editSprint(sprint) {
       this.sprintName = sprint.name;
@@ -696,6 +718,18 @@ export default {
       this.taskState = task.state;
       this.dialogTask = true;
       this.taskEdit = true;
+    },
+    async checkSubTask(subtask) {
+      const token = localStorage.getItem("token");
+      var formData = new FormData();
+      formData.append("subTask", subtask);
+      await axios
+        .put(this.apiUrl + "checkUncheckSubTask/", formData, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .catch((error) => console.log(error));
     },
     async _editSprint() {
       this.loadingModal = true;
@@ -760,6 +794,10 @@ export default {
           value: this.project.members[i].id,
         });
       }
+      this.members.push({
+        text: this.project.user.name + " " + this.project.user.lastName,
+        value: this.project.user.id,
+      });
       for (var j = 0; j < this.project.interesteds.length; j++) {
         this.interesteds.push({
           text:
@@ -817,7 +855,7 @@ export default {
           },
         })
         .then(() => this.getInfo(), this.clearVars())
-        .catch((error) => console.log(error));
+        .catch((error) => console.log(error), this.getInfo());
     },
 
     clearVars() {

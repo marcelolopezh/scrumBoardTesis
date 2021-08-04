@@ -32,6 +32,9 @@ public class sprintController {
 			@RequestParam("objetive") String objetive, @RequestParam("projectId") Long projectId,
 			@RequestParam  String startDate,
 			@RequestParam  String endDate) throws ParseException {
+		if(name == null || objetive == null || projectId == null || startDate == null || endDate == null) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date startDateF = sdf.parse(startDate);
 		Date endDateF   = sdf.parse(endDate);
@@ -54,6 +57,9 @@ public class sprintController {
 			@RequestParam  String startDate,
 			@RequestParam  String endDate,
 			@RequestParam Long id) throws ParseException {
+		if(name == null || name == "" || objetive == null || objetive == "" || id == null || startDate == null || endDate == null) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date startDateF = sdf.parse(startDate);
 		Date endDateF   = sdf.parse(endDate);

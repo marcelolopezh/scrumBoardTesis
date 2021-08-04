@@ -1,5 +1,6 @@
 package com.marcelo.scrumBoard.models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 

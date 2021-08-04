@@ -1,5 +1,6 @@
 package com.marcelo.scrumBoard.models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +31,8 @@ public class Task {
 	private String state;
 	private Integer estimatedHours;
 	private String priority;
-
+	private LocalDateTime started_at;
+	private LocalDateTime finished_at;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
@@ -145,6 +147,22 @@ public class Task {
 	public void setSubtasks(List<SubTask> subtasks) {
 		this.subtasks = subtasks;
 	}
+
+	public LocalDateTime getStarted_at() {
+		return started_at;
+	}
+
+	public void setStarted_at(LocalDateTime started_at) {
+		this.started_at = started_at;
+	}
+
+	public LocalDateTime getFinished_at() {
+		return finished_at;
+	}
+
+	public void setFinished_at(LocalDateTime finished_at) {
+		this.finished_at = finished_at;
+	}	
 	
 
 }

@@ -32,29 +32,29 @@ public class projectController {
 			@RequestParam("selectedMembers") List<String> selectedMembers,
 			@RequestParam("selectedInteresteds") List<String> selectedInteresteds, @RequestParam("email") String email,
 			@RequestParam("objetive") String objetive) {
-		if (name != null && description != null && objetive != null && email != null) {
-			Project project = new Project();
-			project.setUser(userService.findByEmail(email));
-			project.setName(name);
-			List<User> selectedMembersArray = new ArrayList<User>();
-			User user = new User();
-			for (int i = 0; i < selectedMembers.size(); i++) {
-				user = userService.findById(Long.parseLong(selectedMembers.get(i)));
-				selectedMembersArray.add(user);
-			}
-			project.setMembers(selectedMembersArray);
-			List<User> selectedInterestedsArray = new ArrayList<User>();
-			for (int i = 0; i < selectedInteresteds.size(); i++) {
-				user = userService.findById(Long.parseLong(selectedInteresteds.get(i)));
-				selectedInterestedsArray.add(user);
-			}
-			project.setInteresteds(selectedInterestedsArray);
-			project.setDescription(description);
-			project = projectService.createProject(project);
-			return ResponseEntity.status(HttpStatus.OK).body(project);
-		} else {
+		if (name != null || description != null || objetive != null || email != null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
+		Project project = new Project();
+		project.setUser(userService.findByEmail(email));
+		project.setName(name);
+		List<User> selectedMembersArray = new ArrayList<User>();
+		User user = new User();
+		for (int i = 0; i < selectedMembers.size(); i++) {
+			user = userService.findById(Long.parseLong(selectedMembers.get(i)));
+			selectedMembersArray.add(user);
+		}
+		project.setMembers(selectedMembersArray);
+		List<User> selectedInterestedsArray = new ArrayList<User>();
+		for (int i = 0; i < selectedInteresteds.size(); i++) {
+			user = userService.findById(Long.parseLong(selectedInteresteds.get(i)));
+			selectedInterestedsArray.add(user);
+		}
+		project.setInteresteds(selectedInterestedsArray);
+		project.setDescription(description);
+		project = projectService.createProject(project);
+		return ResponseEntity.status(HttpStatus.OK).body(project);
+		
 	}
 
 	@GetMapping("/getAllProjects")
@@ -173,4 +173,6 @@ public class projectController {
 		projectService.createProject(project);
 		return ResponseEntity.status(HttpStatus.OK).body(memberList);
 	}
+	
+
 }
