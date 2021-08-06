@@ -2,7 +2,7 @@
 import { Line } from "vue-chartjs";
 
 export default {
-  props: ["chartDataLabels", "chartEstimatedWork"],
+  props: ["chartDataLabels", "chartEstimatedWork", "hoursPerDay"],
   extends: Line,
   data() {
     return {
@@ -15,6 +15,7 @@ export default {
             borderColor: "#36495d",
             borderWidth: 3,
             data: null,
+            tension:0
           },
            {
             label: "Trabajo Real",
@@ -22,20 +23,25 @@ export default {
             borderColor: "blue",
             borderWidth: 3,
             data: null,
+            tension:0
+
           },
         ],
       },
       options: {
-        type: Object,
-        default: null,
-      },
+        scales: {
+            y: {
+                stacked: true
+            }
+        }
+    }
     };
   },
 
   mounted() {
     this.chartdata.labels = this.chartDataLabels;
     this.chartdata.datasets[0].data = this.chartEstimatedWork;
-    this.chartdata.datasets[1].data = [58,58,58,53,51,50,49,30,20,10];
+    this.chartdata.datasets[1].data = this.hoursPerDay;
     this.renderChart(this.chartdata, this.options);
   },
 

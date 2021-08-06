@@ -21,6 +21,7 @@
 </template>
 <script>
 import LineChart from "./LineChart.vue";
+import moment from "moment";
 export default {
   components: { LineChart },
   name: "DashBoard",
@@ -44,7 +45,7 @@ export default {
       var endDate = Date.parse(sprint.endDate);
       var diff = Math.round((endDate - startDate) / (1000 * 3600 * 24));
       var labels = [];
-      for (var i = 0; i <= diff; i++) {
+      for (var i = 0; i < diff; i++) {
         labels[i] = parseInt(i);
       }
       return labels;
@@ -55,23 +56,56 @@ export default {
       for (var i = 0; i < sprint.tasks.length; i++) {
         totalhours += sprint.tasks[i].estimatedHours;
       }
-      var totaldays = this.getLabelsBurnDown(sprint).length;
+      var totaldays = this.getLabelsBurnDown(sprint).length-1;
+      console.log("TOTALDAYS ="+ totaldays)
       var division = totalhours / totaldays;
-      for (i = 0; i < totaldays; i++) {
-        data[i] = totalhours - division * (i + 1);
+      for (i = 0; i <= totaldays; i++) {
+        data[i] = totalhours - division * (i);
       }
       return data;
     },
     hoursPerDay(sprint) {
-      console.log("estoy en hoursPerDay");
-      console.log(sprint)
-      for (var i = 0; i < sprint.tasks.length; i++) {
-        if (sprint.tasks[i].started_at!=null && sprint.tasks[i].finished_at!=null) {
-          var startDate = Date.parse(sprint.tasks[i].started_at);
-            console.log(startDate)
+      var allData = []
+      var startDate = moment(sprint.startDate, "YYYY-MM-DDTHH:mm");
+      var endDate = moment(sprint.endDate, "YYYY-MM-DDTHH:mm");
+      var difference = moment(endDate.diff(startDate,'days'));
+      difference=difference._i;
+
+      startDate = moment(startDate, "DD-MM-YYYY").add(1, 'days');
+      allData[0] = startDate.format();
+      var hoursWorkedPerDay = []
+      hoursWorkedPerDay[0] = 0
+      for(var i = 1; i<=difference;i++){
+        var aux = moment(startDate, "DD-MM-YYYY").add(i, 'days')
+        allData[i] = aux.format();
+        hoursWorkedPerDay[i] = 0;
+      }
+      var taskData = []
+      for(i=0;i<sprint.tasks.length;i++){
+        aux = [moment(sprint.tasks[i].finished_at, 'YYYY-MM-DDTHH:mm'),sprint.tasks[i].estimatedHours];
+        taskData[i] = [aux[0].format(),aux[1]];
+      }
+
+      for(i=0;i<allData.length;i++){
+        for(var j=0;j<taskData.length;j++){
+          if(allData[i].split("T")[0] == taskData[j][0].split("T")[0]){
+            hoursWorkedPerDay[i] = hoursWorkedPerDay[i] + taskData[j][1]
+          }
         }
       }
-      return sprint.id;
+      var totalHours = 0
+      for( i = 0; i<sprint.tasks.length;i++){
+        totalHours = totalHours + sprint.tasks[i].estimatedHours;
+      }
+      hoursWorkedPerDay[0] = totalHours;
+      for (i=1;i<hoursWorkedPerDay.length;i++){
+        console.log(totalHours - hoursWorkedPerDay[i])
+        aux = hoursWorkedPerDay[i]
+        hoursWorkedPerDay[i] = totalHours - hoursWorkedPerDay[i]
+        totalHours = totalHours - aux
+      }
+      console.log(hoursWorkedPerDay)
+      return hoursWorkedPerDay
     },
     async getInfo() {
       let email = localStorage.getItem("email");
@@ -88,7 +122,7 @@ export default {
         .then((response) => {
           this.allData = response.data;
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.log("error=>" + error));
     },
   },
 };
