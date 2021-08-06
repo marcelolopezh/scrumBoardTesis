@@ -82,6 +82,7 @@
                                   class="text-center"
                                   v-text="sprint.objetive"
                                 ></h4>
+                                
                                 <v-divider class="mt-5 mb-5"></v-divider>
 
                                 <v-expansion-panels class="mb-6">
@@ -582,6 +583,8 @@
 import axios from "axios";
 import Members from "./Members.vue";
 import Interesteds from "./Interesteds.vue";
+// eslint-disable-next-line no-unused-vars
+import moment from "moment";
 export default {
   components: { Members, Interesteds },
   name: "ProyectosDetalle",
@@ -645,6 +648,9 @@ export default {
     this.getInfo();
   },
   methods: {
+    formatDate(date){
+      return moment(date,"DD-MM-YYYY");
+    },
     next() {
       this.window =
         this.window + 1 === this.project.sprints.length ? 0 : this.window + 1;

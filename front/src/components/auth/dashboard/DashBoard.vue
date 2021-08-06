@@ -97,8 +97,8 @@ export default {
       for( i = 0; i<sprint.tasks.length;i++){
         totalHours = totalHours + sprint.tasks[i].estimatedHours;
       }
-
-      for (i=0;i<hoursWorkedPerDay.length;i++){
+      hoursWorkedPerDay[0] = totalHours;
+      for (i=1;i<hoursWorkedPerDay.length;i++){
         console.log(totalHours - hoursWorkedPerDay[i])
         aux = hoursWorkedPerDay[i]
         hoursWorkedPerDay[i] = totalHours - hoursWorkedPerDay[i]
