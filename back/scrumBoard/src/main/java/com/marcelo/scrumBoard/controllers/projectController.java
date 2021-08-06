@@ -29,10 +29,12 @@ public class projectController {
 	@PostMapping("/createProject")
 	public ResponseEntity<Project> createProject(@RequestParam("name") String name,
 			@RequestParam("description") String description,
+			@RequestParam("objetive") String objetive,
 			@RequestParam("selectedMembers") List<String> selectedMembers,
-			@RequestParam("selectedInteresteds") List<String> selectedInteresteds, @RequestParam("email") String email,
-			@RequestParam("objetive") String objetive) {
-		if (name != null || description != null || objetive != null || email != null) {
+			@RequestParam("selectedInteresteds") List<String> selectedInteresteds, @RequestParam("email") String email
+			) {
+		if (name == null || description == null || objetive == null || email == null) {
+			System.out.println("nulo csm");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
 		Project project = new Project();
