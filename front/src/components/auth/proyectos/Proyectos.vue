@@ -133,9 +133,9 @@ export default {
       myProjects: null,
       selectedProject: null,
       projectRules: [
-        value => !!value || 'Campo Requerido',
-        value => (value && value.length >= 6) || 'Mínimo 6 Caracteres',
-        value => (value && value.length < 255) || 'Máximo 255 Caracteres'
+        (value) => !!value || "Campo Requerido",
+        (value) => (value && value.length >= 6) || "Mínimo 6 Caracteres",
+        (value) => (value && value.length < 255) || "Máximo 255 Caracteres",
       ],
     };
   },
@@ -219,6 +219,16 @@ export default {
       const token = localStorage.getItem("token");
       const email = localStorage.getItem("email");
       let formData = new FormData();
+      if (
+        this.name == null ||
+        this.description == null ||
+        this.objetive == null
+      ) {
+        this.errors = true;
+        this.success = false;
+        this.errorMsg = "Ha ocurrido un error, campos nulos";
+        return;
+      }
       formData.append("name", this.name);
       formData.append("description", this.description);
       formData.append("objetive", this.objetive);
@@ -236,6 +246,11 @@ export default {
           this.success = true;
           this.errorMsg = "Proyecto Creado!";
           this.myProjects.push(response.data);
+          this.name = null;
+          this.description = null;
+          this.objetive = null;
+          this.selectedMembers = [];
+          this.selectedInteresteds = [];
         })
         .catch(() => {
           this.errors = true;
