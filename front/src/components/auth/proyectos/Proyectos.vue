@@ -81,11 +81,58 @@
             ><v-col md="6">
               <v-card>
                 <v-card-title>Mis Proyectos</v-card-title>
-                <v-card-text>Listado de Proyectos</v-card-text>
                 <v-list dense v-if="myProjects != null">
                   <v-list-item-group v-model="selectedProject" color="primary">
                     <v-list-item
                       v-for="item in myProjects"
+                      :key="item.id"
+                      @click="routerTo(item)"
+                      class="projectList"
+                    >
+                      <v-list-item-icon>
+                        <v-icon>mdi-file-document-multiple</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          v-text="item.name"
+                        ></v-list-item-title>
+                        {{ item.description }}
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list-item-group>
+                </v-list>
+              </v-card>
+
+              <v-card>
+                <v-card-title>Soy Colaborador</v-card-title>
+                <v-list dense v-if="myProjectsAsMember != null">
+                  <v-list-item-group v-model="selectedProject" color="primary">
+                    <v-list-item
+                      v-for="item in myProjectsAsMember"
+                      :key="item.id"
+                      @click="routerTo(item)"
+                      class="projectList"
+                    >
+                      <v-list-item-icon>
+                        <v-icon>mdi-file-document-multiple</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          v-text="item.name"
+                        ></v-list-item-title>
+                        {{ item.description }}
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list-item-group>
+                </v-list>
+              </v-card>
+
+              <v-card>
+                <v-card-title>Estoy Interesado</v-card-title>
+                <v-list dense v-if="myProjectsAsInterested != null">
+                  <v-list-item-group v-model="selectedProject" color="primary">
+                    <v-list-item
+                      v-for="item in myProjectsAsInterested"
                       :key="item.id"
                       @click="routerTo(item)"
                       class="projectList"
@@ -131,6 +178,8 @@ export default {
       success: false,
       errorMsg: "",
       myProjects: null,
+      myProjectsAsMember: null,
+      myProjectsAsInterested: null,
       selectedProject: null,
       projectRules: [
         (value) => !!value || "Campo Requerido",
@@ -141,6 +190,8 @@ export default {
   },
   mounted() {
     this.getMyProjects();
+    this.getMyProjectsAsMember();
+    this.getMyProjectsAsInterested();
     this.getAllMembers();
   },
   computed: {
@@ -193,6 +244,34 @@ export default {
           },
         })
         .then((response) => (this.myProjects = response.data))
+        .catch((error) => console.log(error));
+    },
+    async getMyProjectsAsMember() {
+      const email = localStorage.getItem("email");
+      const token = localStorage.getItem("token");
+      var formData = new FormData();
+      formData.append("email", email);
+      await axios
+        .post(this.apiUrl + "getMyProjectsAsMember", formData, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then((response) => (this.myProjectsAsMember = response.data))
+        .catch((error) => console.log(error));
+    },
+    async getMyProjectsAsInterested() {
+      const email = localStorage.getItem("email");
+      const token = localStorage.getItem("token");
+      var formData = new FormData();
+      formData.append("email", email);
+      await axios
+        .post(this.apiUrl + "getMyProjectsAsInterested", formData, {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then((response) => (this.myProjectsAsInterested = response.data))
         .catch((error) => console.log(error));
     },
     async getAllMembers() {

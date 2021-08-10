@@ -34,7 +34,6 @@ public class projectController {
 			@RequestParam("selectedInteresteds") List<String> selectedInteresteds, @RequestParam("email") String email
 			) {
 		if (name == null || description == null || objetive == null || email == null) {
-			System.out.println("nulo csm");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
 		Project project = new Project();
@@ -72,6 +71,30 @@ public class projectController {
 		User user = userService.findByEmail(email);
 		for (int i = 0; i < AllProjects.size(); i++) {
 			if (AllProjects.get(i).getUser() == user)
+				MyProj.add(AllProjects.get(i));
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(MyProj);
+	}
+	
+	@PostMapping("/getMyProjectsAsMember")
+	public ResponseEntity<List<Project>> getMyProjectsAsMember(@RequestParam("email") String email) {
+		List<Project> AllProjects = projectService.findAll();
+		List<Project> MyProj = new ArrayList<Project>();
+		User user = userService.findByEmail(email);
+		for (int i = 0; i < AllProjects.size(); i++) {
+			if (AllProjects.get(i).getMembers().contains(user))
+				MyProj.add(AllProjects.get(i));
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(MyProj);
+	}
+	
+	@PostMapping("/getMyProjectsAsInterested")
+	public ResponseEntity<List<Project>> getMyProjectsAsInterested(@RequestParam("email") String email) {
+		List<Project> AllProjects = projectService.findAll();
+		List<Project> MyProj = new ArrayList<Project>();
+		User user = userService.findByEmail(email);
+		for (int i = 0; i < AllProjects.size(); i++) {
+			if (AllProjects.get(i).getInteresteds().contains(user))
 				MyProj.add(AllProjects.get(i));
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(MyProj);
