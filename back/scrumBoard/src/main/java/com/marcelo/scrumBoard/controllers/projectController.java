@@ -1,6 +1,7 @@
 package com.marcelo.scrumBoard.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,10 @@ public class projectController {
 
 	@PostMapping("/createProject")
 	public ResponseEntity<Project> createProject(@RequestParam("name") String name,
-			@RequestParam("description") String description,
-			@RequestParam("objetive") String objetive,
+			@RequestParam("description") String description, @RequestParam("objetive") String objetive,
 			@RequestParam("selectedMembers") List<String> selectedMembers,
-			@RequestParam("selectedInteresteds") List<String> selectedInteresteds, @RequestParam("email") String email
-			) {
+			@RequestParam("selectedInteresteds") List<String> selectedInteresteds,
+			@RequestParam("email") String email) {
 		if (name == null || description == null || objetive == null || email == null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
@@ -55,7 +55,7 @@ public class projectController {
 		project.setDescription(description);
 		project = projectService.createProject(project);
 		return ResponseEntity.status(HttpStatus.OK).body(project);
-		
+
 	}
 
 	@GetMapping("/getAllProjects")
@@ -65,34 +65,46 @@ public class projectController {
 	}
 
 	@PostMapping("/getMyProjects")
-	public ResponseEntity<List<Project>> getMyProjects(@RequestParam("email") String email) {
+	public ResponseEntity<List<Project>> getMyProjects(@RequestParam("email") String email,
+			@RequestParam("token") String token) {
+		User user = userService.findByEmail(email);
+		if (!token.equals(user.getToken())) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
 		List<Project> AllProjects = projectService.findAll();
 		List<Project> MyProj = new ArrayList<Project>();
-		User user = userService.findByEmail(email);
 		for (int i = 0; i < AllProjects.size(); i++) {
 			if (AllProjects.get(i).getUser() == user)
 				MyProj.add(AllProjects.get(i));
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(MyProj);
 	}
-	
+
 	@PostMapping("/getMyProjectsAsMember")
-	public ResponseEntity<List<Project>> getMyProjectsAsMember(@RequestParam("email") String email) {
+	public ResponseEntity<List<Project>> getMyProjectsAsMember(@RequestParam("email") String email,
+			@RequestParam("token") String token) {
+		User user = userService.findByEmail(email);
+		if (!token.equals(user.getToken())) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
 		List<Project> AllProjects = projectService.findAll();
 		List<Project> MyProj = new ArrayList<Project>();
-		User user = userService.findByEmail(email);
 		for (int i = 0; i < AllProjects.size(); i++) {
 			if (AllProjects.get(i).getMembers().contains(user))
 				MyProj.add(AllProjects.get(i));
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(MyProj);
 	}
-	
+
 	@PostMapping("/getMyProjectsAsInterested")
-	public ResponseEntity<List<Project>> getMyProjectsAsInterested(@RequestParam("email") String email) {
+	public ResponseEntity<List<Project>> getMyProjectsAsInterested(@RequestParam("email") String email,
+			@RequestParam("token") String token) {
+		User user = userService.findByEmail(email);
+		if (!token.equals(user.getToken())) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
 		List<Project> AllProjects = projectService.findAll();
 		List<Project> MyProj = new ArrayList<Project>();
-		User user = userService.findByEmail(email);
 		for (int i = 0; i < AllProjects.size(); i++) {
 			if (AllProjects.get(i).getInteresteds().contains(user))
 				MyProj.add(AllProjects.get(i));
@@ -100,9 +112,17 @@ public class projectController {
 		return ResponseEntity.status(HttpStatus.OK).body(MyProj);
 	}
 
-	@GetMapping("/getInfoProject/{id}")
-	public ResponseEntity<Project> getInfoProject(@PathVariable("id") Long id) {
-		return ResponseEntity.status(HttpStatus.OK).body(projectService.findById(id));
+	@PostMapping("/getInfoProject/{id}")
+	public ResponseEntity<Object> getInfoProject(@PathVariable("id") Long id, @RequestParam("email") String email,
+			@RequestParam("token") String token) {
+		User user = userService.findByEmail(email);
+		if (!token.equals(user.getToken())) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
+		HashMap<String,Object> responseData = new HashMap<>();
+		responseData.put("user", user);
+		responseData.put("project", projectService.findById(id));
+		return ResponseEntity.status(HttpStatus.OK).body(responseData);
 	}
 
 	@DeleteMapping("/deleteProject/{id}")
@@ -154,7 +174,7 @@ public class projectController {
 		projectService.createProject(project);
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
-	
+
 	@DeleteMapping("/deleteInterestedFromTheProject/{project_id}/{member_id}")
 	public ResponseEntity<List<User>> deleteInterestedFromTheProject(@PathVariable("project_id") Long project_id,
 			@PathVariable("member_id") Long interested_id) {
@@ -172,32 +192,31 @@ public class projectController {
 			@RequestParam("project_id") Long project_id) {
 		System.out.println(newMemberList);
 		Project project = projectService.findById(project_id);
-		List<User> memberList= project.getMembers();
-		for(int i = 0 ; i<newMemberList.size(); i++) {
+		List<User> memberList = project.getMembers();
+		for (int i = 0; i < newMemberList.size(); i++) {
 			User user = userService.findById(newMemberList.get(i));
-			if(!memberList.contains(user))
-					memberList.add(userService.findById(newMemberList.get(i)));
+			if (!memberList.contains(user))
+				memberList.add(userService.findById(newMemberList.get(i)));
 		}
 		project.setMembers(memberList);
 		projectService.createProject(project);
 		return ResponseEntity.status(HttpStatus.OK).body(memberList);
 	}
-	
+
 	@PutMapping("/addInterestedToProject")
-	public ResponseEntity<List<User>> addInterestedToProject(@RequestParam("newInterestedList") List<Long> newMemberList,
-			@RequestParam("project_id") Long project_id) {
+	public ResponseEntity<List<User>> addInterestedToProject(
+			@RequestParam("newInterestedList") List<Long> newMemberList, @RequestParam("project_id") Long project_id) {
 		System.out.println(newMemberList);
 		Project project = projectService.findById(project_id);
-		List<User> memberList= project.getInteresteds();
-		for(int i = 0 ; i<newMemberList.size(); i++) {
+		List<User> memberList = project.getInteresteds();
+		for (int i = 0; i < newMemberList.size(); i++) {
 			User user = userService.findById(newMemberList.get(i));
-			if(!memberList.contains(user))
-					memberList.add(userService.findById(newMemberList.get(i)));
+			if (!memberList.contains(user))
+				memberList.add(userService.findById(newMemberList.get(i)));
 		}
 		project.setInteresteds(memberList);
 		projectService.createProject(project);
 		return ResponseEntity.status(HttpStatus.OK).body(memberList);
 	}
-	
 
 }
