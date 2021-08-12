@@ -36,11 +36,18 @@
       <v-container>
         <router-view />
 
-        <v-row>  </v-row>
+        <v-row> </v-row>
       </v-container>
     </v-main>
-    <v-footer dark padless>
-      <Footer />
+    <v-footer dark>
+      <v-col class="justify-center" cols="12">
+        <v-card class="d-flex align-center justify-center pa-4 mx-auto">
+          <div>
+            Plataforma virtual para gestión de proyectos mediante metodología
+            Scrum. Trabajo de Título en desarrollo por Marcelo López.
+          </div>
+        </v-card>
+      </v-col>
     </v-footer>
   </v-app>
 </template>
@@ -59,7 +66,7 @@ export default {
     };
   },
   mounted() {
-   document.querySelector("#routerLinkTo").click();
+    document.querySelector("#routerLinkTo").click();
     this.isTokenPresent();
   },
   methods: {

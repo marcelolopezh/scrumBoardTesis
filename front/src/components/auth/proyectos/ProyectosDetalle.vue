@@ -95,10 +95,42 @@
                                   >
                                     <v-expansion-panel-header>
                                       <div v-text="task.name"></div>
-
+                                      <span
+                                        class="d-flex justify-end mr-5"
+                                        v-if="task.priority == 'Alta'"
+                                      >
+                                        <v-icon color="orange">
+                                          mdi-star</v-icon
+                                        >
+                                        <v-icon color="orange">
+                                          mdi-star</v-icon
+                                        >
+                                        <v-icon color="orange">
+                                          mdi-star</v-icon
+                                        >
+                                      </span>
+                                      <span
+                                        class="d-flex justify-end mr-5"
+                                        v-if="task.priority == 'Media'"
+                                      >
+                                        <v-icon color="orange">
+                                          mdi-star</v-icon
+                                        >
+                                        <v-icon color="orange">
+                                          mdi-star</v-icon
+                                        >
+                                      </span>
+                                      <span
+                                        class="d-flex justify-end mr-5"
+                                        v-if="task.priority == 'Baja'"
+                                      >
+                                        <v-icon color="orange">
+                                          mdi-star</v-icon
+                                        >
+                                      </span>
                                       <template v-slot:actions>
                                         <v-icon
-                                          color="danger"
+                                          color="red"
                                           v-if="task.state == 'Pendiente'"
                                         >
                                           mdi-stop-circle-outline
@@ -908,12 +940,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.headerClass {
-  white-space: nowrap;
-  word-break: normal;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-</style>
