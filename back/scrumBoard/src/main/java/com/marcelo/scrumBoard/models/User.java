@@ -37,6 +37,9 @@ public class User {
     @Transient
     @JsonIgnore
     private String passwordConfirmation;
+    @Size(min=0,max=500)
+    @JsonIgnore
+    private String token;
     
     @OneToMany(mappedBy="user", fetch = FetchType.LAZY)
     @JsonIgnore
@@ -160,7 +163,10 @@ public class User {
 	public void setAllClientsProj(List<Project> allClientsProj) {
 		this.allClientsProj = allClientsProj;
 	}
-    
-    
-    
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
+	}    
 }

@@ -26,12 +26,14 @@
                   <Members
                     @event="getInfo"
                     :members="members"
-                    :project_id="project.id"
+                    :project="project"
+                    :user="user"
                   ></Members>
                   <Interesteds
                     @event="getInfo"
                     :interesteds="interesteds"
-                    :project_id="project.id"
+                    :project="project"
+                    :user="user"
                   ></Interesteds>
                 </v-col>
               </v-row>
@@ -63,6 +65,7 @@
                                     <v-icon>mdi-pencil</v-icon>
                                   </v-btn>
                                   <v-btn
+                                    v-if="user.id == project.user.id"
                                     class="mx-2"
                                     fab
                                     dark
@@ -82,7 +85,7 @@
                                   class="text-center"
                                   v-text="sprint.objetive"
                                 ></h4>
-                                
+
                                 <v-divider class="mt-5 mb-5"></v-divider>
 
                                 <v-expansion-panels class="mb-6">
@@ -92,20 +95,59 @@
                                   >
                                     <v-expansion-panel-header>
                                       <div v-text="task.name"></div>
-
+                                      <span
+                                        class="d-flex justify-end mr-5"
+                                        v-if="task.priority == 'Alta'"
+                                      >
+                                        <v-icon color="orange">
+                                          mdi-star</v-icon
+                                        >
+                                        <v-icon color="orange">
+                                          mdi-star</v-icon
+                                        >
+                                        <v-icon color="orange">
+                                          mdi-star</v-icon
+                                        >
+                                      </span>
+                                      <span
+                                        class="d-flex justify-end mr-5"
+                                        v-if="task.priority == 'Media'"
+                                      >
+                                        <v-icon color="orange">
+                                          mdi-star</v-icon
+                                        >
+                                        <v-icon color="orange">
+                                          mdi-star</v-icon
+                                        >
+                                      </span>
+                                      <span
+                                        class="d-flex justify-end mr-5"
+                                        v-if="task.priority == 'Baja'"
+                                      >
+                                        <v-icon color="orange">
+                                          mdi-star</v-icon
+                                        >
+                                      </span>
                                       <template v-slot:actions>
-                                        <v-icon color="danger" v-if="task.state=='Pendiente'">
+                                        <v-icon
+                                          color="red"
+                                          v-if="task.state == 'Pendiente'"
+                                        >
                                           mdi-stop-circle-outline
                                         </v-icon>
-                                        <v-icon color="warning" v-if="task.state=='En Curso'">
+                                        <v-icon
+                                          color="warning"
+                                          v-if="task.state == 'En Curso'"
+                                        >
                                           mdi-progress-check
                                         </v-icon>
-                                        <v-icon color="teal" v-if="task.state=='Terminado'">
+                                        <v-icon
+                                          color="teal"
+                                          v-if="task.state == 'Terminado'"
+                                        >
                                           mdi-check
                                         </v-icon>
                                       </template>
-                                      
-
                                     </v-expansion-panel-header>
                                     <v-expansion-panel-content>
                                       <div
@@ -159,6 +201,7 @@
                                             <v-icon>mdi-tools</v-icon>
                                           </v-btn>
                                           <v-btn
+                                            v-if="user.id == project.user.id"
                                             class="mx-2"
                                             fab
                                             dark
@@ -205,6 +248,7 @@
                                 </v-expansion-panels>
                                 <div class="my-2 text-center">
                                   <v-btn
+                                    v-if="user.id == project.user.id"
                                     small
                                     color="success"
                                     dark
@@ -259,6 +303,7 @@
             <v-row>
               <v-col cols="12" class="text-right">
                 <v-btn
+                  v-if="user.id == project.user.id"
                   class="ma-2"
                   color="primary"
                   dark
@@ -335,6 +380,7 @@
             ></v-select>
 
             <v-select
+              v-if="user && project && user.id == project.user.id"
               v-model="responsable"
               :items="members"
               menu-props="auto"
@@ -591,6 +637,7 @@ export default {
 
   data() {
     return {
+      user: null,
       apiUrl: process.env.VUE_APP_APIURL,
       loadingModal: false,
       loading: false,
@@ -648,8 +695,8 @@ export default {
     this.getInfo();
   },
   methods: {
-    formatDate(date){
-      return moment(date,"DD-MM-YYYY");
+    formatDate(date) {
+      return moment(date, "DD-MM-YYYY");
     },
     next() {
       this.window =
@@ -782,15 +829,25 @@ export default {
     async getInfo() {
       this.members = [];
       this.interesteds = [];
+      var formData = new FormData();
       const token = localStorage.getItem("token");
+      const email = localStorage.getItem("email");
+      formData.append("email", email);
+      formData.append("token", token);
       await axios
-        .get(this.apiUrl + "getInfoProject/" + this.id, {
+        .post(this.apiUrl + "getInfoProject/" + this.id, formData, {
           headers: {
             Authorization: token,
           },
         })
-        .then((response) => (this.project = response.data))
+        .then(
+          (response) => (
+            (this.project = response.data.project),
+            (this.user = response.data.user)
+          )
+        )
         .catch((error) => console.log(error));
+
       for (var i = 0; i < this.project.members.length; i++) {
         this.members.push({
           text:
@@ -883,12 +940,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.headerClass {
-  white-space: nowrap;
-  word-break: normal;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-</style>

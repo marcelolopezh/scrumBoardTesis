@@ -1,5 +1,5 @@
 <template >
-  <v-row class="pa-5">
+  <v-row class="pa-5" v-if="error == null">
     <v-col>
       <v-card>
         <v-card-title>Proyectos</v-card-title>
@@ -165,6 +165,7 @@ export default {
   name: "Proyectos",
   data() {
     return {
+      error: null,
       name: null,
       description: null,
       valid: true,
@@ -237,6 +238,7 @@ export default {
       const token = localStorage.getItem("token");
       var formData = new FormData();
       formData.append("email", email);
+      formData.append("token", token);
       await axios
         .post(this.apiUrl + "getMyProjects", formData, {
           headers: {
@@ -244,13 +246,15 @@ export default {
           },
         })
         .then((response) => (this.myProjects = response.data))
-        .catch((error) => console.log(error));
+        .catch((error) => (this.error = error));
     },
     async getMyProjectsAsMember() {
       const email = localStorage.getItem("email");
       const token = localStorage.getItem("token");
       var formData = new FormData();
       formData.append("email", email);
+      formData.append("token", token);
+
       await axios
         .post(this.apiUrl + "getMyProjectsAsMember", formData, {
           headers: {
@@ -258,13 +262,15 @@ export default {
           },
         })
         .then((response) => (this.myProjectsAsMember = response.data))
-        .catch((error) => console.log(error));
+        .catch((error) => (this.error = error));
     },
     async getMyProjectsAsInterested() {
       const email = localStorage.getItem("email");
       const token = localStorage.getItem("token");
       var formData = new FormData();
       formData.append("email", email);
+      formData.append("token", token);
+
       await axios
         .post(this.apiUrl + "getMyProjectsAsInterested", formData, {
           headers: {
@@ -272,7 +278,7 @@ export default {
           },
         })
         .then((response) => (this.myProjectsAsInterested = response.data))
-        .catch((error) => console.log(error));
+        .catch((error) => (this.error = error));
     },
     async getAllMembers() {
       const token = localStorage.getItem("token");
@@ -284,7 +290,7 @@ export default {
           },
         })
         .then((response) => (this.allMembers = response.data))
-        .catch((error) => console.log(error));
+        .catch((error) => (this.error = error));
       var index = 0;
       for (var i = 0; i < this.allMembers.length; i++) {
         if (this.allMembers[i].email == email) {

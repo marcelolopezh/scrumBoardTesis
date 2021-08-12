@@ -19,19 +19,30 @@
         <v-toolbar color="primary" dark>Listado de Miembros</v-toolbar>
         <v-card-text class="pt-2 text-center">
           <v-row v-for="member in members_" :key="member.value">
-            <v-col>
-              <v-btn class="ma-2" color="success" dark>
+            <v-col cols="11">
+              <v-btn block color="success" dark>
                 <v-icon white class="pr-4">mdi-account</v-icon>
                 {{ member.text }}
               </v-btn>
-              <v-btn class="ma-2" small fab color="red darken-1">
+            </v-col>
+            <v-col cols="1">
+              <v-btn
+                block
+                small
+                fab
+                color="red darken-1"
+              >
                 <v-icon color="white" @click="deleteMember(member.value)">
                   mdi-delete
                 </v-icon>
               </v-btn>
-            </v-col></v-row
+            </v-col>
+          </v-row>
+          <v-form
+            ref="form"
+            v-model="valid"
+            lazy-validation
           >
-          <v-form ref="form" v-model="valid" lazy-validation>
             <v-autocomplete
               v-model="selectedMembers"
               :items="allMembers"
@@ -68,7 +79,7 @@
 <script>
 import axios from "axios";
 export default {
-  props: ["members", "project_id"],
+  props: ["members", "project", "user"],
   name: "Members",
   data() {
     return {
@@ -87,7 +98,7 @@ export default {
   watch: {
     members: function (newVal) {
       this.members_ = newVal;
-      this.getAllMembersAvailable()
+      this.getAllMembersAvailable();
     },
   },
   methods: {
@@ -97,7 +108,7 @@ export default {
         .delete(
           this.apiUrl +
             "deleteMemberFromTheProject/" +
-            this.project_id +
+            this.project.id +
             "/" +
             member,
           {
@@ -115,7 +126,7 @@ export default {
         .get(
           this.apiUrl +
             "getMembersAvailableToAddToTheProject/" +
-            this.project_id,
+            this.project.id,
           {
             headers: {
               Authorization: token,
@@ -133,14 +144,14 @@ export default {
       }
       var formData = new FormData();
       formData.append("newMemberList", membersToAdd);
-      formData.append("project_id", this.project_id);
+      formData.append("project_id", this.project.id);
       await axios
         .put(this.apiUrl + "addMemberToProject/", formData, {
           headers: {
             Authorization: token,
           },
         })
-        .then(()=> this.$emit("event"))
+        .then(() => this.$emit("event"))
         .catch((error) => console.log(error));
     },
   },

@@ -19,19 +19,33 @@
         <v-toolbar color="primary" dark>Listado de Interesados</v-toolbar>
         <v-card-text class="pt-2 text-center">
           <v-row v-for="interested in interesteds_" :key="interested.value">
-            <v-col>
-              <v-btn class="ma-2" color="success" dark>
+            <v-col cols="11">
+              <v-btn block color="success" dark>
                 <v-icon white class="pr-4">mdi-account</v-icon>
                 {{ interested.text }}
               </v-btn>
-              <v-btn class="ma-2" small fab color="red darken-1">
-                <v-icon color="white" @click="deleteInterested(interested.value)">
+            </v-col>
+            <v-col cols="1">
+              <v-btn
+                block
+                small
+                fab
+                color="red darken-1"
+              >
+                <v-icon
+                  color="white"
+                  @click="deleteInterested(interested.value)"
+                >
                   mdi-delete
                 </v-icon>
               </v-btn>
             </v-col></v-row
           >
-          <v-form ref="form" v-model="valid" lazy-validation>
+          <v-form
+            ref="form"
+            v-model="valid"
+            lazy-validation
+          >
             <v-autocomplete
               v-model="selectedInteresteds"
               :items="allInteresteds"
@@ -57,7 +71,9 @@
           </v-form>
         </v-card-text>
         <v-card-actions class="justify-end">
-          <v-btn text @click="dialogInteresteds = !dialogInteresteds">Close</v-btn>
+          <v-btn text @click="dialogInteresteds = !dialogInteresteds"
+            >Close</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -68,7 +84,7 @@
 <script>
 import axios from "axios";
 export default {
-  props: ["interesteds", "project_id"],
+  props: ["interesteds", "project", "user"],
   name: "Interesteds",
   data() {
     return {
@@ -87,7 +103,7 @@ export default {
   watch: {
     interesteds: function (newVal) {
       this.interesteds_ = newVal;
-      this.getAllInterestedsAvailable()
+      this.getAllInterestedsAvailable();
     },
   },
   methods: {
@@ -97,7 +113,7 @@ export default {
         .delete(
           this.apiUrl +
             "deleteInterestedFromTheProject/" +
-            this.project_id +
+            this.project.id +
             "/" +
             interested,
           {
@@ -115,7 +131,7 @@ export default {
         .get(
           this.apiUrl +
             "getInterestedsAvailableToAddToTheProject/" +
-            this.project_id,
+            this.project.id,
           {
             headers: {
               Authorization: token,
@@ -133,14 +149,14 @@ export default {
       }
       var formData = new FormData();
       formData.append("newInterestedList", interestedsToAdd);
-      formData.append("project_id", this.project_id);
+      formData.append("project_id", this.project.id);
       await axios
         .put(this.apiUrl + "addInterestedToProject/", formData, {
           headers: {
             Authorization: token,
           },
         })
-        .then(() =>this.$emit("event"))
+        .then(() => this.$emit("event"))
         .catch((error) => console.log(error));
     },
   },

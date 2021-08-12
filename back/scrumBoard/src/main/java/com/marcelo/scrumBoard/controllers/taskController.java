@@ -68,6 +68,11 @@ public class taskController {
 		if("En Curso".equals(state) && task.getStarted_at()==null) {
 			LocalDateTime localDateTime = LocalDateTime.now();
 			task.setStarted_at(localDateTime);
+			task.setFinished_at(null);
+		}
+		if("Pendiente".equals(state)) {
+			task.setStarted_at(null);
+			task.setFinished_at(null);
 		}
 		if("Terminado".equals(state)) {
 			LocalDateTime localDateTime = LocalDateTime.now();

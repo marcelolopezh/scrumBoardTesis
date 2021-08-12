@@ -43,9 +43,12 @@ public class controller {
 		if(isDataCorrect) {
 			HashMap<String,String> userObj = new HashMap<>();
 			User user = userService.findByEmail(email);
+			String token = getJWTToken(email+" "+date);
+			user.setToken(token);
+			userService.save(user);
 			userObj.put("id",user.getId().toString());
 			userObj.put("completeName", user.getName()+" "+user.getLastName());
-			userObj.put("token", getJWTToken(email+" "+date));
+			userObj.put("token", token);
 			return ResponseEntity.status(HttpStatus.OK).body(userObj);
 		}
 		else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
