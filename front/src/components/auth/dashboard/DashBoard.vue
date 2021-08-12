@@ -62,6 +62,7 @@ export default {
       for (i = 0; i <= totaldays; i++) {
         data[i] = totalhours - division * (i);
       }
+      data[data.length-1]=0;
       return data;
     },
     hoursPerDay(sprint) {
