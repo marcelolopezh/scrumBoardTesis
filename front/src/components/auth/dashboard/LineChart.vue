@@ -31,7 +31,7 @@ export default {
       options: {
         scales: {
             y: {
-                stacked: true
+                stacked: false
             }
         }
     }
