@@ -136,7 +136,7 @@ export default {
       const axios = require("axios");
       // eslint-disable-next-line no-unused-vars
       const responsex = await axios
-        .post(this.apiUrl + 'createUser', formData)
+        .post(this.apiUrl + "createUser", formData)
         .then((response) => console.log(response.data))
         .catch((error) => {
           this.errors = error;
@@ -147,9 +147,14 @@ export default {
         this.errorMsg = "Algo ha salido mal";
         this.errorRegister = true;
       } else {
-        this.successMsg =
-          "Se ha registrado correctamente el email " + this.email;
+        this.name = null;
+        this.lastName = null;
+        this.password = null;
+        this.passwordConfirm = null,
+          (this.successMsg =
+            "Se ha registrado correctamente el email " + this.email);
         this.successRegister = true;
+        this.email = null;
       }
     },
   },
