@@ -29,17 +29,7 @@ public class userController {
 		return ResponseEntity.status(HttpStatus.OK).body(allUsers);
 	}
 
-	@PostMapping("/getAllData")
-	public ResponseEntity<List<Project>> getAllData(@RequestParam("email") String email) {
-		// RETORNA PROYECTOS DE LOS CUAL EL EMAIL PARAM ES OWNER
-		User user = userService.findByEmail(email);
-		List<Project> allProjects = projectService.findAll();
-		List<Project> projectsToReturn = new ArrayList<Project>();
-		for(int i = 0 ; i<allProjects.size();i++ ) {
-			if(allProjects.get(i).getUser().equals(user)) projectsToReturn.add(allProjects.get(i));
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(projectsToReturn);
-	}
+	
 	
 	@GetMapping("/getMembersAvailableToAddToTheProject/{id}")
 	public ResponseEntity<List<User>> getMembersAvailableToAddToTheProject(@PathVariable("id") Long project_id){

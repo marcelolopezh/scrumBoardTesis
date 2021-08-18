@@ -15,26 +15,25 @@ export default {
             borderColor: "#36495d",
             borderWidth: 3,
             data: null,
-            tension:0
+            tension: 0,
           },
-           {
+          {
             label: "Trabajo Real",
             type: "line",
             borderColor: "blue",
             borderWidth: 3,
             data: null,
-            tension:0
-
+            tension: 0,
           },
         ],
       },
       options: {
         scales: {
-            y: {
-                stacked: false
-            }
-        }
-    }
+          y: {
+            stacked: false,
+          },
+        },
+      },
     };
   },
 
