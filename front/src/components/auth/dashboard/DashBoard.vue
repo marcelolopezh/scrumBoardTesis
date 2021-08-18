@@ -1,158 +1,187 @@
 <template>
   <div>
     <v-container fluid>
-      <div v-for="project in MyProjectsAsOwner" :key="project.id">
-        <v-card v-for="sprint in project.sprints" :key="sprint.id">
-          <v-card-title
-            >Resumen de Mi Proyecto : {{ project.name }}, Sprint
-            {{ sprint.name }}</v-card-title
-          >
-          <v-card-text>
-            <v-row>
-              <v-col cols="9">
-                <line-chart
-                  :chartDataLabels="getLabelsBurnDown(sprint)"
-                  :chartEstimatedWork="chartEstimatedWork(sprint)"
-                  :hoursPerDay="hoursPerDay(sprint)"
-                ></line-chart
-              ></v-col>
-              <v-col cols="3 mt-5">
-                <div class="text-subtitle-1 mt-5 text-center">Líder</div>
-                <hr />
-                <div class="text-subtitle-1 mt-1 text-center font-weight-black">
-                  {{ project.user.name }} {{ project.user.lastName }}
-                </div>
-                <div class="text-subtitle-1 mt-5 text-center">Miembros</div>
-                <hr />
-                <div
-                  class="text-subtitle-1 mt-1 text-center font-weight-black"
-                  v-for="user in project.members"
-                  :key="user.id"
-                >
-                  {{ user.name }} {{ user.lastName }}
-                </div>
-                <div class="text-subtitle-1 mt-5 text-center">
-                  Total de Tareas
-                </div>
-                <hr />
-                <div class="text-subtitle-1 mt-1 text-center font-weight-black">
-                  {{ sprint.tasks.length }}
-                </div>
+      <v-card>
+        <v-chip
+          @click="goBack()"
+          class="ma-2"
+          color="primary"
+          text-color="white"
+        >
+          <v-icon left> mdi-arrow-left-circle </v-icon>
+          Volver
+        </v-chip>
+        <div v-for="project in MyProjectsAsOwner" :key="project.id">
+          <v-card v-for="sprint in project.sprints" :key="sprint.id">
+            <v-card-title
+              >Resumen de Mi Proyecto : {{ project.name }}, Sprint
+              {{ sprint.name }}</v-card-title
+            >
+            <v-card-text>
+              <v-row>
+                <v-col cols="9">
+                  <line-chart
+                    :chartDataLabels="getLabelsBurnDown(sprint)"
+                    :chartEstimatedWork="chartEstimatedWork(sprint)"
+                    :hoursPerDay="hoursPerDay(sprint)"
+                  ></line-chart
+                ></v-col>
+                <v-col cols="3 mt-5">
+                  <div class="text-subtitle-1 mt-5 text-center">Líder</div>
+                  <hr />
+                  <div
+                    class="text-subtitle-1 mt-1 text-center font-weight-black"
+                  >
+                    {{ project.user.name }} {{ project.user.lastName }}
+                  </div>
+                  <div class="text-subtitle-1 mt-5 text-center">Miembros</div>
+                  <hr />
+                  <div
+                    class="text-subtitle-1 mt-1 text-center font-weight-black"
+                    v-for="user in project.members"
+                    :key="user.id"
+                  >
+                    {{ user.name }} {{ user.lastName }}
+                  </div>
+                  <div class="text-subtitle-1 mt-5 text-center">
+                    Total de Tareas
+                  </div>
+                  <hr />
+                  <div
+                    class="text-subtitle-1 mt-1 text-center font-weight-black"
+                  >
+                    {{ sprint.tasks.length }}
+                  </div>
 
-                <div class="text-subtitle-1 mt-5 text-center">
-                  Total de Horas Estimadas
-                </div>
-                <hr />
-                <div class="text-subtitle-1 mt-1 text-center font-weight-black">
-                  {{ getTotalHours(sprint.tasks) }}
-                </div>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-      </div>
+                  <div class="text-subtitle-1 mt-5 text-center">
+                    Total de Horas Estimadas
+                  </div>
+                  <hr />
+                  <div
+                    class="text-subtitle-1 mt-1 text-center font-weight-black"
+                  >
+                    {{ getTotalHours(sprint.tasks) }}
+                  </div>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </div>
 
-      <div v-for="project in MyProjectsAsMember" :key="project.id">
-        <v-card v-for="sprint in project.sprints" :key="sprint.id">
-          <v-card-title
-            >Resumen de Mi como Colaborador : {{ project.name }}, Sprint
-            {{ sprint.name }}</v-card-title
-          >
-          <v-card-text>
-            <v-row>
-              <v-col cols="9">
-                <line-chart
-                  :chartDataLabels="getLabelsBurnDown(sprint)"
-                  :chartEstimatedWork="chartEstimatedWork(sprint)"
-                  :hoursPerDay="hoursPerDay(sprint)"
-                ></line-chart
-              ></v-col>
-              <v-col cols="3 mt-5">
-                <div class="text-subtitle-1 mt-5 text-center">Líder</div>
-                <hr />
-                <div class="text-subtitle-1 mt-1 text-center font-weight-black">
-                  {{ project.user.name }} {{ project.user.lastName }}
-                </div>
-                <div class="text-subtitle-1 mt-5 text-center">Miembros</div>
-                <hr />
-                <div
-                  class="text-subtitle-1 mt-1 text-center font-weight-black"
-                  v-for="user in project.members"
-                  :key="user.id"
-                >
-                  {{ user.name }} {{ user.lastName }}
-                </div>
-                <div class="text-subtitle-1 mt-5 text-center">
-                  Total de Tareas
-                </div>
-                <hr />
-                <div class="text-subtitle-1 mt-1 text-center font-weight-black">
-                  {{ sprint.tasks.length }}
-                </div>
+        <div v-for="project in MyProjectsAsMember" :key="project.id">
+          <v-card v-for="sprint in project.sprints" :key="sprint.id">
+            <v-card-title
+              >Resumen de Mi como Colaborador : {{ project.name }}, Sprint
+              {{ sprint.name }}</v-card-title
+            >
+            <v-card-text>
+              <v-row>
+                <v-col cols="9">
+                  <line-chart
+                    :chartDataLabels="getLabelsBurnDown(sprint)"
+                    :chartEstimatedWork="chartEstimatedWork(sprint)"
+                    :hoursPerDay="hoursPerDay(sprint)"
+                  ></line-chart
+                ></v-col>
+                <v-col cols="3 mt-5">
+                  <div class="text-subtitle-1 mt-5 text-center">Líder</div>
+                  <hr />
+                  <div
+                    class="text-subtitle-1 mt-1 text-center font-weight-black"
+                  >
+                    {{ project.user.name }} {{ project.user.lastName }}
+                  </div>
+                  <div class="text-subtitle-1 mt-5 text-center">Miembros</div>
+                  <hr />
+                  <div
+                    class="text-subtitle-1 mt-1 text-center font-weight-black"
+                    v-for="user in project.members"
+                    :key="user.id"
+                  >
+                    {{ user.name }} {{ user.lastName }}
+                  </div>
+                  <div class="text-subtitle-1 mt-5 text-center">
+                    Total de Tareas
+                  </div>
+                  <hr />
+                  <div
+                    class="text-subtitle-1 mt-1 text-center font-weight-black"
+                  >
+                    {{ sprint.tasks.length }}
+                  </div>
 
-                <div class="text-subtitle-1 mt-5 text-center">
-                  Total de Horas Estimadas
-                </div>
-                <hr />
-                <div class="text-subtitle-1 mt-1 text-center font-weight-black">
-                  {{ getTotalHours(sprint.tasks) }}
-                </div>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-      </div>
+                  <div class="text-subtitle-1 mt-5 text-center">
+                    Total de Horas Estimadas
+                  </div>
+                  <hr />
+                  <div
+                    class="text-subtitle-1 mt-1 text-center font-weight-black"
+                  >
+                    {{ getTotalHours(sprint.tasks) }}
+                  </div>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </div>
 
-      <div v-for="project in MyProjectsAsIntersted" :key="project.id">
-        <v-card v-for="sprint in project.sprints" :key="sprint.id">
-          <v-card-title
-            >Resumen de Mi Proyecto de Interés : {{ project.name }}, Sprint
-            {{ sprint.name }}</v-card-title
-          >
-          <v-card-text>
-            <v-row>
-              <v-col cols="9">
-                <line-chart
-                  :chartDataLabels="getLabelsBurnDown(sprint)"
-                  :chartEstimatedWork="chartEstimatedWork(sprint)"
-                  :hoursPerDay="hoursPerDay(sprint)"
-                ></line-chart
-              ></v-col>
-              <v-col cols="3 mt-5">
-                <div class="text-subtitle-1 mt-5 text-center">Líder</div>
-                <hr />
-                <div class="text-subtitle-1 mt-1 text-center font-weight-black">
-                  {{ project.user.name }} {{ project.user.lastName }}
-                </div>
-                <div class="text-subtitle-1 mt-5 text-center">Miembros</div>
-                <hr />
-                <div
-                  class="text-subtitle-1 mt-1 text-center font-weight-black"
-                  v-for="user in project.members"
-                  :key="user.id"
-                >
-                  {{ user.name }} {{ user.lastName }}
-                </div>
-                <div class="text-subtitle-1 mt-5 text-center">
-                  Total de Tareas
-                </div>
-                <hr />
-                <div class="text-subtitle-1 mt-1 text-center font-weight-black">
-                  {{ sprint.tasks.length }}
-                </div>
+        <div v-for="project in MyProjectsAsIntersted" :key="project.id">
+          <v-card v-for="sprint in project.sprints" :key="sprint.id">
+            <v-card-title
+              >Resumen de Mi Proyecto de Interés : {{ project.name }}, Sprint
+              {{ sprint.name }}</v-card-title
+            >
+            <v-card-text>
+              <v-row>
+                <v-col cols="9">
+                  <line-chart
+                    :chartDataLabels="getLabelsBurnDown(sprint)"
+                    :chartEstimatedWork="chartEstimatedWork(sprint)"
+                    :hoursPerDay="hoursPerDay(sprint)"
+                  ></line-chart
+                ></v-col>
+                <v-col cols="3 mt-5">
+                  <div class="text-subtitle-1 mt-5 text-center">Líder</div>
+                  <hr />
+                  <div
+                    class="text-subtitle-1 mt-1 text-center font-weight-black"
+                  >
+                    {{ project.user.name }} {{ project.user.lastName }}
+                  </div>
+                  <div class="text-subtitle-1 mt-5 text-center">Miembros</div>
+                  <hr />
+                  <div
+                    class="text-subtitle-1 mt-1 text-center font-weight-black"
+                    v-for="user in project.members"
+                    :key="user.id"
+                  >
+                    {{ user.name }} {{ user.lastName }}
+                  </div>
+                  <div class="text-subtitle-1 mt-5 text-center">
+                    Total de Tareas
+                  </div>
+                  <hr />
+                  <div
+                    class="text-subtitle-1 mt-1 text-center font-weight-black"
+                  >
+                    {{ sprint.tasks.length }}
+                  </div>
 
-                <div class="text-subtitle-1 mt-5 text-center">
-                  Total de Horas Estimadas
-                </div>
-                <hr />
-                <div class="text-subtitle-1 mt-1 text-center font-weight-black">
-                  {{ getTotalHours(sprint.tasks) }}
-                </div>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-      </div>
+                  <div class="text-subtitle-1 mt-5 text-center">
+                    Total de Horas Estimadas
+                  </div>
+                  <hr />
+                  <div
+                    class="text-subtitle-1 mt-1 text-center font-weight-black"
+                  >
+                    {{ getTotalHours(sprint.tasks) }}
+                  </div>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </div>
+      </v-card>
     </v-container>
   </div>
 </template>
@@ -188,7 +217,7 @@ export default {
       var labels = [];
 
       var _startDate = moment(sprint.startDate, "YYYY-MM-DDTHH:mm");
-      for (var i = 0; i < diff; i++) {
+      for (var i = 0; i <= diff; i++) {
         var day = moment(_startDate, "DD-MM-YYYY").add(i, "days");
         labels[i] = day.format("DD-MM");
       }
@@ -213,13 +242,13 @@ export default {
       var startDate = moment(sprint.startDate, "YYYY-MM-DDTHH:mm");
       var endDate = moment(sprint.endDate, "YYYY-MM-DDTHH:mm");
       var difference = moment(endDate.diff(startDate, "days"));
-      difference = difference._i;
+      difference = difference._i + 1;
 
-      startDate = moment(startDate, "DD-MM-YYYY").add(1, "days");
+      startDate = moment(startDate, "DD-MM-YYYY").add(0, "days");
       allData[0] = startDate.format();
       var hoursWorkedPerDay = [];
       hoursWorkedPerDay[0] = 0;
-      for (var i = 1; i <= difference; i++) {
+      for (var i = 0; i <= difference; i++) {
         var aux = moment(startDate, "DD-MM-YYYY").add(i, "days");
         allData[i] = aux.format();
         hoursWorkedPerDay[i] = 0;
@@ -240,6 +269,7 @@ export default {
           }
         }
       }
+
       var totalHours = 0;
       for (i = 0; i < sprint.tasks.length; i++) {
         totalHours = totalHours + sprint.tasks[i].estimatedHours;
@@ -312,6 +342,9 @@ export default {
         totalHours += tasks[i].estimatedHours;
       }
       return totalHours;
+    },
+    goBack() {
+      this.$router.go(-1);
     },
   },
 };
