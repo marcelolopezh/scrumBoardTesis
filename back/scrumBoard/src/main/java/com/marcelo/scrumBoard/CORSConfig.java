@@ -18,7 +18,7 @@ public class CORSConfig {
         registry
           .addMapping("/**")
           .allowedOrigins(
-        	"http://168.232.167.174:8081",
+        	"http://168.232.167.58:8081",
             "http://localhost:8081"
           )
           .allowedHeaders("*")
