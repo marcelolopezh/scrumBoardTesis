@@ -23,15 +23,7 @@
             </v-list-item-content>
           </v-list-item>
         </router-link>
-        <v-list-item>
-          <v-list-item-icon>
-            <v-icon>mdi-help-box</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Tareas</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
+        
         <v-list-item @click="logout()">
           <v-list-item-icon>
             <v-icon>mdi-exit-to-app</v-icon>

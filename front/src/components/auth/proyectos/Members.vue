@@ -47,7 +47,7 @@
               v-model="selectedMembers"
               :items="allMembers"
               item-value="id"
-              :item-text="(item) => item.name + ' ' + item.lastName"
+              :item-text="(item) => item.name + ' ' + item.lastName + ' - ' + item.email"
               chips
               small-chips
               label="Listado de Miembros"

@@ -45,7 +45,7 @@
                       v-model="selectedMembers"
                       :items="allMembersComputed"
                       item-value="id"
-                      :item-text="(item) => item.name + ' ' + item.lastName"
+                      :item-text="(item) => item.name + ' ' + item.lastName + ' - ' + item.email"
                       chips
                       small-chips
                       label="Listado de Miembros"
@@ -58,7 +58,7 @@
                       v-model="selectedInteresteds"
                       :items="allInterestedsComputed"
                       item-value="id"
-                      :item-text="(item) => item.name + ' ' + item.lastName"
+                      :item-text="(item) => item.name + ' ' + item.lastName + ' - ' + item.email"
                       chips
                       small-chips
                       label="Listado de Clientes"

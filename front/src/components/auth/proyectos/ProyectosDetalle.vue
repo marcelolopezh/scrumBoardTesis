@@ -78,13 +78,13 @@
                                 </v-col>
 
                                 <h3
-                                  class="text-center"
+                                  class="text-center text-overline"
                                   v-text="sprint.name"
                                 ></h3>
-                                <h4
-                                  class="text-center"
-                                  v-text="sprint.objetive"
-                                ></h4>
+                                <h5
+                                  class="text-center text-overline">
+                                  Objetivo : {{sprint.objetive}}
+                                </h5>
 
                                 <v-divider class="mt-5 mb-5"></v-divider>
 
@@ -94,7 +94,25 @@
                                     :key="task.id"
                                   >
                                     <v-expansion-panel-header>
-                                      <div v-text="task.name"></div>
+                                      <div class="text-overline">
+                                        {{ task.name + " - " }}
+                                        <v-chip
+                                          color="secondary"
+                                          text-color="white"
+                                          class="ma-2"
+                                        >
+                                          <v-avatar>
+                                            <v-icon>mdi-account</v-icon>
+                                          </v-avatar>
+                                          <span
+                                            v-text="
+                                              task.user.name +
+                                              ' ' +
+                                              task.user.lastName
+                                            "
+                                          ></span>
+                                        </v-chip>
+                                      </div>
                                       <span
                                         class="d-flex justify-end mr-5"
                                         v-if="task.priority == 'Alta'"
@@ -151,9 +169,9 @@
                                     </v-expansion-panel-header>
                                     <v-expansion-panel-content>
                                       <div
-                                        class="text-center"
-                                        v-text="task.description"
-                                      ></div>
+                                        class="text-center text-overline"
+                                        
+                                      > Descripción : {{task.description}}</div>
                                       <v-chip-group
                                         active-class="primary--text"
                                         column
@@ -172,21 +190,18 @@
                                             v-text="task.estimatedHours + ' H'"
                                           ></span>
                                         </v-chip>
+                                    
                                         <v-chip
                                           color="secondary"
                                           text-color="white"
                                           class="ma-2"
                                         >
                                           <v-avatar>
-                                            <v-icon>mdi-account</v-icon>
+                                            <v-icon>mdi-calendar-clock-outline</v-icon>
                                           </v-avatar>
-                                          <span
-                                            v-text="
-                                              task.user.name +
-                                              ' ' +
-                                              task.user.lastName
-                                            "
-                                          ></span>
+                                          <span>
+                                          Término : {{formatDate(task.finished_at)}}
+                                          </span>
                                         </v-chip>
 
                                         <v-col class="text-right">
@@ -696,8 +711,11 @@ export default {
   },
   methods: {
     formatDate(date) {
-      return moment(date, "DD-MM-YYYY");
+         if (date) {
+           return moment(String(date)).format('DD-MM-YYYY')
+          } 
     },
+
     next() {
       this.window =
         this.window + 1 === this.project.sprints.length ? 0 : this.window + 1;

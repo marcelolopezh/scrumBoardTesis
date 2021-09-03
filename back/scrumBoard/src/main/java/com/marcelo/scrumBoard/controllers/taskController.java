@@ -65,7 +65,7 @@ public class taskController {
 			@RequestParam("task_id") Long task_id,
 			@RequestParam("state") String state) {
 		Task task = taskService.findById(task_id);
-		if("En Curso".equals(state) && task.getStarted_at()==null) {
+		if("En Curso".equals(state)) {
 			LocalDateTime localDateTime = LocalDateTime.now();
 			task.setStarted_at(localDateTime);
 			task.setFinished_at(null);
