@@ -50,7 +50,7 @@
               v-model="selectedInteresteds"
               :items="allInteresteds"
               item-value="id"
-              :item-text="(item) => item.name + ' ' + item.lastName"
+              :item-text="(item) => item.name + ' ' + item.lastName + ' - ' + item.email"
               chips
               small-chips
               label="Listado de Interesados"
