@@ -6,16 +6,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.marcelo.scrumBoard.models.ResponsePokeApi;
+import com.marcelo.scrumBoard.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.marcelo.scrumBoard.models.User;
 import com.marcelo.scrumBoard.services.UserService;
@@ -27,6 +26,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class controller {
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	ProjectService projectService;
 	
 	@GetMapping("/")
 	public ResponseEntity<Boolean> confirmToken() {
@@ -56,23 +58,14 @@ public class controller {
 	
 	@PostMapping("/createUser")
 	public ResponseEntity<User> registerPost(
-			@RequestParam("name") String name,
-			@RequestParam("lastName") String lastName,
-			@RequestParam("email") String email,
-			@RequestParam("password") String password
+			@RequestBody User user
 			) {
-		User isUserRegistered = userService.findByEmail(email.toLowerCase());
-		if(isUserRegistered==null) {
-			User registerUserDB = new User();
-			registerUserDB.setName(name);
-			registerUserDB.setLastName(lastName);
-			registerUserDB.setEmail(email);
-			String hashed = userService.hashedPassword(password);
-			registerUserDB.setPassword(hashed);			
-			registerUserDB = userService.save(registerUserDB);
-			return ResponseEntity.status(HttpStatus.OK).body(registerUserDB);
-		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		User _user_ = userService.findByEmail(user.getEmail());
+		Boolean isValid = _user_ == null ? true : false;
+		User dbUser = isValid ? userService.save(user) : null;
+		return dbUser != null && isValid
+				? ResponseEntity.status(HttpStatus.OK).body(dbUser)
+				: ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 	}
 	private String getJWTToken(String email) {
 		String secretKey = "uctTemuco";
@@ -89,4 +82,11 @@ public class controller {
 	}
 
 
+
+	@GetMapping("/pokemon-api")
+	public ResponseEntity<ResponsePokeApi> getPokemon(
+			@RequestParam("pokemon") String pokemon
+ 	) throws Exception {
+		return projectService.getInfoFromApi(pokemon);
+	}
 }

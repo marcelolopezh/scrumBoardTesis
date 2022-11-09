@@ -17,6 +17,7 @@
 
 	<properties>
 		<java.version>11</java.version>
+		<junit.version>4.13.1</junit.version>
 	</properties>
 
 	<dependencies>
@@ -101,8 +102,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-
-
 	</dependencies>
 
 	<build>

@@ -39,6 +39,7 @@ public class ScrumBoardApplication {
 					.antMatchers(HttpMethod.POST, "/login").permitAll()
 					.antMatchers(HttpMethod.GET, "/getAllProjects").permitAll()
 					.antMatchers(HttpMethod.GET, "/test1").permitAll()
+					.antMatchers(HttpMethod.GET, "/pokemon-api").permitAll()
 					.anyRequest().authenticated();
 			http.cors().and();
 		}

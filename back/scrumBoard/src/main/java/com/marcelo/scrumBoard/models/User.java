@@ -29,7 +29,7 @@ public class User {
     private Long id;
     private String name;
     private String lastName;
-    private String email;    
+    private String email;    {}
     private String accountType;
     @Size(min = 8, max = 200)
     @JsonIgnore
